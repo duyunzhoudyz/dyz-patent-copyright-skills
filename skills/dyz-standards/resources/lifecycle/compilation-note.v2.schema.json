@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "dyz/standards/compilation-note/v2",
+  "title": "标准编制说明 v2 完整记录契约",
+  "description": "显式contract_version=2的compilation_note字段，与运行时使用identity mapping（同形无损映射），扩展字段原样保留；本schema描述完整说明，非完整内部稿仍可交standards.closed_loop返回具体issues，不将缺证转换为格式异常；提供的已声明字段类型错误则抛ContractError。默认内部11节不冒充组织法定表式；组织profile可用不同节数按section_semantics映射已有语义子集，当前始终保留organization_profile_needs_review，不声明组织组合已支持。正文/version/profile哈希、缺节/重复/未知节及派生声明一致性由业务层核验；不认证来源和专业结论。",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["standard_name", "version", "clause_digest", "profile_id", "profile_hash", "sections"],
+  "properties": {
+    "standard_name": {"$ref": "#/$defs/text"},
+    "version": {"$ref": "#/$defs/text"},
+    "clause_digest": {"$ref": "#/$defs/text"},
+    "profile_id": {"$ref": "#/$defs/text"},
+    "profile_hash": {"$ref": "#/$defs/text"},
+    "sections": {"type": "array", "items": {"$ref": "#/$defs/section"}}
+  },
+  "$defs": {
+    "text": {"type": "string", "minLength": 1, "pattern": "\\S"},
+    "texts": {"type": "array", "items": {"$ref": "#/$defs/text"}},
+    "internalSectionId": {
+      "type": "string",
+      "enum": [
+        "note-01-work-overview", "note-02-background-purpose", "note-03-principles-basis",
+        "note-04-technical-content-basis", "note-05-comparison", "note-06-legal-standard-relation",
+        "note-07-major-divergence", "note-08-nature-and-implementation",
+        "note-09-comment-disposition", "note-10-verification", "note-11-open-items"
+      ]
+    },
+    "openItem": {
+      "type": "object", "required": ["id", "question", "owner", "blocks", "recovery"],
+      "properties": {
+        "id": {"$ref": "#/$defs/text"}, "question": {"$ref": "#/$defs/text"},
+        "owner": {"$ref": "#/$defs/text"}, "blocks": {"enum": ["submission", "approval", "publication", "none"]},
+        "recovery": {"$ref": "#/$defs/text"}, "source_refs": {"$ref": "#/$defs/texts"}
+      },
+      "description": "非未决汇总节附加note:<section_id>来源；汇总节声明必须另含非空source_refs且与派生完整集合相等。"
+    },
+    "section": {
+      "type": "object", "required": ["id", "heading", "body", "state", "owner"],
+      "properties": {
+        "id": {"$ref": "#/$defs/text"}, "heading": {"$ref": "#/$defs/text"},
+        "body": {"$ref": "#/$defs/text"}, "owner": {"$ref": "#/$defs/text"},
+        "state": {"enum": ["explicit", "inferred", "unknown", "not_applicable"]},
+        "source": {"$ref": "#/$defs/texts"}, "inference_basis": {"type": "string"},
+        "review_required": {"type": "boolean"}, "reason": {"type": "string"},
+        "question": {"type": "string"}, "blocks": {"enum": ["submission", "approval", "publication", "none"]},
+        "recovery": {"type": "string"},
+        "outcome_tally": {"type": "object", "description": "导入稿声明；每个给定字段必须等于当前原意见与处置派生值，不覆盖矛盾。"},
+        "verification_summary": {"type": "object", "description": "计划/执行/结果/审阅分开，声明只与当前条款hash绑定的派生记录比较。"},
+        "open_items": {"type": "array", "items": {"$ref": "#/$defs/openItem"}}
+      },
+      "allOf": [
+        {"if": {"properties": {"state": {"const": "explicit"}}}, "then": {"required": ["source"], "properties": {"source": {"minItems": 1}}}},
+        {"if": {"properties": {"state": {"const": "inferred"}}}, "then": {"required": ["source", "inference_basis", "review_required"], "properties": {"source": {"minItems": 1}, "inference_basis": {"$ref": "#/$defs/text"}, "review_required": {"const": true}}}},
+        {"if": {"properties": {"state": {"const": "unknown"}}}, "then": {"required": ["question", "blocks", "recovery"], "properties": {"question": {"$ref": "#/$defs/text"}, "recovery": {"$ref": "#/$defs/text"}}}},
+        {"if": {"properties": {"state": {"const": "not_applicable"}}}, "then": {"required": ["reason"], "properties": {"reason": {"$ref": "#/$defs/text"}}}}
+      ]
+    }
+  }
+}

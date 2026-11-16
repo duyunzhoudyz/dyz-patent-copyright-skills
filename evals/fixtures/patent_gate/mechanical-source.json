@@ -1,0 +1,32 @@
+{
+  "sensitivity": "synthetic",
+  "documents": [
+    {
+      "id": "Originalmechanical",
+      "version": "1",
+      "role": "original",
+      "text": "原创合成夹具仅有这一种结构：基座具有两条平行导轨和一个固定止挡；滑块沿导轨移动；滑块上有一个孔，固定止挡上有一个孔；只有滑块抵靠止挡时两孔才同轴，插销可同时穿过两孔以阻止滑块离开止挡。没有尺寸、公差、弹簧或防丢结构，也没有其他方案。",
+      "sha256": "4b86a843ad67b57f15cb207dda06cb54860ccfec51d437e93efb0a6f9bb048f6"
+    }
+  ],
+  "provenance": {
+    "origin": "original_synthetic_user_task_recovered_from_transcript_read",
+    "transcript_record_i": 791,
+    "historical_path": "outputs/patent-skill-validation-20261114/final-gate/mechanical-single-scope-prompt.txt",
+    "task_text": "原创合成夹具仅有这一种结构：基座具有两条平行导轨和一个固定止挡；滑块沿导轨移动；滑块上有一个孔，固定止挡上有一个孔；只有滑块抵靠止挡时两孔才同轴，插销可同时穿过两孔以阻止滑块离开止挡。没有尺寸、公差、弹簧或防丢结构，也没有其他方案。请直接交一条独立权项、说明该动作链的实施方式和摘要，再列内部支持。只写材料支持的范围，不要凑三个方案。",
+    "method": "exact_user_task_prefix_before_delivery_request",
+    "full_technical_material_preserved": true,
+    "rewritten": false,
+    "original_prompt_bytes": "not_recovered_from_read_snapshot",
+    "candidate": "mechanical-candidate.md",
+    "candidate_sha256": "e96d04397b15daa51e1fbc416fbc2088c5eaceedca875655692a2b1330b8e628",
+    "candidate_recovery": "complete_final_read_snapshot_at_transcript_record_i_850_matches_frozen_sha256",
+    "candidate_origin": "local_assistant_authored_reference_not_requested_model_retest",
+    "claim_count": {"independent": 1, "dependent": 0},
+    "historical_bad_output": "mechanical-historical-bad.md",
+    "historical_bad_recovery": "complete_read_snapshot_at_transcript_record_i_570_original_file_bytes_not_authenticated",
+    "natural_language_verified": false,
+    "source_authentication": "not_performed",
+    "professional_review": "not_performed"
+  }
+}

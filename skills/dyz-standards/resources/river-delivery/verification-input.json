@@ -1,0 +1,223 @@
+{
+  "sensitivity": "synthetic",
+  "document_id": "River_verification",
+  "version": "N_1.0_r1",
+  "business": "standard",
+  "sources": [
+    {
+      "id": "River",
+      "path": "skills/dyz-standards/resources/river-example.md",
+      "sha256": "145d38e9aac50a606d9631331b1e6eb9c25f468bfea0be915d0245469d241386"
+    }
+  ],
+  "blocks": [
+    {
+      "id": "verification_146",
+      "source_id": "River",
+      "start_line": 146,
+      "end_line": 146,
+      "kind": "heading2",
+      "audience": "body"
+    },
+    {
+      "id": "verification_148",
+      "source_id": "River",
+      "start_line": 148,
+      "end_line": 148,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "verification_150",
+      "source_id": "River",
+      "start_line": 150,
+      "end_line": 161,
+      "kind": "table",
+      "audience": "body"
+    },
+    {
+      "id": "verification_163",
+      "source_id": "River",
+      "start_line": 163,
+      "end_line": 163,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "verification_165",
+      "source_id": "River",
+      "start_line": 165,
+      "end_line": 165,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "verification_167",
+      "source_id": "River",
+      "start_line": 167,
+      "end_line": 167,
+      "kind": "heading2",
+      "audience": "body"
+    },
+    {
+      "id": "verification_169",
+      "source_id": "River",
+      "start_line": 169,
+      "end_line": 169,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "verification_172",
+      "source_id": "River",
+      "start_line": 172,
+      "end_line": 172,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "verification_175",
+      "source_id": "River",
+      "start_line": 175,
+      "end_line": 175,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "verification_178",
+      "source_id": "River",
+      "start_line": 178,
+      "end_line": 178,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "verification_179",
+      "source_id": "River",
+      "start_line": 179,
+      "end_line": 179,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "verification_180",
+      "source_id": "River",
+      "start_line": 180,
+      "end_line": 180,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "verification_181",
+      "source_id": "River",
+      "start_line": 181,
+      "end_line": 181,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "verification_182",
+      "source_id": "River",
+      "start_line": 182,
+      "end_line": 182,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "verification_183",
+      "source_id": "River",
+      "start_line": 183,
+      "end_line": 183,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "verification_184",
+      "source_id": "River",
+      "start_line": 184,
+      "end_line": 184,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "verification_185",
+      "source_id": "River",
+      "start_line": 185,
+      "end_line": 185,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "verification_186",
+      "source_id": "River",
+      "start_line": 186,
+      "end_line": 186,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "verification_187",
+      "source_id": "River",
+      "start_line": 187,
+      "end_line": 187,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "verification_188",
+      "source_id": "River",
+      "start_line": 188,
+      "end_line": 188,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "verification_189",
+      "source_id": "River",
+      "start_line": 189,
+      "end_line": 189,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "verification_190",
+      "source_id": "River",
+      "start_line": 190,
+      "end_line": 190,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "verification_191",
+      "source_id": "River",
+      "start_line": 191,
+      "end_line": 191,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "verification_192",
+      "source_id": "River",
+      "start_line": 192,
+      "end_line": 192,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "verification_193",
+      "source_id": "River",
+      "start_line": 193,
+      "end_line": 193,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "verification_196",
+      "source_id": "River",
+      "start_line": 196,
+      "end_line": 196,
+      "kind": "paragraph",
+      "audience": "body"
+    }
+  ]
+}

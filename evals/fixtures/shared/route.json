@@ -1,0 +1,9 @@
+{
+  "project_id": "synthetic-three-businesses",
+  "evidence_ids": ["synthetic-shared-evidence-1"],
+  "requests": [
+    {"business": "patent", "goal": "整理合成技术交底", "owner": "synthetic-patent-owner", "adaptation": {"jurisdiction": "unverified", "right_type": "invention", "domain": "synthetic", "stage": "internal_draft"}},
+    {"business": "software", "goal": "整理合成软件版本", "owner": "synthetic-software-owner", "adaptation": {"jurisdiction": "unverified", "right_type": "copyright", "domain": "synthetic", "stage": "internal_draft"}},
+    {"business": "standard", "goal": "整理合成标准条款", "owner": "synthetic-standard-owner", "adaptation": {"organization": "SYNTHETIC-ORG", "standard_type": "product", "domain": "synthetic", "stage": "working_draft"}}
+  ]
+}

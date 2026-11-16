@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>港湾记录整理器</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#edf1f5;color:#182f43;font:16px/1.6 system-ui,sans-serif}main{max-width:1060px;margin:40px auto;padding:32px;background:white;border:1px solid #ccd7e0;border-radius:12px}h1{margin:0;font-size:30px}p{color:#526577}.label{font-weight:600}textarea,pre{width:100%;min-height:220px;padding:16px;border:1px solid #9aafbf;border-radius:6px;background:#f8fafc;white-space:pre-wrap;overflow-wrap:anywhere;font:15px/1.6 Consolas,monospace}textarea:focus,button:focus{outline:3px solid #80b7e8;outline-offset:2px}.columns{display:grid;grid-template-columns:1fr 1fr;gap:24px}button{background:#174e73;color:white;padding:11px 22px;border:0;border-radius:6px;font-size:16px;cursor:pointer}button:disabled{opacity:.5}#status{min-height:26px;font-weight:600}.note{font-size:14px}.toolbar{display:flex;gap:24px;align-items:center;margin:20px 0}@media(max-width:740px){main{margin:12px;padding:20px}.columns{grid-template-columns:1fr}.toolbar{flex-wrap:wrap}}
+</style>
+<main><h1>港湾记录整理器 <span id="version"></span></h1>
+<p>将 JSON 记录转换为 CSV，可按 id 排序。原创合成演示，仅供本机内部试用。</p>
+<div class="columns"><section><label class="label" for="input">输入 JSON 记录</label>
+<textarea id="input" spellcheck="false">[{"id":"A1","label":"港口观测","value":12},{"id":"A2","label":"桥面观测","value":8}]</textarea></section>
+<section><div class="label">CSV 结果</div><pre id="output" aria-label="CSV结果"></pre></section></div>
+<div class="toolbar"><label><input type="checkbox" id="strict" checked> 拒绝记录中的额外字段</label><label><input type="checkbox" id="sort"> 按 id 排序（Unicode 字符序）</label><button id="convert" disabled>转换为 CSV</button></div>
+<div id="status" role="status" aria-live="polite">正在读取版本…</div>
+<p class="note">最多 1000 条记录，接口请求最多 65536 字节；id 不得重复，value 必须为非负整数。结果仅显示在当前页面；本工具不自动保存文件。</p>
+</main>
+<script>
+const input=document.querySelector('#input'), output=document.querySelector('#output'), strict=document.querySelector('#strict'), sort=document.querySelector('#sort'), button=document.querySelector('#convert'), status=document.querySelector('#status');
+let revision=0,ready=false,busy=false;
+function changed(){revision++;output.textContent='';status.textContent='输入已改变，请重新转换。';}
+input.addEventListener('input',changed);strict.addEventListener('change',changed);sort.addEventListener('change',changed);
+fetch('/version').then(r=>{if(!r.ok)throw Error();return r.json()}).then(v=>{document.querySelector('#version').textContent='v'+v.version;ready=true;button.disabled=false;status.textContent='准备就绪。'}).catch(()=>{status.textContent='版本读取失败，请检查本地服务。'});
+button.addEventListener('click',async()=>{
+ if(!ready||busy)return;const current=revision;output.textContent='';busy=true;button.disabled=true;status.textContent='转换中…';
+ try{const response=await fetch('/convert?strict='+Number(strict.checked)+'&sort_by_id='+Number(sort.checked),{method:'POST',headers:{'Content-Type':'application/json'},body:input.value});const text=await response.text();
+ if(current!==revision)return;
+ if(!response.ok){let code='unknown_error';try{code=JSON.parse(text).error}catch{}status.textContent='转换失败：'+code;return;}
+ output.textContent=text;status.textContent='转换成功。';
+ }catch{if(current===revision)status.textContent='连接失败，请检查本地服务。';}
+ finally{busy=false;button.disabled=!ready;}
+});
+</script></html>

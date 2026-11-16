@@ -1,0 +1,408 @@
+{
+  "fixture_id": "maturity-i04-standard-source-boundaries",
+  "version": "1.0",
+  "kind": "author_development_fixed_vectors_not_rfc_conformance_suite",
+  "predeclaration": "Expected outputs authored after reading existing model and sources, before first run of these vectors. Not independent, blinded, or pre-implementation expectations. Do not alter to fit actual results.",
+  "count": 16,
+  "limits": [
+    "Only configured River 1.0; original model and requirements unchanged.",
+    "RFC relationship labels are human source analysis, not a reference parser oracle.",
+    "SB-13 has no RFC valid/invalid grade; River batch restriction alone is tested."
+  ],
+  "vectors": [
+    {
+      "id": "SB-01",
+      "title": "JSON number outside object-only application profile",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R03"
+      ],
+      "rfc8259_relation": {
+        "state": "grammar_allowed_profile_rejected",
+        "sections": [
+          "2",
+          "3"
+        ],
+        "authority": "author source comparison, not computed by tested model"
+      },
+      "initial_state": {},
+      "body_text": "7",
+      "expected": {
+        "status": "rejected",
+        "reason": "shape",
+        "state": {}
+      }
+    },
+    {
+      "id": "SB-02",
+      "title": "JSON null outside object-only application profile",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R03"
+      ],
+      "rfc8259_relation": {
+        "state": "grammar_allowed_profile_rejected",
+        "sections": [
+          "2",
+          "3"
+        ],
+        "authority": "author source comparison, not computed by tested model"
+      },
+      "initial_state": {},
+      "body_text": "null",
+      "expected": {
+        "status": "rejected",
+        "reason": "shape",
+        "state": {}
+      }
+    },
+    {
+      "id": "SB-03",
+      "title": "Fraction zeroes allowed by JSON but forbidden number token here",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R02"
+      ],
+      "rfc8259_relation": {
+        "state": "grammar_allowed_profile_rejected",
+        "sections": [
+          "6",
+          "erratum-7600"
+        ],
+        "authority": "author source comparison, not computed by tested model"
+      },
+      "initial_state": {},
+      "body_text": "{\"version\":\"1.0\",\"batch\":\"A\",\"records\":[{\"seq\":1,\"value\":0.001}]}",
+      "expected": {
+        "status": "rejected",
+        "reason": "json",
+        "state": {}
+      }
+    },
+    {
+      "id": "SB-04",
+      "title": "Exponent leading zeroes allowed by JSON but forbidden here",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R02"
+      ],
+      "rfc8259_relation": {
+        "state": "grammar_allowed_profile_rejected",
+        "sections": [
+          "6",
+          "erratum-7600"
+        ],
+        "authority": "author source comparison, not computed by tested model"
+      },
+      "initial_state": {},
+      "body_text": "{\"version\":\"1.0\",\"batch\":\"A\",\"records\":[{\"seq\":1,\"value\":1E01}]}",
+      "expected": {
+        "status": "rejected",
+        "reason": "json",
+        "state": {}
+      }
+    },
+    {
+      "id": "SB-05",
+      "title": "Leading extra integer zero forbidden by JSON",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R02"
+      ],
+      "rfc8259_relation": {
+        "state": "grammar_disallowed",
+        "sections": [
+          "6"
+        ],
+        "authority": "author source comparison, not computed by tested model"
+      },
+      "initial_state": {},
+      "body_text": "{\"version\":\"1.0\",\"batch\":\"A\",\"records\":[{\"seq\":1,\"value\":01}]}",
+      "expected": {
+        "status": "rejected",
+        "reason": "json",
+        "state": {}
+      }
+    },
+    {
+      "id": "SB-06",
+      "title": "Literal names are lowercase",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R02"
+      ],
+      "rfc8259_relation": {
+        "state": "grammar_disallowed",
+        "sections": [
+          "3"
+        ],
+        "authority": "author source comparison, not computed by tested model"
+      },
+      "initial_state": {},
+      "body_text": "{\"version\":\"1.0\",\"batch\":\"A\",\"records\":[{\"seq\":1,\"value\":Null}]}",
+      "expected": {
+        "status": "rejected",
+        "reason": "json",
+        "state": {}
+      }
+    },
+    {
+      "id": "SB-07",
+      "title": "Decoded valid member names",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R02",
+        "R03"
+      ],
+      "rfc8259_relation": {
+        "state": "grammar_allowed",
+        "sections": [
+          "7",
+          "8.3"
+        ],
+        "authority": "author source comparison, not computed by tested model"
+      },
+      "initial_state": {},
+      "body_text": "{\"vers\\u0069on\":\"1.0\",\"ba\\u0074ch\":\"A\",\"records\":[{\"seq\":1,\"value\":4}]}",
+      "expected": {
+        "status": "accepted",
+        "reason": "accepted",
+        "state": {
+          "A": [
+            {
+              "seq": 1,
+              "value": 4
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "SB-08",
+      "title": "Escaped unpaired surrogate rejected by application alphabet",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R04"
+      ],
+      "rfc8259_relation": {
+        "state": "grammar_allows_escape_interoperability_warning_profile_rejected",
+        "sections": [
+          "7",
+          "8.2",
+          "erratum-7603"
+        ],
+        "authority": "author source comparison, not computed by tested model"
+      },
+      "initial_state": {},
+      "body_text": "{\"version\":\"1.0\",\"batch\":\"\\uD800\",\"records\":[{\"seq\":1,\"value\":4}]}",
+      "expected": {
+        "status": "rejected",
+        "reason": "batch",
+        "state": {}
+      }
+    },
+    {
+      "id": "SB-09",
+      "title": "Escaped newline valid JSON string but outside batch alphabet",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R04"
+      ],
+      "rfc8259_relation": {
+        "state": "grammar_allowed_profile_rejected",
+        "sections": [
+          "7"
+        ],
+        "authority": "author source comparison, not computed by tested model"
+      },
+      "initial_state": {},
+      "body_text": "{\"version\":\"1.0\",\"batch\":\"A\\n\",\"records\":[{\"seq\":1,\"value\":4}]}",
+      "expected": {
+        "status": "rejected",
+        "reason": "batch",
+        "state": {}
+      }
+    },
+    {
+      "id": "SB-10",
+      "title": "Raw newline forbidden inside JSON string",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R02"
+      ],
+      "rfc8259_relation": {
+        "state": "grammar_disallowed",
+        "sections": [
+          "7"
+        ],
+        "authority": "author source comparison, not computed by tested model"
+      },
+      "initial_state": {},
+      "body_text": "{\"version\":\"1.0\",\"batch\":\"A\n\",\"records\":[{\"seq\":1,\"value\":4}]}",
+      "expected": {
+        "status": "rejected",
+        "reason": "json",
+        "state": {}
+      }
+    },
+    {
+      "id": "SB-11",
+      "title": "All four JSON whitespace forms counted as bytes",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R01"
+      ],
+      "rfc8259_relation": {
+        "state": "grammar_allowed",
+        "sections": [
+          "2"
+        ],
+        "authority": "author source comparison, not computed by tested model"
+      },
+      "initial_state": {},
+      "body_text": " \t\r\n{\"version\":\"1.0\",\"batch\":\"A\",\"records\":[{\"seq\":1,\"value\":4}]}\n\r\t ",
+      "expected": {
+        "status": "accepted",
+        "reason": "accepted",
+        "state": {
+          "A": [
+            {
+              "seq": 1,
+              "value": 4
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "SB-12",
+      "title": "Nonbreaking space is not JSON whitespace",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R01",
+        "R02"
+      ],
+      "rfc8259_relation": {
+        "state": "grammar_disallowed",
+        "sections": [
+          "2"
+        ],
+        "authority": "author source comparison, not computed by tested model"
+      },
+      "initial_state": {},
+      "body_text": " {\"version\":\"1.0\",\"batch\":\"A\",\"records\":[{\"seq\":1,\"value\":4}]}",
+      "expected": {
+        "status": "rejected",
+        "reason": "json",
+        "state": {}
+      }
+    },
+    {
+      "id": "SB-13",
+      "title": "Unescaped solidus relation quarantined pending source conflict",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R04"
+      ],
+      "rfc8259_relation": {
+        "state": "disputed_original_section7_vs_verified_erratum5318_no_rfc_grade",
+        "sections": [
+          "7",
+          "erratum-5318"
+        ],
+        "authority": "author source comparison, not computed by tested model"
+      },
+      "initial_state": {},
+      "body_text": "{\"version\":\"1.0\",\"batch\":\"A/B\",\"records\":[{\"seq\":1,\"value\":4}]}",
+      "expected": {
+        "status": "rejected",
+        "reason": "batch",
+        "state": {}
+      }
+    },
+    {
+      "id": "SB-14",
+      "title": "Escaped solidus still outside batch alphabet",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R04"
+      ],
+      "rfc8259_relation": {
+        "state": "grammar_allowed_profile_rejected",
+        "sections": [
+          "7"
+        ],
+        "authority": "author source comparison, not computed by tested model"
+      },
+      "initial_state": {},
+      "body_text": "{\"version\":\"1.0\",\"batch\":\"A\\/B\",\"records\":[{\"seq\":1,\"value\":4}]}",
+      "expected": {
+        "status": "rejected",
+        "reason": "batch",
+        "state": {}
+      }
+    },
+    {
+      "id": "SB-15",
+      "title": "Escaped batch equals accepted literal batch; replay",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R04",
+        "R08"
+      ],
+      "rfc8259_relation": {
+        "state": "grammar_allowed_business_replay_outside_rfc",
+        "sections": [
+          "7",
+          "8.3"
+        ],
+        "authority": "author source comparison, not computed by tested model"
+      },
+      "initial_state": {
+        "A": [
+          {
+            "seq": 1,
+            "value": 4
+          }
+        ]
+      },
+      "body_text": "{\"version\":\"1.0\",\"batch\":\"\\u0041\",\"records\":[{\"seq\":1,\"value\":4}]}",
+      "expected": {
+        "status": "rejected",
+        "reason": "replay",
+        "state": {
+          "A": [
+            {
+              "seq": 1,
+              "value": 4
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "SB-16",
+      "title": "Byte limit precedes alphabet check for multibyte value",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R01",
+        "R04",
+        "R09"
+      ],
+      "rfc8259_relation": {
+        "state": "grammar_allowed_application_byte_limit_rejected",
+        "sections": [
+          "9"
+        ],
+        "authority": "author source comparison, not computed by tested model"
+      },
+      "initial_state": {},
+      "body_text": "{\"version\":\"1.0\",\"batch\":\"汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉\",\"records\":[{\"seq\":1,\"value\":4}]}",
+      "expected": {
+        "status": "rejected",
+        "reason": "size",
+        "state": {}
+      }
+    }
+  ]
+}

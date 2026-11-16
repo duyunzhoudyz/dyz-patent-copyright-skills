@@ -1,0 +1,405 @@
+{
+  "sensitivity": "synthetic",
+  "document_id": "GatewayPatent",
+  "version": "N_v2",
+  "business": "patent",
+  "sources": [
+    {
+      "id": "gateway",
+      "path": "skills/dyz-patent/resources/cn-gateway-example.md",
+      "sha256": "779af8d05685f6bf566201f272c7956fec9225fcb5aa7321ef71a7c91ba597a7"
+    }
+  ],
+  "blocks": [
+    {
+      "id": "P0089",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "gateway",
+      "start_line": 89,
+      "end_line": 89
+    },
+    {
+      "id": "P0091",
+      "kind": "heading1",
+      "audience": "body",
+      "source_id": "gateway",
+      "start_line": 91,
+      "end_line": 91
+    },
+    {
+      "id": "P0093",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "gateway",
+      "start_line": 93,
+      "end_line": 93
+    },
+    {
+      "id": "P0095",
+      "kind": "heading1",
+      "audience": "body",
+      "source_id": "gateway",
+      "start_line": 95,
+      "end_line": 95
+    },
+    {
+      "id": "P0097",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "gateway",
+      "start_line": 97,
+      "end_line": 97
+    },
+    {
+      "id": "P0099",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "gateway",
+      "start_line": 99,
+      "end_line": 99
+    },
+    {
+      "id": "P0101",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "gateway",
+      "start_line": 101,
+      "end_line": 101
+    },
+    {
+      "id": "P0103",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "gateway",
+      "start_line": 103,
+      "end_line": 103
+    },
+    {
+      "id": "P0105",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "gateway",
+      "start_line": 105,
+      "end_line": 105
+    },
+    {
+      "id": "P0107",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "gateway",
+      "start_line": 107,
+      "end_line": 107
+    },
+    {
+      "id": "P0109",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "gateway",
+      "start_line": 109,
+      "end_line": 109
+    },
+    {
+      "id": "P0111",
+      "kind": "heading1",
+      "audience": "body",
+      "source_id": "gateway",
+      "start_line": 111,
+      "end_line": 111
+    },
+    {
+      "id": "P0113",
+      "kind": "heading2",
+      "audience": "body",
+      "source_id": "gateway",
+      "start_line": 113,
+      "end_line": 113
+    },
+    {
+      "id": "P0115",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "gateway",
+      "start_line": 115,
+      "end_line": 115
+    },
+    {
+      "id": "P0117",
+      "kind": "heading2",
+      "audience": "body",
+      "source_id": "gateway",
+      "start_line": 117,
+      "end_line": 117
+    },
+    {
+      "id": "P0119",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "gateway",
+      "start_line": 119,
+      "end_line": 119
+    },
+    {
+      "id": "P0121",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "gateway",
+      "start_line": 121,
+      "end_line": 121
+    },
+    {
+      "id": "P0123",
+      "kind": "heading2",
+      "audience": "body",
+      "source_id": "gateway",
+      "start_line": 123,
+      "end_line": 123
+    },
+    {
+      "id": "P0125",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "gateway",
+      "start_line": 125,
+      "end_line": 125
+    },
+    {
+      "id": "P0127",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "gateway",
+      "start_line": 127,
+      "end_line": 127
+    },
+    {
+      "id": "P0129",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "gateway",
+      "start_line": 129,
+      "end_line": 129
+    },
+    {
+      "id": "P0131",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "gateway",
+      "start_line": 131,
+      "end_line": 131
+    },
+    {
+      "id": "P0133",
+      "kind": "heading2",
+      "audience": "body",
+      "source_id": "gateway",
+      "start_line": 133,
+      "end_line": 133
+    },
+    {
+      "id": "P0135",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "gateway",
+      "start_line": 135,
+      "end_line": 135
+    },
+    {
+      "id": "P0137",
+      "kind": "heading2",
+      "audience": "body",
+      "source_id": "gateway",
+      "start_line": 137,
+      "end_line": 137
+    },
+    {
+      "id": "P0139",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "gateway",
+      "start_line": 139,
+      "end_line": 139
+    },
+    {
+      "id": "P0141",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "gateway",
+      "start_line": 141,
+      "end_line": 141
+    },
+    {
+      "id": "P0143",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "gateway",
+      "start_line": 143,
+      "end_line": 143
+    },
+    {
+      "id": "P0145",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "gateway",
+      "start_line": 145,
+      "end_line": 145
+    },
+    {
+      "id": "P0147",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "gateway",
+      "start_line": 147,
+      "end_line": 147
+    },
+    {
+      "id": "P0149",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "gateway",
+      "start_line": 149,
+      "end_line": 149
+    },
+    {
+      "id": "P0151",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "gateway",
+      "start_line": 151,
+      "end_line": 151
+    },
+    {
+      "id": "P0153",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "gateway",
+      "start_line": 153,
+      "end_line": 153
+    },
+    {
+      "id": "P0155",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "gateway",
+      "start_line": 155,
+      "end_line": 155
+    },
+    {
+      "id": "P0157",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "gateway",
+      "start_line": 157,
+      "end_line": 157
+    },
+    {
+      "id": "P0159",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "gateway",
+      "start_line": 159,
+      "end_line": 159
+    },
+    {
+      "id": "P0161",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "gateway",
+      "start_line": 161,
+      "end_line": 161
+    },
+    {
+      "id": "P0163",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "gateway",
+      "start_line": 163,
+      "end_line": 163
+    },
+    {
+      "id": "P0165",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "gateway",
+      "start_line": 165,
+      "end_line": 165
+    },
+    {
+      "id": "P0167",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "gateway",
+      "start_line": 167,
+      "end_line": 167
+    },
+    {
+      "id": "P0169",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "gateway",
+      "start_line": 169,
+      "end_line": 169
+    },
+    {
+      "id": "P0171",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "gateway",
+      "start_line": 171,
+      "end_line": 171
+    },
+    {
+      "id": "P0173",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "gateway",
+      "start_line": 173,
+      "end_line": 173
+    },
+    {
+      "id": "P0175",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "gateway",
+      "start_line": 175,
+      "end_line": 175
+    },
+    {
+      "id": "P0177",
+      "kind": "heading1",
+      "audience": "body",
+      "source_id": "gateway",
+      "start_line": 177,
+      "end_line": 177
+    },
+    {
+      "id": "P0179",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "gateway",
+      "start_line": 179,
+      "end_line": 179
+    },
+    {
+      "id": "InternalStrategy",
+      "kind": "paragraph",
+      "audience": "internal",
+      "source_id": "gateway",
+      "start_line": 59,
+      "end_line": 59
+    }
+  ],
+  "figures": [
+    {
+      "id": "GatewayFigures",
+      "svg": {
+        "path": "skills/dyz-patent/resources/cn-gateway-flow.svg",
+        "sha256": "cfcffd687f66fa47eb3e11a167952456d63d7a501db2db5a4954f0a962f3a165"
+      },
+      "png": {
+        "path": "skills/dyz-patent/resources/cn-gateway-flow.png",
+        "sha256": "88620c8e3364807f7c502e7a461f6abe4e4deddb92d5467d3f05ef84957b152b"
+      },
+      "render_binding": "e5a8f3b96dc502912d325376f0faa7cee6dab7f43ab8b598acdafdfba4a4ff6a"
+    }
+  ]
+}

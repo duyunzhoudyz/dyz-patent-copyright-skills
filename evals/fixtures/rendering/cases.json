@@ -1,0 +1,6 @@
+{
+  "mode": "synthetic",
+  "markdown": "# 合成候选文档\n\n## 条件与例外\n当工作温度为20摄氏度时，装置应记录时间；维护模式除外。\n\n| 参数 | 条件 | 容差 |\n| --- | --- | --- |\n| 时延10 ms | 仅当正常运行 | ±1 ms，维护模式除外 |\n\n1. 输入 `python counter.py`。\n2. 失败时输出错误，不自动重试。\n\n```python\nprint('<synthetic>')\n```\n",
+  "good_svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 500 180\"><rect x=\"20\" y=\"20\" width=\"460\" height=\"140\" fill=\"white\" stroke=\"black\"/><text x=\"40\" y=\"60\" font-size=\"16\">合成多行边界：应保留条件与例外<tspan x=\"40\" dy=\"28\">仅当正常运行；维护模式除外</tspan><tspan x=\"40\" dy=\"28\">容差 ±1 ms；本图不是正式附图</tspan></text></svg>",
+  "clipped_svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 160 80\"><rect x=\"5\" y=\"5\" width=\"150\" height=\"70\" fill=\"white\" stroke=\"black\"/><text x=\"100\" y=\"40\" font-size=\"20\">合成长中文标签在导出右边界发生明显裁切</text></svg>"
+}

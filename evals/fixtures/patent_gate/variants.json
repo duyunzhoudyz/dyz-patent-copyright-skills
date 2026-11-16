@@ -1,0 +1,33 @@
+{
+  "scope": "Derived adversarial copies; the frozen reference files are never edited.",
+  "cn": [
+    {"name": "unsupported_per_sample_count", "origin": "historical_verify_fulltext_record_i_822", "before": "所述温度传感器每秒采样。", "after": "所述控制器每收到一个采样值仅比较一次。", "occurrences": 1},
+    {"name": "duplicate_dependent", "origin": "historical_verify_fulltext_record_i_822", "before": "所述温度传感器每秒采样。", "after": "所述温度传感器用于采样温度。", "occurrences": 1},
+    {"name": "invented_equality_branch", "origin": "historical_verify_fulltext_record_i_822", "before": "摘要\n", "after": "温度等于L时，控制器保持阀门关闭。\n\n摘要\n", "occurrences": 1},
+    {"name": "purpose_upgrade", "origin": "systematic_repair_typed_relation_counterexample", "before": "所述温度传感器用于采样温度", "after": "所述温度传感器用于控制阀门", "occurrences": 1},
+    {"name": "reversed_threshold_order", "origin": "systematic_repair_typed_relation_counterexample", "before": "L小于H", "after": "H小于L"},
+    {"name": "unsupported_member", "origin": "systematic_repair_typed_relation_counterexample", "before": "包括温度传感器、控制器和阀门", "after": "包括温度传感器、控制器、阀门和报警器"},
+    {"name": "invented_waiting_position", "origin": "systematic_repair_unknown_branch_counterexample", "before": "摘要\n", "after": "等待确认时，阀门保持关闭。\n\n摘要\n", "occurrences": 1},
+    {"name": "fault_close_instead_of_prohibition", "origin": "systematic_repair_prohibition_counterexample", "before": "传感器故障时禁止新开阀命令", "after": "传感器故障时关闭阀门"},
+    {"name": "recovery_necessary_to_sufficient", "origin": "systematic_repair_recovery_counterexample", "before": "故障解除后须收到人工复位确认才能恢复正常判断", "after": "故障解除后收到人工复位确认就恢复正常判断"}
+  ],
+  "mechanical": [
+    {"name": "reversed_contact_alignment", "origin": "historical_verify_fulltext_records_i_822_and_831", "before": "只有所述滑块抵靠所述固定止挡时，两孔才同轴", "after": "所述滑块抵靠所述固定止挡时，两孔同轴", "occurrences": 1},
+    {"name": "changed_rail_count", "origin": "systematic_repair_quantity_counterexample", "before": "两条平行导轨", "after": "三条平行导轨"},
+    {"name": "capability_upgraded_to_action", "origin": "systematic_repair_capability_counterexample", "before": "可同时穿过", "after": "同时穿过"},
+    {"name": "either_hole_instead_of_both", "origin": "systematic_repair_capability_counterexample", "before": "可同时穿过两孔以阻止", "after": "可穿过任一孔以阻止", "occurrences": 1},
+    {"name": "unsupported_spring", "origin": "systematic_repair_combination_counterexample", "before": "包括基座、滑块和插销", "after": "包括基座、滑块、插销和弹簧"},
+    {"name": "technical_heading_instead_of_structure", "origin": "systematic_repair_heading_counterexample", "before": "# 夹具", "after": "# 故障时阀门自动关闭", "occurrences": 1}
+  ],
+  "historical_workflow": {
+    "source": "outputs/patent-fulltext-validation-20261114/verify_fulltext.py",
+    "recovered_from": "write_to_file_source_prefix_at_record_i_822_and_subsequent_edit_and_read_records",
+    "exact_script_bytes": "not_recovered_initial_params_end_with_truncation_marker",
+    "material_extraction": "split_at_用户任务_then_prefix_before_请(?:直接)?交_including_all_unknowns",
+    "original_outputs": ["API audit report", "require_final_text result", "real CLI report and copied candidate", "documents.build final Word", "historical bad output refusal", "four historical variants", "necessary condition and dependent addition controls"],
+    "persistent_replacement": "evals/test_patent_gate_fulltext.py asserts checked for every positive outlet and fails with nonzero on any positive failure",
+    "source_rewrite": false,
+    "requested_model_retest": "not_performed",
+    "professional_review": "not_performed"
+  }
+}

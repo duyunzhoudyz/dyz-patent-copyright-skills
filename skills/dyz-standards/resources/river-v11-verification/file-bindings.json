@@ -1,0 +1,56 @@
+{
+  "date": "2026-11-03",
+  "kind": "current_supplement_and_original_review_exact_unique_target_binding",
+  "document": {
+    "input": "skills/dyz-standards/resources/river-v11-verification/document-input.json",
+    "input_file_sha256": "4d94fc817669d27ad832d00fcd04c7fb3240dbb76a8486906890cee628050f76",
+    "docx_sha256": "6360dd437071a13836f99abd07532ce25eaf6cdde3bca2575888d45254cc5d7b",
+    "pdf_sha256": "c950586221a97d067346cfc587479f2ee63ff99f598cb730cc8be4e53f1a6254",
+    "output_hint": "outputs/maturity-i04-river-v11-coverage/current-package",
+    "unique_bookmarks": 19,
+    "pages": 3,
+    "targets": [
+      {
+        "bookmark": "V11Matrix",
+        "text_sha256": "5477263b1925f4272b0bf0217b73afaa96043f1ff9beb7a00d9162954d215475"
+      },
+      {
+        "bookmark": "V11Actual",
+        "text_sha256": "abf9f94e93845c94d869a54aa3d9241aaf9c52e9fa4b23f77389ff6241881054"
+      },
+      {
+        "bookmark": "V11Opinion",
+        "text_sha256": "28427195cd0ed998d5d1bad6ba6768bb0e9cad963798ecc7af55a99cd8fb10cb"
+      },
+      {
+        "bookmark": "V11Remaining",
+        "text_sha256": "75ea50f92be30ec64052584a887754a835b475fb705f6caa83d36ee2e6486046"
+      }
+    ]
+  },
+  "prior_review": {
+    "input": "skills/dyz-standards/resources/river-delivery-source/review-v1.1-input.json",
+    "docx_sha256": "b15a63a5d2d39411169b41b4a6e1e2fe65909f57488b7797a790538bf68c9495",
+    "targets": [
+      {
+        "bookmark": "ReviewMatrix",
+        "text_sha256": "fc320e4a7a40ed6eb655ebfa0a5cf778690eac13cc811acbbc3a6af9d08c1d55"
+      },
+      {
+        "bookmark": "ReviewActual",
+        "text_sha256": "2784f1f735098e44e1c9e7f87fc82c4301c350682dcecf1e24c217ed33917430"
+      },
+      {
+        "bookmark": "ReviewMore",
+        "text_sha256": "2e3e3e28aacafb506042a45a83fc77d1f17b99661bedfdb7b43728c91679c9b8"
+      },
+      {
+        "bookmark": "ReviewOpinions",
+        "text_sha256": "f0eeabd8b84b10ac0c9ef76ee19d656987c0e79019009f38a520d89ffcfca896"
+      }
+    ]
+  },
+  "scope": "Supplement only coverage/evidence and follow-up. Original normative text and frozen4files unchanged; no old approval inherited. Output hint is not a package runtime dependency.",
+  "professional_review": "not_performed",
+  "external_action": "not_performed"
+}

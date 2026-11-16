@@ -1,0 +1,488 @@
+{
+  "date": "2026-11-03",
+  "created_at_utc": "2026-11-02T23:21:52.838215+00:00",
+  "kind": "author_predeclared_local_process_implementation_exercise",
+  "plan_id": "RIVER-LOCAL-INTEROP-1",
+  "status": "synthetic_development_not_professional",
+  "predeclaration": "Read original requirements/model/corpora first. These expectations frozen before executing new peers/runner, not independent or held-out. Do not alter expected or feed expected states to implementation after failure.",
+  "bound_sources": {
+    "requirements.json": "1abf48e50746bd600a7555ceb345ad8d8f8dbbe7a8f9d4ab653b73a31cf805f2",
+    "vectors.json": "22770d1dfd0602f56f14f653dfeb8e8631561ee9ab35da7ccad03f78eb7f3227",
+    "source-boundary-vectors.json": "d2eea43511eb279d9c80b4e312cea2ebd3d41e56400a94f58fae3c1d2af2869b",
+    "v11-boundary-vectors.json": "640aa3177d686fd707fb95bb395ad06ff72b6777403b1de537c42345d7ae19aa"
+  },
+  "configurations": [
+    {
+      "version": "1.0",
+      "steps": [
+        {
+          "id": "from-A",
+          "producer": "A",
+          "consumer": "B",
+          "message": {
+            "batch": "FROM-A10",
+            "records": [
+              {
+                "seq": 1,
+                "value": 0
+              },
+              {
+                "seq": 2,
+                "value": 1000
+              }
+            ]
+          },
+          "expected": {
+            "status": "accepted",
+            "reason": "accepted",
+            "state": {
+              "FROM-A10": [
+                {
+                  "seq": 1,
+                  "value": 0
+                },
+                {
+                  "seq": 2,
+                  "value": 1000
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "from-B",
+          "producer": "B",
+          "consumer": "A",
+          "message": {
+            "batch": "FROM-B10",
+            "records": [
+              {
+                "seq": 1,
+                "value": 7
+              }
+            ]
+          },
+          "expected": {
+            "status": "accepted",
+            "reason": "accepted",
+            "state": {
+              "FROM-B10": [
+                {
+                  "seq": 1,
+                  "value": 7
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "same-A-again",
+          "producer": "A",
+          "consumer": "B",
+          "payload_from": "from-A",
+          "expected": {
+            "status": "rejected",
+            "reason": "replay",
+            "state": {
+              "FROM-A10": [
+                {
+                  "seq": 1,
+                  "value": 0
+                },
+                {
+                  "seq": 2,
+                  "value": 1000
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "different-B-again",
+          "producer": "B",
+          "consumer": "A",
+          "message": {
+            "batch": "FROM-B10",
+            "records": [
+              {
+                "seq": 1,
+                "value": 8
+              }
+            ]
+          },
+          "expected": {
+            "status": "rejected",
+            "reason": "replay",
+            "state": {
+              "FROM-B10": [
+                {
+                  "seq": 1,
+                  "value": 7
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "bad-FIX",
+          "producer": "A",
+          "consumer": "B",
+          "message": {
+            "batch": "FIX-10",
+            "records": [
+              {
+                "seq": 1,
+                "value": 0
+              }
+            ]
+          },
+          "replace_ascii": {
+            "before": "\"value\":0",
+            "after": "\"value\":true"
+          },
+          "expected": {
+            "status": "rejected",
+            "reason": "field",
+            "state": {
+              "FROM-A10": [
+                {
+                  "seq": 1,
+                  "value": 0
+                },
+                {
+                  "seq": 2,
+                  "value": 1000
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "corrected-FIX",
+          "producer": "A",
+          "consumer": "B",
+          "message": {
+            "batch": "FIX-10",
+            "records": [
+              {
+                "seq": 1,
+                "value": 0
+              }
+            ]
+          },
+          "expected": {
+            "status": "accepted",
+            "reason": "accepted",
+            "state": {
+              "FROM-A10": [
+                {
+                  "seq": 1,
+                  "value": 0
+                },
+                {
+                  "seq": 2,
+                  "value": 1000
+                }
+              ],
+              "FIX-10": [
+                {
+                  "seq": 1,
+                  "value": 0
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "version": "1.1",
+      "steps": [
+        {
+          "id": "from-A",
+          "producer": "A",
+          "consumer": "B",
+          "message": {
+            "batch": "FROM-A11",
+            "records": [
+              {
+                "seq": 4,
+                "value": null
+              },
+              {
+                "seq": 7,
+                "value": 0
+              }
+            ]
+          },
+          "expected": {
+            "status": "accepted",
+            "reason": "accepted",
+            "state": {
+              "FROM-A11": [
+                {
+                  "seq": 4,
+                  "value": null
+                },
+                {
+                  "seq": 7,
+                  "value": 0
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "from-B",
+          "producer": "B",
+          "consumer": "A",
+          "message": {
+            "batch": "FROM-B11",
+            "records": [
+              {
+                "seq": 1,
+                "value": 1000
+              },
+              {
+                "seq": 999,
+                "value": null
+              }
+            ]
+          },
+          "expected": {
+            "status": "accepted",
+            "reason": "accepted",
+            "state": {
+              "FROM-B11": [
+                {
+                  "seq": 1,
+                  "value": 1000
+                },
+                {
+                  "seq": 999,
+                  "value": null
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "same-A-again",
+          "producer": "A",
+          "consumer": "B",
+          "payload_from": "from-A",
+          "expected": {
+            "status": "rejected",
+            "reason": "replay",
+            "state": {
+              "FROM-A11": [
+                {
+                  "seq": 4,
+                  "value": null
+                },
+                {
+                  "seq": 7,
+                  "value": 0
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "different-B-again",
+          "producer": "B",
+          "consumer": "A",
+          "message": {
+            "batch": "FROM-B11",
+            "records": [
+              {
+                "seq": 1,
+                "value": 8
+              },
+              {
+                "seq": 999,
+                "value": null
+              }
+            ]
+          },
+          "expected": {
+            "status": "rejected",
+            "reason": "replay",
+            "state": {
+              "FROM-B11": [
+                {
+                  "seq": 1,
+                  "value": 1000
+                },
+                {
+                  "seq": 999,
+                  "value": null
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "bad-FIX",
+          "producer": "A",
+          "consumer": "B",
+          "message": {
+            "batch": "FIX-11",
+            "records": [
+              {
+                "seq": 1,
+                "value": 0
+              }
+            ]
+          },
+          "replace_ascii": {
+            "before": "\"value\":0",
+            "after": "\"value\":true"
+          },
+          "expected": {
+            "status": "rejected",
+            "reason": "field",
+            "state": {
+              "FROM-A11": [
+                {
+                  "seq": 4,
+                  "value": null
+                },
+                {
+                  "seq": 7,
+                  "value": 0
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "corrected-FIX",
+          "producer": "A",
+          "consumer": "B",
+          "message": {
+            "batch": "FIX-11",
+            "records": [
+              {
+                "seq": 1,
+                "value": 0
+              }
+            ]
+          },
+          "expected": {
+            "status": "accepted",
+            "reason": "accepted",
+            "state": {
+              "FROM-A11": [
+                {
+                  "seq": 4,
+                  "value": null
+                },
+                {
+                  "seq": 7,
+                  "value": 0
+                }
+              ],
+              "FIX-11": [
+                {
+                  "seq": 1,
+                  "value": 0
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "mixed_version_steps": [
+    {
+      "producer": "A",
+      "consumer": "B",
+      "producer_version": "1.0",
+      "receiver_version": "1.1",
+      "message": {
+        "batch": "VERSION-A",
+        "records": [
+          {
+            "seq": 1,
+            "value": 9
+          }
+        ]
+      },
+      "expected": {
+        "status": "rejected",
+        "reason": "version",
+        "state": {}
+      }
+    },
+    {
+      "producer": "B",
+      "consumer": "A",
+      "producer_version": "1.1",
+      "receiver_version": "1.0",
+      "message": {
+        "batch": "VERSION-B",
+        "records": [
+          {
+            "seq": 1,
+            "value": 9
+          }
+        ]
+      },
+      "expected": {
+        "status": "rejected",
+        "reason": "version",
+        "state": {}
+      }
+    }
+  ],
+  "restart": {
+    "version": "1.1",
+    "peer": "B",
+    "payload_from": "from-A",
+    "expected_new_process_initial_state": {},
+    "expected": {
+      "status": "accepted",
+      "reason": "accepted",
+      "state": {
+        "FROM-A11": [
+          {
+            "seq": 4,
+            "value": null
+          },
+          {
+            "seq": 7,
+            "value": 0
+          }
+        ]
+      }
+    },
+    "interpretation": "A newly started memory-only receiver accepts prior batch in its new scope. This is not a durable replay guarantee or recovery certification."
+  },
+  "bounds": {
+    "max_live_peers": 2,
+    "expected_peer_starts": 7,
+    "ready_seconds": 5,
+    "request_seconds": 3,
+    "close_seconds": 3,
+    "response_line_bytes": 262144,
+    "control_line_bytes": 16384
+  },
+  "evidence_counts": {
+    "visible_single_inputs": 152,
+    "peer_evaluations": 304,
+    "actual_state_sequences_per_peer": 3,
+    "state_steps_per_peer": 11,
+    "same_version_wire_deliveries": 12,
+    "mixed_version_wire_deliveries": 2,
+    "post_restart_wire_deliveries": 1
+  },
+  "limits": [
+    "Two separately coded implementations by same author who read original model; not two independent vendors/custodians.",
+    "OS pipes and hex control envelope are test machinery, not normative River transport/acknowledgement.",
+    "No sockets/network/service/credentials/newcost; memory serial scope only.",
+    "No RFC5318 adjudication,GB/T compliance,realdevice,persistence,concurrency,performance,professional or organizational approval.",
+    "Old corpora/current1.0/1.1drafts and allhistorical failures remain unchanged."
+  ]
+}

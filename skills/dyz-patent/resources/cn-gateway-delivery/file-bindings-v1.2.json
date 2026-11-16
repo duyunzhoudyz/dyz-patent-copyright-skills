@@ -1,0 +1,221 @@
+{
+  "date": "2026-11-03",
+  "kind": "actual_GW12_source_integration_file_bindings",
+  "source_update": "skills/dyz-patent/resources/cn-gateway-delivery/source-update-v1.2.json",
+  "source_update_sha256": "5e900a72bbf9637f9062d084c4522ca4a5d644543a8721dae0f467ea1ccc2479",
+  "documents": [
+    {
+      "role": "draft",
+      "version": "1.2_RS1",
+      "input": "skills/dyz-patent/resources/cn-gateway-delivery/draft-v1.2-input.json",
+      "input_sha256": "ae537dba4ec0bcbb5d9fb0fc1fb5f844cc2d6dd96dfac655abcaa629997aae98",
+      "docx_sha256": "12486aad0ebf7046aa18a858bb38ec499bee53a604bd451a38fad3b4c4efe552",
+      "pdf_sha256": "931212ee09cd80dd560df3877345ea25509abb9585756201c252c815dff74037",
+      "manifest_sha256": "737a37b8ced52a4578b86a7f2b87d52d3c11044dca03c3e88fcd9b12dc145f54",
+      "pages": 6,
+      "unique_bookmarks": 49,
+      "changed_existing_bookmarks": [
+        "PatEdition"
+      ],
+      "new_bookmarks": [
+        "PatP0002b",
+        "PatP0002c"
+      ],
+      "word_readback_state": "partial",
+      "unchanged_non_document_parts_including_styles_and_images": true,
+      "output_hint": "outputs/maturity-i04-gateway-v12/GW12-draft",
+      "actual_word_report_hint": "outputs/maturity-i04-gateway-v12/actual-word-draft.json",
+      "actual_pdf_literal_segments_checked": 49,
+      "targets": [
+        {
+          "bookmark": "PatClaim01",
+          "text_sha256": "eb92cd3e55029f42a9db08a94e548042350f152a49d750b9863c9204918ba370",
+          "locator": "body/p[5]/bookmarkStart[1]",
+          "end_locator": "body/p[5]/bookmarkEnd[1]",
+          "characters": 524
+        },
+        {
+          "bookmark": "PatClaim03",
+          "text_sha256": "b95280cc20470d511a98bd469da1070565139317f7ce2da512686b8b7e7b16a6",
+          "locator": "body/p[7]/bookmarkStart[1]",
+          "end_locator": "body/p[7]/bookmarkEnd[1]",
+          "characters": 90
+        },
+        {
+          "bookmark": "PatP0002b",
+          "text_sha256": "61c95d3fd4f17f3b9ae76f17795b0a1e140c1ebceba0b626be8bf98043b99e85",
+          "locator": "body/p[18]/bookmarkStart[1]",
+          "end_locator": "body/p[18]/bookmarkEnd[1]",
+          "characters": 148
+        },
+        {
+          "bookmark": "PatP0002c",
+          "text_sha256": "b2df67290e9eb985945abe39aaa8f0d81b1a3ab3fa9a5f6a07d468307db7c300",
+          "locator": "body/p[19]/bookmarkStart[1]",
+          "end_locator": "body/p[19]/bookmarkEnd[1]",
+          "characters": 146
+        },
+        {
+          "bookmark": "PatP0003",
+          "text_sha256": "e937d6ee63b21af74fe217a9531a7fd529e017e6019c6cdf8208c0e2f05697d9",
+          "locator": "body/p[20]/bookmarkStart[1]",
+          "end_locator": "body/p[20]/bookmarkEnd[1]",
+          "characters": 120
+        },
+        {
+          "bookmark": "PatAbstract",
+          "text_sha256": "bf18db8219af219a50c7178066b324964305d696a63b4b8e5274baa1869ef86d",
+          "locator": "body/p[49]/bookmarkStart[1]",
+          "end_locator": "body/p[49]/bookmarkEnd[1]",
+          "characters": 228
+        }
+      ],
+      "unread_parts": [
+        {
+          "path": "word/media/image1.png",
+          "scope": "not_interpreted"
+        },
+        {
+          "path": "word/styles.xml",
+          "scope": "style_inheritance_not_resolved"
+        }
+      ],
+      "unresolved_fragments": [
+        {
+          "kind": "unread_drawing",
+          "locator": "body/p[50]/r[1]/drawing[1]",
+          "text": ""
+        }
+      ]
+    },
+    {
+      "role": "review",
+      "version": "1.2_RS1",
+      "input": "skills/dyz-patent/resources/cn-gateway-delivery/review-v1.2-input.json",
+      "input_sha256": "93a5db57c6231daf00acaee724b26ded4ac1224c22500115d182164e85c7d570",
+      "docx_sha256": "2adc4c187db6471beb3cde9bc8825d283aea4e7313ef218567525f74905c2602",
+      "pdf_sha256": "a191576fcc895fc7b02984337cf50bb126d40c2a5d2df2a4ca83d69887033e1e",
+      "manifest_sha256": "ade68d1b7427ad8cf03e32713aef910fab209e42dbd259df61edd466c456ffda",
+      "pages": 3,
+      "unique_bookmarks": 25,
+      "changed_existing_bookmarks": [
+        "PatComparison",
+        "PatFileChecks",
+        "PatHandoff",
+        "PatModification",
+        "PatReviewStatus",
+        "PatReviewTitle",
+        "PatRoute",
+        "PatSource"
+      ],
+      "new_bookmarks": [
+        "PatEpoDateScope",
+        "PatEpoRelationsHead",
+        "PatEpoReplay",
+        "PatEpoRequest",
+        "PatEpoSourceIssues"
+      ],
+      "word_readback_state": "complete_supported_subset",
+      "unchanged_non_document_parts_including_styles_and_images": true,
+      "output_hint": "outputs/maturity-i04-gateway-v12/GW12-review",
+      "actual_word_report_hint": "outputs/maturity-i04-gateway-v12/actual-word-review.json",
+      "actual_pdf_literal_segments_checked": 56,
+      "targets": [
+        {
+          "bookmark": "PatRoute",
+          "text_sha256": "84fe326f8bde01cf9d8580a629756f81390f08a8dcea3d5f2eeef99157b49884",
+          "locator": "body/p[7]/bookmarkStart[1]",
+          "end_locator": "body/p[7]/bookmarkEnd[1]",
+          "characters": 167
+        },
+        {
+          "bookmark": "PatSource",
+          "text_sha256": "1f5df61b3a07b7fefa4f3ddc81916a2500ca148905db24152df9a006731ee1b8",
+          "locator": "body/p[10]/bookmarkStart[1]",
+          "end_locator": "body/p[10]/bookmarkEnd[1]",
+          "characters": 294
+        },
+        {
+          "bookmark": "PatComparison",
+          "text_sha256": "ed1eb88abf38480311d76cb9bfdbd2938e206118dcbda2d627210c487b6e0f59",
+          "locator": "body/tbl[1]/tr[1]/tc[1]/p[1]/bookmarkStart[1]",
+          "end_locator": "body/tbl[1]/tr[6]/tc[3]/p[1]/bookmarkEnd[1]",
+          "characters": 297
+        },
+        {
+          "bookmark": "PatEpoRequest",
+          "text_sha256": "e3a6255592e5adb8bfb37d74f7a0440d5e290efe40a8398258eead100d186e98",
+          "locator": "body/p[12]/bookmarkStart[1]",
+          "end_locator": "body/p[12]/bookmarkEnd[1]",
+          "characters": 266
+        },
+        {
+          "bookmark": "PatEpoReplay",
+          "text_sha256": "2e9dee71d45bc0cf97dbf721ec98c88754ebbad0ca29d67ed5d53093968a157e",
+          "locator": "body/p[13]/bookmarkStart[1]",
+          "end_locator": "body/p[13]/bookmarkEnd[1]",
+          "characters": 248
+        },
+        {
+          "bookmark": "PatEpoSourceIssues",
+          "text_sha256": "37554389d2a524530018ee30cfe0d58290a8cf5bdaa008265f99dba08da1d20d",
+          "locator": "body/p[14]/bookmarkStart[1]",
+          "end_locator": "body/p[14]/bookmarkEnd[1]",
+          "characters": 185
+        },
+        {
+          "bookmark": "PatEpoDateScope",
+          "text_sha256": "db0d932602dd37d3dc73b43a9bd8753add159e557ff163b89099af16b3791058",
+          "locator": "body/p[15]/bookmarkStart[1]",
+          "end_locator": "body/p[15]/bookmarkEnd[1]",
+          "characters": 280
+        },
+        {
+          "bookmark": "PatUnknown",
+          "text_sha256": "a1e21fe84bf5588bc7cbd17831cd31d57931e154a0ed2857d6ef0a9bb3db13e4",
+          "locator": "body/p[18]/bookmarkStart[1]",
+          "end_locator": "body/p[18]/bookmarkEnd[1]",
+          "characters": 183
+        },
+        {
+          "bookmark": "PatModification",
+          "text_sha256": "50177c7694e845021104b6ef0546e8d40aff13a332d715e4684e2b4ce510a9c9",
+          "locator": "body/p[20]/bookmarkStart[1]",
+          "end_locator": "body/p[20]/bookmarkEnd[1]",
+          "characters": 170
+        },
+        {
+          "bookmark": "PatHandoff",
+          "text_sha256": "68b86ac66e621c4e43227a571ec5f9b22b81aa0a683868f23997283a36be3134",
+          "locator": "body/p[23]/bookmarkStart[1]",
+          "end_locator": "body/p[23]/bookmarkEnd[1]",
+          "characters": 195
+        }
+      ],
+      "unread_parts": [
+        {
+          "path": "word/styles.xml",
+          "scope": "style_inheritance_not_resolved"
+        }
+      ],
+      "unresolved_fragments": []
+    }
+  ],
+  "review_scope": "Current1.2 author file checks; prior1.0/1.1 reviews retained and not current signoff.",
+  "new_topic_queries": 0,
+  "new_independent_model_tasks": 0,
+  "professional_review": "not_performed",
+  "official_status_or_priority_original_full_worldwide_family": "not_checked",
+  "workspace_hints": "Output/report paths are retained workspace evidence, not hidden runtime dependencies of local bundle.",
+  "whole_goal": "active_not_complete",
+  "actual_environment": {
+    "os": "Microsoft Windows NT 10.0.26200.0",
+    "artifact_authoring_and_current_related_checks_python": "3.12.14",
+    "office_file_version": "26.2.5.2",
+    "office_product_version": "26.2.5.2",
+    "scope": "Observed two current file exports/renders and144related checks only. Does not extend support to other OS/hosts or certify allPython3.12 paths.",
+    "task_owned_office_processes_after": 0,
+    "new_temporary_office_and_renderer_directories_remaining": 0,
+    "old_four_office_directories_retried": false
+  }
+}

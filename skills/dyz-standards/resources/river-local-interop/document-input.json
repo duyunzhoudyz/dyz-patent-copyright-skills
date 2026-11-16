@@ -1,0 +1,323 @@
+{
+  "sensitivity": "research_example",
+  "document_id": "RiverLocalInteropVerification",
+  "version": "LOCAL_INTEROP1_RS3",
+  "business": "standard",
+  "sources": [
+    {
+      "id": "Current",
+      "path": "skills/dyz-standards/resources/river-local-interop/verification.md",
+      "sha256": "56c2ca5dd79b983484280d7a02d0a6c217bc1d8c08d3d14e7ac77fed508078fb"
+    }
+  ],
+  "dependencies": [
+    {
+      "path": "skills/dyz-standards/resources/river-local-interop/plan.json",
+      "sha256": "ae2730c5fd50ec47579b0d0b7b4739bebbd182d9a98f6912e30c2f956b5cf2ac"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-local-interop/execution.json",
+      "sha256": "0f00311a738fb6b911eca91baeb52713a99d43eb73df22e0a87a6426a1b24084"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-local-interop/peer_a.py",
+      "sha256": "bdc3cbfb2f7960001cbc1ddd904d95ca18417b67d8f3487775ee8e3ef576f1bf"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-local-interop/peer_b.py",
+      "sha256": "b94cce580d7aa7b72d6fb81e85a124891ba7262b7f89236489b420e00b64fdd6"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-local-interop/run_interop.py",
+      "sha256": "3ba58be26ddc23bff5a0f7543f283f4682ee8365349a8a7f145d35eb880c927a"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-demo/requirements.json",
+      "sha256": "1abf48e50746bd600a7555ceb345ad8d8f8dbbe7a8f9d4ab653b73a31cf805f2"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-demo/vectors.json",
+      "sha256": "22770d1dfd0602f56f14f653dfeb8e8631561ee9ab35da7ccad03f78eb7f3227"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-demo/source-boundary-vectors.json",
+      "sha256": "d2eea43511eb279d9c80b4e312cea2ebd3d41e56400a94f58fae3c1d2af2869b"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-demo/v11-boundary-vectors.json",
+      "sha256": "640aa3177d686fd707fb95bb395ad06ff72b6777403b1de537c42345d7ae19aa"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-delivery-source/draft-v1.1.md",
+      "sha256": "6288da4f6d92b98959d75f4b05127753dd713f888a85360c1568fecf83521802"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-delivery-source/review-v1.1.md",
+      "sha256": "112bc7331788971f23bcf9cad57cbc9e508606280ba1fa594c40706a71a5d033"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-v11-verification/verification.md",
+      "sha256": "652e5c6f003fa07b65f2c2929b0dfa2f91ae64b98d85f6e8ccce221118ead995"
+    }
+  ],
+  "blocks": [
+    {
+      "id": "InteropTitle",
+      "kind": "heading1",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 2,
+      "end_line": 2
+    },
+    {
+      "id": "InteropIdentity",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 5,
+      "end_line": 5
+    },
+    {
+      "id": "InteropScopeHead",
+      "kind": "heading2",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 8,
+      "end_line": 8
+    },
+    {
+      "id": "InteropScope",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 11,
+      "end_line": 11
+    },
+    {
+      "id": "InteropMethodsHead",
+      "kind": "heading2",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 14,
+      "end_line": 14
+    },
+    {
+      "id": "InteropMethods",
+      "kind": "table",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 17,
+      "end_line": 21
+    },
+    {
+      "id": "InteropResultsHead",
+      "kind": "heading2",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 24,
+      "end_line": 24
+    },
+    {
+      "id": "InteropResults",
+      "kind": "table",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 27,
+      "end_line": 33
+    },
+    {
+      "id": "InteropActual",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 36,
+      "end_line": 36
+    },
+    {
+      "id": "InteropFresh",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 39,
+      "end_line": 39
+    },
+    {
+      "id": "InteropControlsHead",
+      "kind": "heading2",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 42,
+      "end_line": 42
+    },
+    {
+      "id": "InteropControls",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 45,
+      "end_line": 45
+    },
+    {
+      "id": "InteropImpactHead",
+      "kind": "heading2",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 48,
+      "end_line": 48
+    },
+    {
+      "id": "InteropImpact",
+      "kind": "table",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 51,
+      "end_line": 55
+    },
+    {
+      "id": "InteropLimitsHead",
+      "kind": "heading2",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 58,
+      "end_line": 58
+    },
+    {
+      "id": "InteropLimits",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 61,
+      "end_line": 61
+    },
+    {
+      "id": "InteropUseHead",
+      "kind": "heading2",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 64,
+      "end_line": 64
+    },
+    {
+      "id": "InteropEnvironment",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 67,
+      "end_line": 67
+    },
+    {
+      "id": "InteropCommand",
+      "kind": "code",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 70,
+      "end_line": 70
+    }
+  ],
+  "research_materials": [
+    {
+      "path": "skills/dyz-standards/resources/river-local-interop/verification.md",
+      "sha256": "56c2ca5dd79b983484280d7a02d0a6c217bc1d8c08d3d14e7ac77fed508078fb",
+      "content_kind": "original_mixed_research",
+      "third_party_text": "not_included",
+      "processing_basis": "Original project synthetic requirements/implementations and actual finite local-process observations, authorized internal local development. No private case or third-party full text/implementation.",
+      "export_basis": "Original project material under root LICENSE/commercial terms for local internal example. No professional or organizational approval or external publication/action authorized."
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-local-interop/plan.json",
+      "sha256": "ae2730c5fd50ec47579b0d0b7b4739bebbd182d9a98f6912e30c2f956b5cf2ac",
+      "content_kind": "original_synthetic",
+      "third_party_text": "not_included",
+      "processing_basis": "Original project synthetic requirements/implementations and actual finite local-process observations, authorized internal local development. No private case or third-party full text/implementation.",
+      "export_basis": "Original project material under root LICENSE/commercial terms for local internal example. No professional or organizational approval or external publication/action authorized."
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-local-interop/execution.json",
+      "sha256": "0f00311a738fb6b911eca91baeb52713a99d43eb73df22e0a87a6426a1b24084",
+      "content_kind": "original_execution_evidence",
+      "third_party_text": "not_included",
+      "processing_basis": "Original project synthetic requirements/implementations and actual finite local-process observations, authorized internal local development. No private case or third-party full text/implementation.",
+      "export_basis": "Original project material under root LICENSE/commercial terms for local internal example. No professional or organizational approval or external publication/action authorized."
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-local-interop/peer_a.py",
+      "sha256": "bdc3cbfb2f7960001cbc1ddd904d95ca18417b67d8f3487775ee8e3ef576f1bf",
+      "content_kind": "original_synthetic",
+      "third_party_text": "not_included",
+      "processing_basis": "Original project synthetic requirements/implementations and actual finite local-process observations, authorized internal local development. No private case or third-party full text/implementation.",
+      "export_basis": "Original project material under root LICENSE/commercial terms for local internal example. No professional or organizational approval or external publication/action authorized."
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-local-interop/peer_b.py",
+      "sha256": "b94cce580d7aa7b72d6fb81e85a124891ba7262b7f89236489b420e00b64fdd6",
+      "content_kind": "original_synthetic",
+      "third_party_text": "not_included",
+      "processing_basis": "Original project synthetic requirements/implementations and actual finite local-process observations, authorized internal local development. No private case or third-party full text/implementation.",
+      "export_basis": "Original project material under root LICENSE/commercial terms for local internal example. No professional or organizational approval or external publication/action authorized."
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-local-interop/run_interop.py",
+      "sha256": "3ba58be26ddc23bff5a0f7543f283f4682ee8365349a8a7f145d35eb880c927a",
+      "content_kind": "original_synthetic",
+      "third_party_text": "not_included",
+      "processing_basis": "Original project synthetic requirements/implementations and actual finite local-process observations, authorized internal local development. No private case or third-party full text/implementation.",
+      "export_basis": "Original project material under root LICENSE/commercial terms for local internal example. No professional or organizational approval or external publication/action authorized."
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-demo/requirements.json",
+      "sha256": "1abf48e50746bd600a7555ceb345ad8d8f8dbbe7a8f9d4ab653b73a31cf805f2",
+      "content_kind": "original_synthetic",
+      "third_party_text": "not_included",
+      "processing_basis": "Original project synthetic requirements/implementations and actual finite local-process observations, authorized internal local development. No private case or third-party full text/implementation.",
+      "export_basis": "Original project material under root LICENSE/commercial terms for local internal example. No professional or organizational approval or external publication/action authorized."
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-demo/vectors.json",
+      "sha256": "22770d1dfd0602f56f14f653dfeb8e8631561ee9ab35da7ccad03f78eb7f3227",
+      "content_kind": "original_synthetic",
+      "third_party_text": "not_included",
+      "processing_basis": "Original project synthetic requirements/implementations and actual finite local-process observations, authorized internal local development. No private case or third-party full text/implementation.",
+      "export_basis": "Original project material under root LICENSE/commercial terms for local internal example. No professional or organizational approval or external publication/action authorized."
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-demo/source-boundary-vectors.json",
+      "sha256": "d2eea43511eb279d9c80b4e312cea2ebd3d41e56400a94f58fae3c1d2af2869b",
+      "content_kind": "original_synthetic",
+      "third_party_text": "not_included",
+      "processing_basis": "Original project synthetic requirements/implementations and actual finite local-process observations, authorized internal local development. No private case or third-party full text/implementation.",
+      "export_basis": "Original project material under root LICENSE/commercial terms for local internal example. No professional or organizational approval or external publication/action authorized."
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-demo/v11-boundary-vectors.json",
+      "sha256": "640aa3177d686fd707fb95bb395ad06ff72b6777403b1de537c42345d7ae19aa",
+      "content_kind": "original_synthetic",
+      "third_party_text": "not_included",
+      "processing_basis": "Original project synthetic requirements/implementations and actual finite local-process observations, authorized internal local development. No private case or third-party full text/implementation.",
+      "export_basis": "Original project material under root LICENSE/commercial terms for local internal example. No professional or organizational approval or external publication/action authorized."
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-delivery-source/draft-v1.1.md",
+      "sha256": "6288da4f6d92b98959d75f4b05127753dd713f888a85360c1568fecf83521802",
+      "content_kind": "original_mixed_research",
+      "third_party_text": "not_included",
+      "processing_basis": "Original project synthetic requirements/implementations and actual finite local-process observations, authorized internal local development. No private case or third-party full text/implementation.",
+      "export_basis": "Original project material under root LICENSE/commercial terms for local internal example. No professional or organizational approval or external publication/action authorized."
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-delivery-source/review-v1.1.md",
+      "sha256": "112bc7331788971f23bcf9cad57cbc9e508606280ba1fa594c40706a71a5d033",
+      "content_kind": "original_mixed_research",
+      "third_party_text": "not_included",
+      "processing_basis": "Original project synthetic requirements/implementations and actual finite local-process observations, authorized internal local development. No private case or third-party full text/implementation.",
+      "export_basis": "Original project material under root LICENSE/commercial terms for local internal example. No professional or organizational approval or external publication/action authorized."
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-v11-verification/verification.md",
+      "sha256": "652e5c6f003fa07b65f2c2929b0dfa2f91ae64b98d85f6e8ccce221118ead995",
+      "content_kind": "original_mixed_research",
+      "third_party_text": "not_included",
+      "processing_basis": "Original project synthetic requirements/implementations and actual finite local-process observations, authorized internal local development. No private case or third-party full text/implementation.",
+      "export_basis": "Original project material under root LICENSE/commercial terms for local internal example. No professional or organizational approval or external publication/action authorized."
+    }
+  ]
+}

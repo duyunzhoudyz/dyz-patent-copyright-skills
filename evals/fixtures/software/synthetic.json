@@ -1,0 +1,42 @@
+{
+  "context": {
+    "environment": {},
+    "permissions": [{
+      "action": "local_read", "purpose": "synthetic_software",
+      "recipient": "local_tool", "decision": "allow",
+      "authority_evidence": "synthetic-consent",
+      "valid_from": "2026-01-01T00:00:00Z", "valid_until": "2027-01-01T00:00:00Z"
+    }],
+    "sensitivity": "synthetic", "purpose": "synthetic_software",
+    "now": "2026-10-31T10:00:00Z"
+  },
+  "scope_input": {
+    "metadata": {
+      "software_id": "synthetic-cli", "name": "合成计数器", "version": "1.0",
+      "runtime_environment": {"description": "Python 3.11 / 合成CLI环境", "evidence_id": "synthetic-environment"},
+      "completed_date": {"value": "2026-10-01", "evidence_id": "synthetic-date"},
+      "published_date": {"value": "2026-10-02", "evidence_id": "synthetic-publication"}
+    },
+    "components": [{
+      "id": "cli", "kind": "standalone", "version": "1.0", "origin": "own",
+      "claim": ["本版独立编写的命令行表达"], "exclusions": ["运行时与外部依赖"],
+      "subjects": [{"subject_id": "synthetic-owner", "basis": "合成权属材料",
+                    "evidence_id": "synthetic-contract"}]
+    }]
+  },
+  "rights": [{
+    "component_id": "cli", "requested_decision": "claim",
+    "evidence_ids": ["synthetic-contract"],
+    "permissions": {"local_process": "allow", "deposit": "allow", "public": "unknown", "cloud": "deny"}
+  }],
+  "pagination": {"lines_per_page": 3, "wrap_columns": 12, "selection": "all",
+                 "basis": "合成测试参数，不代表任何登记制度"},
+  "source": "def count(items):\n    return len(items)\nprint(count([1, 2]))\n",
+  "manual_input": {
+    "mode": "CLI",
+    "facts": [{"id": "fact-1", "text": "命令接收合成列表并计数", "evidence_id": "synthetic-source"}],
+    "operations": [{"id": "count", "input": "python counter.py", "expected_output": "2",
+                    "failure": "参数类型不匹配时报错", "evidence_id": "synthetic-source"}],
+    "runtime_evidence": []
+  }
+}

@@ -1,0 +1,140 @@
+{
+  "kind": "author_local_readiness_cases_not_actual_title_or_professional_acceptance",
+  "source_bindings": [
+    {
+      "path": "skills/dyz-software/resources/harbor-demo/v1.3/api.py",
+      "sha256": "d7a5c8493a1c9b150a9f17ef372b3ad0fbcc6419517f8c9b7a3c065135042ef7"
+    },
+    {
+      "path": "skills/dyz-software/resources/harbor-demo/v1.3/cli.py",
+      "sha256": "de887993b20563ae0ce2d0a32f9ca837e928320fd50dad9b5347d013cd0c0edd"
+    },
+    {
+      "path": "skills/dyz-software/resources/harbor-demo/v1.3/core.py",
+      "sha256": "e6acd5ed00bd9ff64069fef84fb6489f4986c03ba441a2367fd383ad68e419a9"
+    },
+    {
+      "path": "skills/dyz-software/resources/harbor-demo/v1.3/gui.py",
+      "sha256": "ce462a1e279b9cbdb4346b9533ffc092b3f713a1443e715e0755d0a2d6bffaea"
+    },
+    {
+      "path": "skills/dyz-software/resources/harbor-demo/v1.3/index.html",
+      "sha256": "00fb5fa5a9d6e9a0137dbff985f6b109e0cbf8d3c18422d75de9bf49a48a86c7"
+    },
+    {
+      "path": "skills/dyz-software/resources/harbor-delivery-v1.3/facts.json",
+      "sha256": "7d794c758fa83a5b2e56346890bbdc74de9b0e98d1eb91c8b06eafd589366ba0"
+    },
+    {
+      "path": "skills/dyz-software/resources/harbor-review-readiness/evidence-map.json",
+      "sha256": "dc84f5c96989a0ce59a9c543d0c7019b2443318ed9f01c82384ca95fbd3454c0"
+    },
+    {
+      "path": "tools/software.py",
+      "sha256": "379893f8df61273b4b918a92dac46ba4123b34772319e36a52587fafb1621828"
+    },
+    {
+      "path": "tools/core.py",
+      "sha256": "1882f640b64c520a8648e072a5549eb00c1e52d1623ef5ea277a42a5bbd00a77"
+    }
+  ],
+  "runner_sha256": "1b983a94c8645fb4d215f7b4e24a1cb102cff8d12c6c0318ab3443fc7bf14b2d",
+  "results": [
+    {
+      "id": "missing_actual_title",
+      "expected": {
+        "scope": "needs_evidence",
+        "rights_decisions": [
+          "needs_evidence"
+        ],
+        "source": "partial",
+        "selected": 0,
+        "applicant_stays_null": true
+      },
+      "observed": {
+        "scope": "needs_evidence",
+        "rights_decisions": [
+          "needs_evidence"
+        ],
+        "source": "partial",
+        "selected": 0,
+        "applicant_stays_null": true
+      },
+      "status": "passed"
+    },
+    {
+      "id": "hypothetical_local_candidate",
+      "expected": {
+        "scope": "needs_evidence",
+        "rights_decisions": [
+          "claim"
+        ],
+        "source": "needs_review",
+        "selected": 266,
+        "deposit_source": "partial",
+        "deposit_selected": 0
+      },
+      "observed": {
+        "scope": "needs_evidence",
+        "rights_decisions": [
+          "claim"
+        ],
+        "source": "needs_review",
+        "selected": 266,
+        "deposit_source": "partial",
+        "deposit_selected": 0
+      },
+      "status": "passed"
+    },
+    {
+      "id": "hypothetical_permission_change",
+      "expected": {
+        "source": "invalidated",
+        "selected": 201,
+        "withheld_file": "api",
+        "withheld_read_status": "not_read",
+        "stale_scope_error": "rights_scope_stale"
+      },
+      "observed": {
+        "source": "invalidated",
+        "selected": 201,
+        "withheld_file": "api",
+        "withheld_read_status": "not_read",
+        "stale_scope_error": "rights_scope_stale"
+      },
+      "status": "passed"
+    },
+    {
+      "id": "separate_synthetic_secret_probe",
+      "expected": {
+        "source": "needs_review",
+        "mask": "needs_review",
+        "secret_in_masked_output": false,
+        "exception_rule_issue": "exception_deposit_rule_unverified",
+        "external_permission": "not_granted",
+        "public_issue": "separate_disclosure_authorization_required"
+      },
+      "observed": {
+        "source": "needs_review",
+        "mask": "needs_review",
+        "secret_in_masked_output": false,
+        "exception_rule_issue": "exception_deposit_rule_unverified",
+        "external_permission": "not_granted",
+        "public_issue": "separate_disclosure_authorization_required"
+      },
+      "status": "passed"
+    }
+  ],
+  "passed": 4,
+  "failed": 0,
+  "skipped": 0,
+  "actual_facts_unchanged": true,
+  "temporary_secret_probe_removed": true,
+  "limits": [
+    "Fictional title assumptions do not fill actual applicant/contributor/date facts.",
+    "Metadata, license and hashes do not prove title, originality or permission authority.",
+    "Withheld target is hypothetical, absent path; not a host-wide isolation claim.",
+    "Masking known fake spans does not discover all real secrets or authorize deposit/public/cloud.",
+    "No real filing, disclosure, reviewer signature, software server or browser action."
+  ]
+}

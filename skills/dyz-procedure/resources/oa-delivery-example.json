@@ -1,0 +1,183 @@
+{
+  "adaptation": {
+    "jurisdiction": "TEST",
+    "right_type": "invention",
+    "domain": "synthetic",
+    "stage": "review"
+  },
+  "as_of": "2026-10-31T12:00:00+00:00",
+  "evidence": [
+    {
+      "id": "e1",
+      "version": "1",
+      "source": "synthetic",
+      "locator": "fixture:1",
+      "kind": "synthetic"
+    }
+  ],
+  "notice": {
+    "evidence_ids": [
+      "e1"
+    ],
+    "id": "N",
+    "version": "N2",
+    "kind": "synthetic",
+    "complete": true,
+    "served_at": "2026-10-30T00:00:00Z",
+    "due_at": "2026-12-01T00:00:00Z",
+    "opinions": [
+      {
+        "id": "I",
+        "text": "合成局部文字意见"
+      }
+    ]
+  },
+  "current_claims": {
+    "evidence_ids": [
+      "e1"
+    ],
+    "version": "C1"
+  },
+  "original_application": {
+    "evidence_ids": [
+      "e1"
+    ],
+    "version": "O1"
+  },
+  "responses": [
+    {
+      "evidence_ids": [
+        "e1"
+      ],
+      "opinion_id": "I",
+      "text": "本轮仅整理给定局部文字，其余意见待核。"
+    }
+  ],
+  "amendments": [],
+  "citations": [],
+  "disclosure_targets": [],
+  "replacement_required": true,
+  "replacement_candidates": [
+    {
+      "evidence_ids": [
+        "e1"
+      ],
+      "id": "K",
+      "version": "C2",
+      "text": "光学接口",
+      "coverage": "partial",
+      "boundary": "只含获给局部文字，未取得其余权项上下文，不是完整权项"
+    }
+  ],
+  "fidelity": {
+    "documents": [
+      {
+        "id": "O",
+        "role": "original",
+        "version": "O1",
+        "text": "采用光学接口。",
+        "sha256": "bf5b2c90e7216aeadbde16a7ec648a10172e9bdf7f9cc1eebf73590f891b8bbc"
+      },
+      {
+        "id": "D",
+        "role": "candidate",
+        "version": "C2",
+        "text": "光学接口",
+        "sha256": "303fe4a82df42b2b36e32eda118ee9d1654e58c707246be9a33cfab6b120b306"
+      },
+      {
+        "id": "R",
+        "role": "candidate",
+        "version": "R2",
+        "text": "本轮仅整理给定局部文字，其余意见待核。",
+        "sha256": "c908002958b74c1602f0006619555b282c1b2a8042e999b6e41fe30257607008"
+      }
+    ],
+    "atoms": [
+      {
+        "id": "optical",
+        "meaning": "采用光学接口",
+        "scope": "本题局部接口限定"
+      },
+      {
+        "id": "pump",
+        "meaning": "接口信号后自动启泵",
+        "scope": "本题局部接口动作关系"
+      }
+    ],
+    "facts": [
+      {
+        "id": "F",
+        "state": "explicit",
+        "citation": {
+          "document_id": "O",
+          "start": 0,
+          "end": 7,
+          "quote": "采用光学接口。"
+        },
+        "formula": "optical"
+      }
+    ],
+    "assertions": [
+      {
+        "id": "A",
+        "citation": {
+          "document_id": "D",
+          "start": 0,
+          "end": 4,
+          "quote": "光学接口"
+        },
+        "formula": "optical",
+        "basis_fact_ids": [
+          "F"
+        ],
+        "proof_scope": "original_support",
+        "mode": "asserted"
+      }
+    ],
+    "regions": [
+      {
+        "id": "D-body",
+        "citation": {
+          "document_id": "D",
+          "start": 0,
+          "end": 4,
+          "quote": "光学接口"
+        },
+        "kind": "technical",
+        "assertion_ids": [
+          "A"
+        ]
+      },
+      {
+        "id": "R-scope",
+        "citation": {
+          "document_id": "R",
+          "start": 0,
+          "end": 19,
+          "quote": "本轮仅整理给定局部文字，其余意见待核。"
+        },
+        "kind": "context",
+        "assertion_ids": [],
+        "reason": "答复范围，不是新增技术断言；分类仍由调用者负责"
+      }
+    ],
+    "parameter_requests": [],
+    "parameter_assessments": []
+  },
+  "fidelity_bindings": {
+    "response:I": {
+      "document_id": "R",
+      "start": 0,
+      "end": 19,
+      "quote": "本轮仅整理给定局部文字，其余意见待核。"
+    },
+    "replacement:K": {
+      "document_id": "D",
+      "start": 0,
+      "end": 4,
+      "quote": "光学接口"
+    }
+  },
+  "sensitivity": "synthetic"
+}

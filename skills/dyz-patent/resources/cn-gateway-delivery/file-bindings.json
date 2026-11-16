@@ -1,0 +1,134 @@
+{
+  "date": "2026-11-03",
+  "kind": "actual_current_docx_unique_targets_and_source_version_binding",
+  "material_revision": "RS2",
+  "limits": [
+    "Output paths are local observation hints only; package replay rebuilds from included sources.",
+    "Hashes and unique target text do not certify technical/legal support or professional approval.",
+    "Draft Word readback remains partial for drawing/styles, separate current PDF visual record required."
+  ],
+  "documents_and_changes": [
+    {
+      "version": "1.0",
+      "documents": {
+        "draft": {
+          "input": "skills/dyz-patent/resources/cn-gateway-delivery/draft-v1.0-input.json",
+          "docx_sha256": "a5984e86a516d78df3a4156ecbc9708ec460cd09e7ebea8d14ac31bfd2bc6f30",
+          "pdf_sha256": "bd2c707e02e5bfd2e4535d8bbfdc2e5f4945b593bbca6a3e5e027336bdee82b1",
+          "pages": 5,
+          "unique_bookmarks": 47,
+          "word_readback_state": "partial",
+          "changed_bookmarks": [],
+          "output_hint": "outputs/maturity-i04-patent-current-chain/current-files/GW10-draft",
+          "actual_word_report_hint": "outputs/maturity-i04-patent-current-chain/current-word-reports/GW10-draft.json",
+          "targets": [
+            {
+              "bookmark": "PatClaim01",
+              "text_sha256": "34b9dbf358673c7ff23761290e92d53d0a6d401a01f6ff39db6107df796b83c9"
+            },
+            {
+              "bookmark": "PatClaim03",
+              "text_sha256": "2d814f99728e2d438f28e0bc5347e7170547c808bc21100ef3089f138142c28d"
+            },
+            {
+              "bookmark": "PatP0004",
+              "text_sha256": "597352500e9b427ef13d4fbbde89e76669772a30083bf77c50686f1ac4b01e2e"
+            },
+            {
+              "bookmark": "PatAbstract",
+              "text_sha256": "56e98b3ff5479fc8e9a7a50ff34aff829fb33cca8acf7d4babe17d975b6243a6"
+            }
+          ]
+        },
+        "review": {
+          "input": "skills/dyz-patent/resources/cn-gateway-delivery/review-v1.0-input.json",
+          "docx_sha256": "ed893dae293fd4d007bb8f3f08cace1d41eb663fbe190f21acfe7467b15c5f8e",
+          "pdf_sha256": "aad1e1f2489bd0cb80a9ec4dc0f66901b984330ac8f425749b05b2ce9aeeedb6",
+          "pages": 2,
+          "unique_bookmarks": 20,
+          "word_readback_state": "complete_supported_subset",
+          "changed_bookmarks": [],
+          "output_hint": "outputs/maturity-i04-patent-current-chain/current-files/GW10-review",
+          "actual_word_report_hint": "outputs/maturity-i04-patent-current-chain/current-word-reports/GW10-review.json",
+          "targets": [
+            {
+              "bookmark": "PatRoute",
+              "text_sha256": "d03509ac8f6435a3344476e9fd95f719e52d897842ac5d02cc2041ed1da24d44"
+            },
+            {
+              "bookmark": "PatModification",
+              "text_sha256": "8553afb1663b0273709e539ed7352589bbb5bb2822a32beb2e8089da8621f681"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "version": "1.1",
+      "documents": {
+        "draft": {
+          "input": "skills/dyz-patent/resources/cn-gateway-delivery/draft-v1.1-input.json",
+          "docx_sha256": "f80220fcd893c0483395066dd05ff284c928a1c6db59c093ec532ccfcaf38498",
+          "pdf_sha256": "81025a82a340b13202ef480a48d0a43fa343c5773d5886a8240f183645e8993a",
+          "pages": 5,
+          "unique_bookmarks": 47,
+          "word_readback_state": "partial",
+          "changed_bookmarks": [
+            "PatAbstract",
+            "PatClaim01",
+            "PatClaim03",
+            "PatEdition",
+            "PatP0004"
+          ],
+          "output_hint": "outputs/maturity-i04-patent-current-chain/current-files/GW11-draft",
+          "actual_word_report_hint": "outputs/maturity-i04-patent-current-chain/current-word-reports/GW11-draft.json",
+          "targets": [
+            {
+              "bookmark": "PatClaim01",
+              "text_sha256": "eb92cd3e55029f42a9db08a94e548042350f152a49d750b9863c9204918ba370"
+            },
+            {
+              "bookmark": "PatClaim03",
+              "text_sha256": "b95280cc20470d511a98bd469da1070565139317f7ce2da512686b8b7e7b16a6"
+            },
+            {
+              "bookmark": "PatP0004",
+              "text_sha256": "243ae7131a01b6fdafd8578b8a2f87cb1eaaa30e4d877788d14abadea1d5a669"
+            },
+            {
+              "bookmark": "PatAbstract",
+              "text_sha256": "bf18db8219af219a50c7178066b324964305d696a63b4b8e5274baa1869ef86d"
+            }
+          ]
+        },
+        "review": {
+          "input": "skills/dyz-patent/resources/cn-gateway-delivery/review-v1.1-input.json",
+          "docx_sha256": "c8bbe1bf2a0975c574fb0efbefac1b367b7d4d38e4dab70f8a8c513ea5f19b24",
+          "pdf_sha256": "e314708356e4dd68a6738f5f3511961396bdf473d8c7b5f469dedd7639315db7",
+          "pages": 2,
+          "unique_bookmarks": 20,
+          "word_readback_state": "complete_supported_subset",
+          "changed_bookmarks": [
+            "PatModification",
+            "PatReviewTitle",
+            "PatRoute"
+          ],
+          "output_hint": "outputs/maturity-i04-patent-current-chain/current-files/GW11-review",
+          "actual_word_report_hint": "outputs/maturity-i04-patent-current-chain/current-word-reports/GW11-review.json",
+          "targets": [
+            {
+              "bookmark": "PatRoute",
+              "text_sha256": "ef1cfa6d2b7849a619f7134869396073b65553af5a2a74c5f5c67995203a98e6"
+            },
+            {
+              "bookmark": "PatModification",
+              "text_sha256": "aad890ebee3d1350456ad72e187eaae5f5ae0e2aa27d881eebd53036ce377cdf"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "professional_review": "not_performed",
+  "external_action": "not_performed"
+}

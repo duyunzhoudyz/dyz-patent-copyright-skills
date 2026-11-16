@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 2070" width="1400" height="2070">
+<title>合成工业网关方案：系统关系与确认后回收流程</title>
+<desc>仅为设计推演附图。图1显示网关与接收端的职责；图2显示完整身份确认、原子记账及提交后擦除。不是设备实测或官方申请附图。</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#273c50"/></marker></defs>
+<text x="55" y="55" font-size="31" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="start" font-weight="bold" fill="#17202a">图1  系统关系与职责</text>
+<text x="55" y="95" font-size="23" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="start" font-weight="normal" fill="#17202a">合成设计示意 · 不含真实产品、实验或申请事实</text>
+<g><rect x="55" y="150" width="280" height="150" rx="8" fill="#ffffff" stroke="#273c50" stroke-width="2"/>
+<text x="195.0" y="216.0" font-size="25" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">工业传感数据输入</text>
+<text x="195.0" y="252.0" font-size="25" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">可暂停接入</text>
+</g>
+<g><rect x="465" y="130" width="440" height="200" rx="8" fill="#ffffff" stroke="#273c50" stroke-width="2"/>
+<text x="685.0" y="185.0" font-size="25" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">网关 G</text>
+<text x="685.0" y="221.0" font-size="25" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">处理器／持久存储／网络</text>
+<text x="685.0" y="257.0" font-size="25" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">保存状态、未确认计数 U</text>
+<text x="685.0" y="293.0" font-size="25" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">确认提交后才可擦除</text>
+</g>
+<g><rect x="1035" y="130" width="310" height="200" rx="8" fill="#ffffff" stroke="#273c50" stroke-width="2"/>
+<text x="1190.0" y="185.0" font-size="24" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">接收端 C</text>
+<text x="1190.0" y="221.0" font-size="24" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">持久事务存储</text>
+<text x="1190.0" y="257.0" font-size="24" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">去重及内容核验</text>
+<text x="1190.0" y="293.0" font-size="24" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">提交后发送确认</text>
+</g>
+<polyline points="335,200 465,200" fill="none" stroke="#273c50" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<text x="400" y="185" font-size="22" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">记录</text>
+<polyline points="905,180 1035,180" fill="none" stroke="#273c50" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<text x="970" y="165" font-size="22" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">批次 B</text>
+<polyline points="1035,280 905,280" fill="none" stroke="#273c50" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<text x="970" y="315" font-size="22" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">确认／拒绝</text>
+<text x="55" y="385" font-size="31" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="start" font-weight="bold" fill="#17202a">图2  网关当前待确认批次的处理与回收</text>
+<g><rect x="455" y="440" width="490" height="100" rx="8" fill="#eef4fa" stroke="#273c50" stroke-width="2"/>
+<text x="700.0" y="481.0" font-size="25" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">封存不可变数据并固化完整 B</text>
+<text x="700.0" y="517.0" font-size="25" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">持久状态设为 PENDING</text>
+</g>
+<g><rect x="55" y="620" width="300" height="140" rx="8" fill="#f3f5f7" stroke="#273c50" stroke-width="2"/>
+<text x="205.0" y="663.0" font-size="25" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">W：保留同一 B</text>
+<text x="205.0" y="699.0" font-size="25" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">断连／超时后等待</text>
+<text x="205.0" y="735.0" font-size="25" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">恢复时重传</text>
+</g>
+<g><rect x="455" y="620" width="490" height="100" rx="8" fill="#ffffff" stroke="#273c50" stroke-width="2"/>
+<text x="700.0" y="661.0" font-size="25" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">有连接时发送同一 B</text>
+<text x="700.0" y="697.0" font-size="25" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">发送返回不代表持久确认</text>
+</g>
+<g><rect x="455" y="810" width="490" height="100" rx="8" fill="#ffffff" stroke="#273c50" stroke-width="2"/>
+<text x="700.0" y="851.0" font-size="25" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">等待并接收 ACK 或 REJECT</text>
+<text x="700.0" y="887.0" font-size="25" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">发送返回不减 U、不擦除</text>
+</g>
+<g><rect x="455" y="1000" width="490" height="140" rx="8" fill="#eef4fa" stroke="#273c50" stroke-width="2"/>
+<text x="700.0" y="1043.0" font-size="25" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">是否同时满足：COMMITTED</text>
+<text x="700.0" y="1079.0" font-size="25" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">完整 B 逐字段相等</text>
+<text x="700.0" y="1115.0" font-size="25" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">本地仍为 PENDING？</text>
+</g>
+<g><rect x="1045" y="1000" width="300" height="140" rx="8" fill="#f3f5f7" stroke="#273c50" stroke-width="2"/>
+<text x="1195.0" y="1043.0" font-size="23" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">不满足时分类</text>
+<text x="1195.0" y="1079.0" font-size="23" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">旧／无关 ACK：忽略</text>
+<text x="1195.0" y="1115.0" font-size="23" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">REJECT：故障分流</text>
+</g>
+<g><rect x="1045" y="1230" width="300" height="110" rx="8" fill="#ffffff" stroke="#273c50" stroke-width="2"/>
+<text x="1195.0" y="1276.0" font-size="23" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">内容校验／冲突故障</text>
+<text x="1195.0" y="1312.0" font-size="23" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">保留数据并人工处理</text>
+</g>
+<g><rect x="455" y="1230" width="490" height="140" rx="8" fill="#eaf3ec" stroke="#273c50" stroke-width="2"/>
+<text x="700.0" y="1273.0" font-size="25" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">单一本地原子事务</text>
+<text x="700.0" y="1309.0" font-size="25" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">PENDING → ACKED</text>
+<text x="700.0" y="1345.0" font-size="25" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">写回收许可，U 仅减 n 一次</text>
+</g>
+<g><rect x="455" y="1460" width="490" height="110" rx="8" fill="#ffffff" stroke="#273c50" stroke-width="2"/>
+<text x="700.0" y="1506.0" font-size="25" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">确认事务提交后</text>
+<text x="700.0" y="1542.0" font-size="25" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">才执行擦除／删除</text>
+</g>
+<g><rect x="1045" y="1460" width="300" height="110" rx="8" fill="#ffffff" stroke="#273c50" stroke-width="2"/>
+<text x="1195.0" y="1506.0" font-size="23" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">H：保持 ACKED</text>
+<text x="1195.0" y="1542.0" font-size="23" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">保留许可，仅重试擦除</text>
+</g>
+<g><rect x="455" y="1670" width="490" height="100" rx="8" fill="#eaf3ec" stroke="#273c50" stroke-width="2"/>
+<text x="700.0" y="1711.0" font-size="25" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">擦除成功后转 FREE</text>
+<text x="700.0" y="1747.0" font-size="25" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">下次分配持久递增 z</text>
+</g>
+<polyline points="700,540 700,620" fill="none" stroke="#273c50" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<text x="785" y="590" font-size="22" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">有连接</text>
+<polyline points="455,490 205,490 205,620" fill="none" stroke="#273c50" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<text x="290" y="475" font-size="22" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">无连接</text>
+<polyline points="355,660 455,660" fill="none" stroke="#273c50" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<text x="405" y="645" font-size="22" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">恢复</text>
+<polyline points="700,720 700,810" fill="none" stroke="#273c50" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<text x="770" y="770" font-size="22" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">返回</text>
+<polyline points="455,860 205,860 205,760" fill="none" stroke="#273c50" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<text x="320" y="845" font-size="22" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">超时／断连</text>
+<polyline points="700,910 700,1000" fill="none" stroke="#273c50" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<text x="795" y="960" font-size="22" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">收到结果</text>
+<polyline points="945,1070 1045,1070" fill="none" stroke="#273c50" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<text x="995" y="1055" font-size="22" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">否</text>
+<polyline points="1195,1000 1195,860 945,860" fill="none" stroke="#273c50" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<text x="1160" y="835" font-size="22" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">忽略后继续等待</text>
+<polyline points="1195,1140 1195,1230" fill="none" stroke="#273c50" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<text x="1195" y="1190" font-size="22" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">REJECT／内容故障</text>
+<polyline points="700,1140 700,1230" fill="none" stroke="#273c50" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<text x="755" y="1195" font-size="22" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">是</text>
+<polyline points="455,1300 395,1300 395,730 355,730" fill="none" stroke="#273c50" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<text x="390" y="1190" font-size="22" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="end" font-weight="normal" fill="#17202a">未提交</text>
+<text x="390" y="1225" font-size="22" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="end" font-weight="normal" fill="#17202a">仍为 PENDING</text>
+<polyline points="700,1370 700,1460" fill="none" stroke="#273c50" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<text x="780" y="1425" font-size="22" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">已提交</text>
+<polyline points="945,1515 1045,1515" fill="none" stroke="#273c50" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<text x="995" y="1500" font-size="22" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">失败</text>
+<polyline points="1195,1570 1195,1615 890,1615 890,1570" fill="none" stroke="#273c50" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<text x="1160" y="1650" font-size="22" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">仅重试擦除</text>
+<polyline points="700,1570 700,1670" fill="none" stroke="#273c50" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<text x="775" y="1630" font-size="22" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">成功</text>
+<g><rect x="55" y="1835" width="1290" height="175" rx="8" fill="#f3f5f7" stroke="#273c50" stroke-width="2"/>
+<text x="700.0" y="1877.5" font-size="23" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">B = (g, e, s, z, qfirst, qlast, n, h)；本图主路径针对当前 PENDING 批次。</text>
+<text x="700.0" y="1913.5" font-size="23" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">重启：确认事务提交前仍为 PENDING；提交后、擦除前恢复为 ACKED 并继续擦除。</text>
+<text x="700.0" y="1949.5" font-size="23" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">已 ACKED／FREE／新槽位世代收到迟到确认：无匹配 PENDING，不重复减 U 或授权擦除。</text>
+<text x="700.0" y="1985.5" font-size="23" font-family="Microsoft YaHei, Arial, sans-serif" text-anchor="middle" font-weight="normal" fill="#17202a">无 FREE 槽位时暂停新接入；仍处理确认与擦除。q 与 z 均不得在各自作用域内复用。</text>
+</g>
+</svg>

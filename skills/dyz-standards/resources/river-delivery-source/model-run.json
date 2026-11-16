@@ -1,0 +1,1602 @@
+{
+  "fixture_id": "deepening-standards-d3",
+  "kind": "finite_model_fixed_vector_run",
+  "environment": {
+    "python": "3.11.15 (main, May 10 2026, 19:31:25) [MSC v.1944 64 bit (AMD64)]",
+    "executable": "C:\\Users\\Administrator\\AppData\\Local\\hermes\\hermes-agent\\venv\\Scripts\\python.exe",
+    "platform": "Windows-10-10.0.26200-SP0"
+  },
+  "sources": [
+    {
+      "path": "skills/dyz-standards/resources/river-demo/model.py",
+      "sha256": "4214ff76e9364e2fa66cf999d5a42ba5490a0197d76efbbfd8a54a1091ff5aa0",
+      "bytes": 5980
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-demo/requirements.json",
+      "sha256": "1abf48e50746bd600a7555ceb345ad8d8f8dbbe7a8f9d4ab653b73a31cf805f2",
+      "bytes": 6036
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-demo/vectors.json",
+      "sha256": "22770d1dfd0602f56f14f653dfeb8e8631561ee9ab35da7ccad03f78eb7f3227",
+      "bytes": 29597
+    }
+  ],
+  "count": 58,
+  "passed": 58,
+  "failed": 0,
+  "skipped": 0,
+  "results": [
+    {
+      "id": "10-minimum",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R01",
+        "R03",
+        "R04",
+        "R05",
+        "R06",
+        "R08"
+      ],
+      "input_bytes": 61,
+      "input_sha256": "3a1790f397b48d70bc2809f4887affd1e99776df5ed62afcb31670bbf1c69a40",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "accepted",
+        "reason": "accepted",
+        "state": {
+          "A": [
+            {
+              "seq": 1,
+              "value": 0
+            }
+          ]
+        }
+      },
+      "actual": {
+        "status": "accepted",
+        "reason": "accepted",
+        "state": {
+          "A": [
+            {
+              "seq": 1,
+              "value": 0
+            }
+          ]
+        }
+      },
+      "status": "passed"
+    },
+    {
+      "id": "10-four-max-value",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R04",
+        "R05",
+        "R06"
+      ],
+      "input_bytes": 148,
+      "input_sha256": "be07d66938c2c4fbe9d9b039fa2a8a7753f4a02b5477eb9fad22f106b8cd4a59",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "accepted",
+        "reason": "accepted",
+        "state": {
+          "ABCDEFGHIJKLMNO9": [
+            {
+              "seq": 1,
+              "value": 1000
+            },
+            {
+              "seq": 2,
+              "value": 1000
+            },
+            {
+              "seq": 3,
+              "value": 1000
+            },
+            {
+              "seq": 4,
+              "value": 1000
+            }
+          ]
+        }
+      },
+      "actual": {
+        "status": "accepted",
+        "reason": "accepted",
+        "state": {
+          "ABCDEFGHIJKLMNO9": [
+            {
+              "seq": 1,
+              "value": 1000
+            },
+            {
+              "seq": 2,
+              "value": 1000
+            },
+            {
+              "seq": 3,
+              "value": 1000
+            },
+            {
+              "seq": 4,
+              "value": 1000
+            }
+          ]
+        }
+      },
+      "status": "passed"
+    },
+    {
+      "id": "10-exact-1024",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R01"
+      ],
+      "input_bytes": 1024,
+      "input_sha256": "dc884692279dd8089114fd305130817005dc8189316122973b4abff78ae18253",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "accepted",
+        "reason": "accepted",
+        "state": {
+          "A": [
+            {
+              "seq": 1,
+              "value": 0
+            }
+          ]
+        }
+      },
+      "actual": {
+        "status": "accepted",
+        "reason": "accepted",
+        "state": {
+          "A": [
+            {
+              "seq": 1,
+              "value": 0
+            }
+          ]
+        }
+      },
+      "status": "passed"
+    },
+    {
+      "id": "10-over-1024",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R01"
+      ],
+      "input_bytes": 1025,
+      "input_sha256": "0a3f1ebd01bbcc3e2d8fafce335124d134a478ce92925f3c6d5db2a2a1b66da6",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "rejected",
+        "reason": "size",
+        "state": {}
+      },
+      "actual": {
+        "status": "rejected",
+        "reason": "size",
+        "state": {}
+      },
+      "status": "passed"
+    },
+    {
+      "id": "10-bad-first-and-replay",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R08",
+        "R09"
+      ],
+      "input_bytes": 64,
+      "input_sha256": "1a97d0d38eb8219e38de37795a48e9eb67a2f6a6b2af34328eac5d4548270de1",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "rejected",
+        "reason": "field",
+        "state": {
+          "A": [
+            {
+              "seq": 1,
+              "value": 7
+            }
+          ]
+        }
+      },
+      "actual": {
+        "status": "rejected",
+        "reason": "field",
+        "state": {
+          "A": [
+            {
+              "seq": 1,
+              "value": 7
+            }
+          ]
+        }
+      },
+      "status": "passed"
+    },
+    {
+      "id": "10-last-record-invalid-atomic",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R08"
+      ],
+      "input_bytes": 84,
+      "input_sha256": "42396f86c5dacc53c473086e58caa1677db8953e6f2a3c2780be9bd0e96be700",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "rejected",
+        "reason": "field",
+        "state": {
+          "A": [
+            {
+              "seq": 1,
+              "value": 7
+            }
+          ]
+        }
+      },
+      "actual": {
+        "status": "rejected",
+        "reason": "field",
+        "state": {
+          "A": [
+            {
+              "seq": 1,
+              "value": 7
+            }
+          ]
+        }
+      },
+      "status": "passed"
+    },
+    {
+      "id": "10-replay",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R08",
+        "R09"
+      ],
+      "input_bytes": 61,
+      "input_sha256": "3a1790f397b48d70bc2809f4887affd1e99776df5ed62afcb31670bbf1c69a40",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "rejected",
+        "reason": "replay",
+        "state": {
+          "A": [
+            {
+              "seq": 1,
+              "value": 0
+            }
+          ]
+        }
+      },
+      "actual": {
+        "status": "rejected",
+        "reason": "replay",
+        "state": {
+          "A": [
+            {
+              "seq": 1,
+              "value": 0
+            }
+          ]
+        }
+      },
+      "status": "passed"
+    },
+    {
+      "id": "10-version-mismatch",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R03"
+      ],
+      "input_bytes": 61,
+      "input_sha256": "dfab60d0a207ab722697ebdf878e468664566263ab4567f24fb764b2cded615c",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "rejected",
+        "reason": "version",
+        "state": {}
+      },
+      "actual": {
+        "status": "rejected",
+        "reason": "version",
+        "state": {}
+      },
+      "status": "passed"
+    },
+    {
+      "id": "10-gap",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R06"
+      ],
+      "input_bytes": 81,
+      "input_sha256": "e0ce0caaf6cefb42336a6062c108129ff9224fec26a403635b02a4d4c4dd0973",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "rejected",
+        "reason": "order",
+        "state": {}
+      },
+      "actual": {
+        "status": "rejected",
+        "reason": "order",
+        "state": {}
+      },
+      "status": "passed"
+    },
+    {
+      "id": "10-nonone-start",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R06"
+      ],
+      "input_bytes": 63,
+      "input_sha256": "60ccc9740e448ead317570bec62b6fe55c27f69878c0c43e2263ba240035fadc",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "rejected",
+        "reason": "order",
+        "state": {}
+      },
+      "actual": {
+        "status": "rejected",
+        "reason": "order",
+        "state": {}
+      },
+      "status": "passed"
+    },
+    {
+      "id": "10-null",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R06"
+      ],
+      "input_bytes": 64,
+      "input_sha256": "f6ac3a3df14485dec7497f4f70d4ad748961b35087acd62ac161128cf6d4b5b2",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "rejected",
+        "reason": "field",
+        "state": {}
+      },
+      "actual": {
+        "status": "rejected",
+        "reason": "field",
+        "state": {}
+      },
+      "status": "passed"
+    },
+    {
+      "id": "10-duplicate-seq",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R06"
+      ],
+      "input_bytes": 81,
+      "input_sha256": "7448e1c30256971fbac3eb522cf76f22577055a1d517926a12293b9100889cea",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "rejected",
+        "reason": "order",
+        "state": {}
+      },
+      "actual": {
+        "status": "rejected",
+        "reason": "order",
+        "state": {}
+      },
+      "status": "passed"
+    },
+    {
+      "id": "10-descending",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R06"
+      ],
+      "input_bytes": 81,
+      "input_sha256": "b0f041b51a93bbf8dc9954e81655baef8591f3b77b0b3b2472db59878f9ae76a",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "rejected",
+        "reason": "order",
+        "state": {}
+      },
+      "actual": {
+        "status": "rejected",
+        "reason": "order",
+        "state": {}
+      },
+      "status": "passed"
+    },
+    {
+      "id": "10-zero-seq",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R06"
+      ],
+      "input_bytes": 61,
+      "input_sha256": "4061be86115acb65876b67147c299ed71aa7f23136df23c025f60415abf493db",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "rejected",
+        "reason": "order",
+        "state": {}
+      },
+      "actual": {
+        "status": "rejected",
+        "reason": "order",
+        "state": {}
+      },
+      "status": "passed"
+    },
+    {
+      "id": "10-bool-seq",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R06"
+      ],
+      "input_bytes": 64,
+      "input_sha256": "1c7de405bd5dec84ba71409d3e91d0c166b68fc8b210fe7cf005e2fa83bc9391",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "rejected",
+        "reason": "field",
+        "state": {}
+      },
+      "actual": {
+        "status": "rejected",
+        "reason": "field",
+        "state": {}
+      },
+      "status": "passed"
+    },
+    {
+      "id": "10-negative-value",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R06"
+      ],
+      "input_bytes": 62,
+      "input_sha256": "190ad99107849677b0d0740464af39451b638fb2d3d7798f42bad8b42aa53bb6",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "rejected",
+        "reason": "field",
+        "state": {}
+      },
+      "actual": {
+        "status": "rejected",
+        "reason": "field",
+        "state": {}
+      },
+      "status": "passed"
+    },
+    {
+      "id": "11-minimum",
+      "receiver_version": "1.1",
+      "requirements": [
+        "R01",
+        "R03",
+        "R04",
+        "R05",
+        "R07",
+        "R08"
+      ],
+      "input_bytes": 61,
+      "input_sha256": "dfab60d0a207ab722697ebdf878e468664566263ab4567f24fb764b2cded615c",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "accepted",
+        "reason": "accepted",
+        "state": {
+          "A": [
+            {
+              "seq": 1,
+              "value": 0
+            }
+          ]
+        }
+      },
+      "actual": {
+        "status": "accepted",
+        "reason": "accepted",
+        "state": {
+          "A": [
+            {
+              "seq": 1,
+              "value": 0
+            }
+          ]
+        }
+      },
+      "status": "passed"
+    },
+    {
+      "id": "11-four-max-value",
+      "receiver_version": "1.1",
+      "requirements": [
+        "R04",
+        "R05",
+        "R07"
+      ],
+      "input_bytes": 148,
+      "input_sha256": "f45510ddc047826f2a1597121c39c86cc8a2cc315a37d35706a164969a91f0a7",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "accepted",
+        "reason": "accepted",
+        "state": {
+          "ABCDEFGHIJKLMNO9": [
+            {
+              "seq": 1,
+              "value": 1000
+            },
+            {
+              "seq": 2,
+              "value": 1000
+            },
+            {
+              "seq": 3,
+              "value": 1000
+            },
+            {
+              "seq": 4,
+              "value": 1000
+            }
+          ]
+        }
+      },
+      "actual": {
+        "status": "accepted",
+        "reason": "accepted",
+        "state": {
+          "ABCDEFGHIJKLMNO9": [
+            {
+              "seq": 1,
+              "value": 1000
+            },
+            {
+              "seq": 2,
+              "value": 1000
+            },
+            {
+              "seq": 3,
+              "value": 1000
+            },
+            {
+              "seq": 4,
+              "value": 1000
+            }
+          ]
+        }
+      },
+      "status": "passed"
+    },
+    {
+      "id": "11-exact-1024",
+      "receiver_version": "1.1",
+      "requirements": [
+        "R01"
+      ],
+      "input_bytes": 1024,
+      "input_sha256": "3ff0a45517c2a9f32469dce3577e1a0244cc283b8dee0c134700afb0261b434a",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "accepted",
+        "reason": "accepted",
+        "state": {
+          "A": [
+            {
+              "seq": 1,
+              "value": 0
+            }
+          ]
+        }
+      },
+      "actual": {
+        "status": "accepted",
+        "reason": "accepted",
+        "state": {
+          "A": [
+            {
+              "seq": 1,
+              "value": 0
+            }
+          ]
+        }
+      },
+      "status": "passed"
+    },
+    {
+      "id": "11-over-1024",
+      "receiver_version": "1.1",
+      "requirements": [
+        "R01"
+      ],
+      "input_bytes": 1025,
+      "input_sha256": "0f7ccc1699c6a7666cedc762bf41f26d7a8a9962bcb391431af151b25e4938f8",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "rejected",
+        "reason": "size",
+        "state": {}
+      },
+      "actual": {
+        "status": "rejected",
+        "reason": "size",
+        "state": {}
+      },
+      "status": "passed"
+    },
+    {
+      "id": "11-bad-first-and-replay",
+      "receiver_version": "1.1",
+      "requirements": [
+        "R08",
+        "R09"
+      ],
+      "input_bytes": 64,
+      "input_sha256": "d925fdf2874aa30411fada3d9a52d8fb7d4ab1d212418fc372d8d6c2c9259fb1",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "rejected",
+        "reason": "field",
+        "state": {
+          "A": [
+            {
+              "seq": 1,
+              "value": 7
+            }
+          ]
+        }
+      },
+      "actual": {
+        "status": "rejected",
+        "reason": "field",
+        "state": {
+          "A": [
+            {
+              "seq": 1,
+              "value": 7
+            }
+          ]
+        }
+      },
+      "status": "passed"
+    },
+    {
+      "id": "11-last-record-invalid-atomic",
+      "receiver_version": "1.1",
+      "requirements": [
+        "R08"
+      ],
+      "input_bytes": 84,
+      "input_sha256": "d806b89dae8e15e4f43a51f46876b54ab46be7df7db4a7a562564c1756b3d3c6",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "rejected",
+        "reason": "field",
+        "state": {
+          "A": [
+            {
+              "seq": 1,
+              "value": 7
+            }
+          ]
+        }
+      },
+      "actual": {
+        "status": "rejected",
+        "reason": "field",
+        "state": {
+          "A": [
+            {
+              "seq": 1,
+              "value": 7
+            }
+          ]
+        }
+      },
+      "status": "passed"
+    },
+    {
+      "id": "11-replay",
+      "receiver_version": "1.1",
+      "requirements": [
+        "R08",
+        "R09"
+      ],
+      "input_bytes": 61,
+      "input_sha256": "dfab60d0a207ab722697ebdf878e468664566263ab4567f24fb764b2cded615c",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "rejected",
+        "reason": "replay",
+        "state": {
+          "A": [
+            {
+              "seq": 1,
+              "value": 0
+            }
+          ]
+        }
+      },
+      "actual": {
+        "status": "rejected",
+        "reason": "replay",
+        "state": {
+          "A": [
+            {
+              "seq": 1,
+              "value": 0
+            }
+          ]
+        }
+      },
+      "status": "passed"
+    },
+    {
+      "id": "11-version-mismatch",
+      "receiver_version": "1.1",
+      "requirements": [
+        "R03"
+      ],
+      "input_bytes": 61,
+      "input_sha256": "3a1790f397b48d70bc2809f4887affd1e99776df5ed62afcb31670bbf1c69a40",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "rejected",
+        "reason": "version",
+        "state": {}
+      },
+      "actual": {
+        "status": "rejected",
+        "reason": "version",
+        "state": {}
+      },
+      "status": "passed"
+    },
+    {
+      "id": "11-gap",
+      "receiver_version": "1.1",
+      "requirements": [
+        "R07"
+      ],
+      "input_bytes": 81,
+      "input_sha256": "1eeb5765e6801c88a45ebbb217b2f687f37d9c0ab9f0ce5d842f172fc2cf7511",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "accepted",
+        "reason": "accepted",
+        "state": {
+          "G": [
+            {
+              "seq": 1,
+              "value": 2
+            },
+            {
+              "seq": 3,
+              "value": 4
+            }
+          ]
+        }
+      },
+      "actual": {
+        "status": "accepted",
+        "reason": "accepted",
+        "state": {
+          "G": [
+            {
+              "seq": 1,
+              "value": 2
+            },
+            {
+              "seq": 3,
+              "value": 4
+            }
+          ]
+        }
+      },
+      "status": "passed"
+    },
+    {
+      "id": "11-nonone-start",
+      "receiver_version": "1.1",
+      "requirements": [
+        "R07"
+      ],
+      "input_bytes": 63,
+      "input_sha256": "33c29ba58ea63a70ea545568e52e13f964fe38bf09abeb216dee2b5aa791a3fc",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "accepted",
+        "reason": "accepted",
+        "state": {
+          "S": [
+            {
+              "seq": 999,
+              "value": 8
+            }
+          ]
+        }
+      },
+      "actual": {
+        "status": "accepted",
+        "reason": "accepted",
+        "state": {
+          "S": [
+            {
+              "seq": 999,
+              "value": 8
+            }
+          ]
+        }
+      },
+      "status": "passed"
+    },
+    {
+      "id": "11-null",
+      "receiver_version": "1.1",
+      "requirements": [
+        "R07"
+      ],
+      "input_bytes": 64,
+      "input_sha256": "992984d81946f261d6ca6f70225db4b7da74ea6bc48aeedb6dd8ad82d56226d8",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "accepted",
+        "reason": "accepted",
+        "state": {
+          "N": [
+            {
+              "seq": 1,
+              "value": null
+            }
+          ]
+        }
+      },
+      "actual": {
+        "status": "accepted",
+        "reason": "accepted",
+        "state": {
+          "N": [
+            {
+              "seq": 1,
+              "value": null
+            }
+          ]
+        }
+      },
+      "status": "passed"
+    },
+    {
+      "id": "11-duplicate-seq",
+      "receiver_version": "1.1",
+      "requirements": [
+        "R07"
+      ],
+      "input_bytes": 81,
+      "input_sha256": "5500add4ec0ca44aafb5d65365560ce53b8292cb6403bdc83feebf58ad1c92bd",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "rejected",
+        "reason": "order",
+        "state": {}
+      },
+      "actual": {
+        "status": "rejected",
+        "reason": "order",
+        "state": {}
+      },
+      "status": "passed"
+    },
+    {
+      "id": "11-descending",
+      "receiver_version": "1.1",
+      "requirements": [
+        "R07"
+      ],
+      "input_bytes": 81,
+      "input_sha256": "b01c71c5eee8a6551d24cf93912dc79c58483b2170e408ab6867a78819aa065d",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "rejected",
+        "reason": "order",
+        "state": {}
+      },
+      "actual": {
+        "status": "rejected",
+        "reason": "order",
+        "state": {}
+      },
+      "status": "passed"
+    },
+    {
+      "id": "11-zero-seq",
+      "receiver_version": "1.1",
+      "requirements": [
+        "R07"
+      ],
+      "input_bytes": 61,
+      "input_sha256": "90723a49038c007e88fc1d8d51327244e5bfd0e8f9a2cde36c77f20481b33474",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "rejected",
+        "reason": "field",
+        "state": {}
+      },
+      "actual": {
+        "status": "rejected",
+        "reason": "field",
+        "state": {}
+      },
+      "status": "passed"
+    },
+    {
+      "id": "11-bool-seq",
+      "receiver_version": "1.1",
+      "requirements": [
+        "R07"
+      ],
+      "input_bytes": 64,
+      "input_sha256": "577a0664a18cea22d796320b447b9bc12a5208d1bd6406ad2d6744584c32f601",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "rejected",
+        "reason": "field",
+        "state": {}
+      },
+      "actual": {
+        "status": "rejected",
+        "reason": "field",
+        "state": {}
+      },
+      "status": "passed"
+    },
+    {
+      "id": "11-negative-value",
+      "receiver_version": "1.1",
+      "requirements": [
+        "R07"
+      ],
+      "input_bytes": 62,
+      "input_sha256": "5d90b87608dc28525cd08fc56cd2d26a5ffcbe47e5e758ef21389ab19903e0e7",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "rejected",
+        "reason": "field",
+        "state": {}
+      },
+      "actual": {
+        "status": "rejected",
+        "reason": "field",
+        "state": {}
+      },
+      "status": "passed"
+    },
+    {
+      "id": "10-empty",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R01"
+      ],
+      "input_bytes": 0,
+      "input_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "rejected",
+        "reason": "size",
+        "state": {}
+      },
+      "actual": {
+        "status": "rejected",
+        "reason": "size",
+        "state": {}
+      },
+      "status": "passed"
+    },
+    {
+      "id": "10-invalid-utf8",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R01"
+      ],
+      "input_bytes": 1,
+      "input_sha256": "a8100ae6aa1940d0b663bb31cd466142ebbdbd5187131b92d93818987832eb89",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "rejected",
+        "reason": "encoding",
+        "state": {}
+      },
+      "actual": {
+        "status": "rejected",
+        "reason": "encoding",
+        "state": {}
+      },
+      "status": "passed"
+    },
+    {
+      "id": "10-bom",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R01"
+      ],
+      "input_bytes": 5,
+      "input_sha256": "aa25e978046d680ef8740d837e6de5bc1e2a2dc6089dbda1012544b538d53f65",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "rejected",
+        "reason": "encoding",
+        "state": {}
+      },
+      "actual": {
+        "status": "rejected",
+        "reason": "encoding",
+        "state": {}
+      },
+      "status": "passed"
+    },
+    {
+      "id": "10-trailing",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R01",
+        "R02"
+      ],
+      "input_bytes": 5,
+      "input_sha256": "2cec2bbf1a64ea5249e8a7ab9ecc782fa48be13f0b35ad5f52bdea741841a230",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "rejected",
+        "reason": "json",
+        "state": {}
+      },
+      "actual": {
+        "status": "rejected",
+        "reason": "json",
+        "state": {}
+      },
+      "status": "passed"
+    },
+    {
+      "id": "10-duplicate-top",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R02"
+      ],
+      "input_bytes": 73,
+      "input_sha256": "2105da8ee64c8287845f27902747aabe2add80225e1eb37df7d39af2191d2b33",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "rejected",
+        "reason": "json",
+        "state": {}
+      },
+      "actual": {
+        "status": "rejected",
+        "reason": "json",
+        "state": {}
+      },
+      "status": "passed"
+    },
+    {
+      "id": "10-escaped-duplicate",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R02"
+      ],
+      "input_bytes": 76,
+      "input_sha256": "d1445ab570d6a5903eafc7de6bff2301f863d161ae7be3fa34ebf5a7528f21ae",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "rejected",
+        "reason": "json",
+        "state": {}
+      },
+      "actual": {
+        "status": "rejected",
+        "reason": "json",
+        "state": {}
+      },
+      "status": "passed"
+    },
+    {
+      "id": "10-token-1.0",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R02"
+      ],
+      "input_bytes": 63,
+      "input_sha256": "170c84fbed30f922fdf0ccbac76c3d7d08db6abe3b0876bbd55960c40fe9e2c5",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "rejected",
+        "reason": "json",
+        "state": {}
+      },
+      "actual": {
+        "status": "rejected",
+        "reason": "json",
+        "state": {}
+      },
+      "status": "passed"
+    },
+    {
+      "id": "10-token-1e0",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R02"
+      ],
+      "input_bytes": 63,
+      "input_sha256": "82dfb6c1c5b95ac03c84c5e145e92484c582ba7b786a60d8a197c14ecc38297a",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "rejected",
+        "reason": "json",
+        "state": {}
+      },
+      "actual": {
+        "status": "rejected",
+        "reason": "json",
+        "state": {}
+      },
+      "status": "passed"
+    },
+    {
+      "id": "10-token-NaN",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R02"
+      ],
+      "input_bytes": 63,
+      "input_sha256": "de323653e33abc7a51c62cbf92632e45d37c0a86d06b238bae286da69072eb9d",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "rejected",
+        "reason": "json",
+        "state": {}
+      },
+      "actual": {
+        "status": "rejected",
+        "reason": "json",
+        "state": {}
+      },
+      "status": "passed"
+    },
+    {
+      "id": "10-token-Infinity",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R02"
+      ],
+      "input_bytes": 68,
+      "input_sha256": "813f340f84203def8b970f97037c8238a2855c0609d7393ab7fb100d6147dc22",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "rejected",
+        "reason": "json",
+        "state": {}
+      },
+      "actual": {
+        "status": "rejected",
+        "reason": "json",
+        "state": {}
+      },
+      "status": "passed"
+    },
+    {
+      "id": "10-token--Infinity",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R02"
+      ],
+      "input_bytes": 69,
+      "input_sha256": "922c883ebaba82d0a80bf8efd9588dc70c17e44724a55fb4b501db8db4a91874",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "rejected",
+        "reason": "json",
+        "state": {}
+      },
+      "actual": {
+        "status": "rejected",
+        "reason": "json",
+        "state": {}
+      },
+      "status": "passed"
+    },
+    {
+      "id": "10-negative-zero",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R02",
+        "R06"
+      ],
+      "input_bytes": 62,
+      "input_sha256": "9877dcbd3c7a2bbea9fd5998374f66bb830ce214dbc44852065bfda6640b3741",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "accepted",
+        "reason": "accepted",
+        "state": {
+          "A": [
+            {
+              "seq": 1,
+              "value": 0
+            }
+          ]
+        }
+      },
+      "actual": {
+        "status": "accepted",
+        "reason": "accepted",
+        "state": {
+          "A": [
+            {
+              "seq": 1,
+              "value": 0
+            }
+          ]
+        }
+      },
+      "status": "passed"
+    },
+    {
+      "id": "10-shape-array",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R03"
+      ],
+      "input_bytes": 2,
+      "input_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "rejected",
+        "reason": "shape",
+        "state": {}
+      },
+      "actual": {
+        "status": "rejected",
+        "reason": "shape",
+        "state": {}
+      },
+      "status": "passed"
+    },
+    {
+      "id": "10-extra-top",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R03"
+      ],
+      "input_bytes": 71,
+      "input_sha256": "b46c425e621c6ab2512eb4191d232e7f1e09fc3aeb8873f82badb50f6a0a8dc4",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "rejected",
+        "reason": "shape",
+        "state": {}
+      },
+      "actual": {
+        "status": "rejected",
+        "reason": "shape",
+        "state": {}
+      },
+      "status": "passed"
+    },
+    {
+      "id": "10-missing-top",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R03"
+      ],
+      "input_bytes": 29,
+      "input_sha256": "5a0b58f3cc7b88250cbd0cd5c1b98c977fc344e5359f1b3ef9692b9922aee216",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "rejected",
+        "reason": "shape",
+        "state": {}
+      },
+      "actual": {
+        "status": "rejected",
+        "reason": "shape",
+        "state": {}
+      },
+      "status": "passed"
+    },
+    {
+      "id": "10-bad-batch-lower",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R04"
+      ],
+      "input_bytes": 61,
+      "input_sha256": "5a12ec9712bbfc44bb0d0f4c352e89b61c5ab0c904e1c591c44a667be5f96e46",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "rejected",
+        "reason": "batch",
+        "state": {}
+      },
+      "actual": {
+        "status": "rejected",
+        "reason": "batch",
+        "state": {}
+      },
+      "status": "passed"
+    },
+    {
+      "id": "10-bad-batch-unicode",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R04"
+      ],
+      "input_bytes": 63,
+      "input_sha256": "3a846a3b0c88ea9a6f2ef5751358224838c21f46f5086a3be4ecae3cbe59da24",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "rejected",
+        "reason": "batch",
+        "state": {}
+      },
+      "actual": {
+        "status": "rejected",
+        "reason": "batch",
+        "state": {}
+      },
+      "status": "passed"
+    },
+    {
+      "id": "10-bad-batch-long",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R04"
+      ],
+      "input_bytes": 77,
+      "input_sha256": "cc02fdab1c8946cb00bf0f389eb2bac480235559fe5bc548595d2e986c949ece",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "rejected",
+        "reason": "batch",
+        "state": {}
+      },
+      "actual": {
+        "status": "rejected",
+        "reason": "batch",
+        "state": {}
+      },
+      "status": "passed"
+    },
+    {
+      "id": "10-no-records",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R05"
+      ],
+      "input_bytes": 42,
+      "input_sha256": "afa7f4e17ecf9b7903724d0d03a0e20244277276a43315a8c39cd5ce78db97c1",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "rejected",
+        "reason": "records",
+        "state": {}
+      },
+      "actual": {
+        "status": "rejected",
+        "reason": "records",
+        "state": {}
+      },
+      "status": "passed"
+    },
+    {
+      "id": "10-five-records",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R05"
+      ],
+      "input_bytes": 141,
+      "input_sha256": "253828de8253868c72b5687b6b6b9057463eb29dfbcebf2ce6f5b0a7d39bb6f0",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "rejected",
+        "reason": "records",
+        "state": {}
+      },
+      "actual": {
+        "status": "rejected",
+        "reason": "records",
+        "state": {}
+      },
+      "status": "passed"
+    },
+    {
+      "id": "10-records-object",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R05"
+      ],
+      "input_bytes": 42,
+      "input_sha256": "40eba87c77992553ca42a39c49fa3860142cff6186c95ef9bf422805d1db5e02",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "rejected",
+        "reason": "records",
+        "state": {}
+      },
+      "actual": {
+        "status": "rejected",
+        "reason": "records",
+        "state": {}
+      },
+      "status": "passed"
+    },
+    {
+      "id": "10-record-extra",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R05"
+      ],
+      "input_bytes": 67,
+      "input_sha256": "16dfa7f0d6ca3d1f20214b9e5497f2c43c723cec1f9d80f81548700915cafe36",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "rejected",
+        "reason": "field",
+        "state": {}
+      },
+      "actual": {
+        "status": "rejected",
+        "reason": "field",
+        "state": {}
+      },
+      "status": "passed"
+    },
+    {
+      "id": "10-record-missing",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R05"
+      ],
+      "input_bytes": 51,
+      "input_sha256": "28feea1f581bfe4c2d615cf9c712b8b1cbaedacbcb6a1b3de18a929033b7b6db",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "rejected",
+        "reason": "field",
+        "state": {}
+      },
+      "actual": {
+        "status": "rejected",
+        "reason": "field",
+        "state": {}
+      },
+      "status": "passed"
+    },
+    {
+      "id": "10-object-order",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R02",
+        "R04"
+      ],
+      "input_bytes": 74,
+      "input_sha256": "8e3fd1c5f878d496ccdf198b126061ce4c3c978c1e176b667dafbc1adfcdfb7f",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "accepted",
+        "reason": "accepted",
+        "state": {
+          "A": [
+            {
+              "value": 0,
+              "seq": 1
+            }
+          ]
+        }
+      },
+      "actual": {
+        "status": "accepted",
+        "reason": "accepted",
+        "state": {
+          "A": [
+            {
+              "value": 0,
+              "seq": 1
+            }
+          ]
+        }
+      },
+      "status": "passed"
+    },
+    {
+      "id": "11-seq-over-range",
+      "receiver_version": "1.1",
+      "requirements": [
+        "R07"
+      ],
+      "input_bytes": 64,
+      "input_sha256": "eeed23700bc770f67944fa63c9ae20254ff1993d13d55b6f09d8cdf85e6ea58e",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "rejected",
+        "reason": "field",
+        "state": {}
+      },
+      "actual": {
+        "status": "rejected",
+        "reason": "field",
+        "state": {}
+      },
+      "status": "passed"
+    },
+    {
+      "id": "11-null-and-gap-no-fill",
+      "receiver_version": "1.1",
+      "requirements": [
+        "R07",
+        "R08"
+      ],
+      "input_bytes": 84,
+      "input_sha256": "bdd0ce1f4b35b774b120484cd1ff516393abdcb03fb335ad7e64ef5ae83c3b38",
+      "caller_state_unchanged": true,
+      "expected": {
+        "status": "accepted",
+        "reason": "accepted",
+        "state": {
+          "R": [
+            {
+              "seq": 2,
+              "value": null
+            },
+            {
+              "seq": 4,
+              "value": 0
+            }
+          ]
+        }
+      },
+      "actual": {
+        "status": "accepted",
+        "reason": "accepted",
+        "state": {
+          "R": [
+            {
+              "seq": 2,
+              "value": null
+            },
+            {
+              "seq": 4,
+              "value": 0
+            }
+          ]
+        }
+      },
+      "status": "passed"
+    }
+  ],
+  "limits": [
+    "One in-memory serial model and fixed synthetic vectors only.",
+    "No real product interoperability, performance, durable transaction, professional or organization approval."
+  ],
+  "run_started_at": "2026-11-02T20:00:28.964692+00:00",
+  "run_elapsed_seconds": 0.265,
+  "stdout_sha256": "771effdf20940b53e5820ba5067af40009beb6a2dc279b7351d0ffba9ee6d0e8",
+  "record_kind": "actual_author_model_run_for_new_original_mixed_source_example",
+  "by_version": {
+    "1.0": 40,
+    "1.1": 18
+  },
+  "not_independent_implementation": true,
+  "source_path_note": "source locations made repository-relative after actual run; original stdout retained in ignored output with hash"
+}

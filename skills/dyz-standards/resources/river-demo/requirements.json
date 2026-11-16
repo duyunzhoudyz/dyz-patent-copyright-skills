@@ -1,0 +1,100 @@
+{
+  "fixture_id": "deepening-standards-d3",
+  "version": "1.0",
+  "title": "溪桥观测记录交换合成需求",
+  "provenance": "全部技术数值、项目、意见、IP线索与授权均为本仓库原创虚构开发材料；不是任何真实组织已经立项、认可或发布的标准。组织公开规则须另引当次官方研究。",
+  "license": "Original synthetic material under repository LICENSE (PolyForm Noncommercial 1.0.0 and separate commercial authorization); no third-party standard text.",
+  "scope": "有限的单批 JSON 记录接收语义；不规定传输、鉴权、存储耐久性、设备测量、时钟、吞吐量或真实产品互操作。数值只是输入字段和资源预算的虚构给定约束，不是实测性能或安全阈值。",
+  "units": {
+    "seq": "批内逻辑序号，无量纲；不表示测量时间或全局样本编号",
+    "value": "虚构的无量纲计数观测值；有效语法不证明测量有效性"
+  },
+  "normative_candidate_status": "项目给定需求足以编写内部完整候选条款；所有拟应/不应仍是待技术组和有权组织审阅的草案要求。",
+  "requirements": [
+    {
+      "id": "R01",
+      "subject": "编码与预算",
+      "given": "完整消息按 UTF-8 字节计数为 1..1024；不允许 UTF-8 BOM、无效 UTF-8、尾随第二个 JSON 值。JSON 允许的空白可出现，计入字节上限；上限含消息全部字节。"
+    },
+    {
+      "id": "R02",
+      "subject": "JSON 与重复成员",
+      "given": "消息须为 JSON 对象；任何层次对象均不允许重复成员名，JSON 转义后相等的名称视为重复。拒绝 NaN/Infinity/-Infinity、所有含小数点或指数的数字 token；整数字面量 -0 解码为 0。对象成员顺序不影响语义。"
+    },
+    {
+      "id": "R03",
+      "subject": "顶层结构与版本",
+      "given": "顶层恰有 version、batch、records 三个成员，无可省略项或扩展字段。version 是字符串，恰等于本次接收端已配置版本 1.0 或 1.1；无自动协商、猜测、回退或跨版本转换。版本不符拒绝整批。"
+    },
+    {
+      "id": "R04",
+      "subject": "批次标识",
+      "given": "batch 为长度 1..16 的 ASCII 字符串，首字母 A..Z，其后只可 A..Z、0..9 或连字符；正则含义为 [A-Z][A-Z0-9-]{0,15}，不裁剪空格、不变换大小写。JSON 转义后的内容用于比较。"
+    },
+    {
+      "id": "R05",
+      "subject": "记录结构",
+      "given": "records 是长度 1..4 的数组；各元素对象恰有 seq、value，均不可省略，不允许未知成员。数组顺序有语义；不得排序后补救非法输入。"
+    },
+    {
+      "id": "R06",
+      "subject": "v1.0 序号和值",
+      "given": "1.0 下 seq 必须是 JSON 整数且不为布尔值，各条依数组位置恰为 1..n；value 必须是整数且不为布尔值，闭区间 0..1000；null 拒绝。"
+    },
+    {
+      "id": "R07",
+      "subject": "v1.1 序号和值",
+      "given": "1.1 下 seq 必须是 JSON 整数且不为布尔值，闭区间 1..999，沿数组严格递增，可任意起点和跳号；value 是闭区间 0..1000 的整数且不为布尔值，或 null。null 唯一表示缺测，不等于 0，不推断跳号位置存在记录，不插值、不补记录。"
+    },
+    {
+      "id": "R08",
+      "subject": "整批接收与重放",
+      "given": "先校验完整消息，包括所有记录；任一失败则该批全部拒绝且既有状态不变。全部校验成功后，若 batch 已存在于该接收端本次状态中，整批拒绝为 replay，即使内容相同也不重复接收；此前被拒绝的 batch 不占用标识。成功时按原数组顺序一次加入该 batch 及其原值。"
+    },
+    {
+      "id": "R09",
+      "subject": "错误判定次序",
+      "given": "依次为 size、encoding、json、shape、version、batch、records、field、order、replay。size 含空消息/超限；encoding 含 BOM/非法 UTF-8；json 含重复键/数字 token/语法；shape 是顶层类型/成员；records 是数组类型/数量；field 是任一元素结构/类型/值域；所有字段先验完再检查 order，重放最后检查。每次只输出第一个类别，拒绝原因不改变状态。"
+    },
+    {
+      "id": "R10",
+      "subject": "有限状态前提",
+      "given": "本模型状态输入只含先前已接收的合成批次；状态不跨真实程序重启持久化。事务、并发、断电/磁盘故障和网络确认丢失均未实现。草案应明确状态保存与作用域为给定测试条件，并将真实实现的持久化/并发互操作验证列待验，不能凭内存模型声称生产级 exactly-once。"
+    }
+  ],
+  "versions": {
+    "1.0": {
+      "reference_id": "RQ-RIVER-1.0",
+      "kind": "原创虚构需求版本，不是已发布标准",
+      "requirements": [
+        "R01",
+        "R02",
+        "R03",
+        "R04",
+        "R05",
+        "R06",
+        "R08",
+        "R09",
+        "R10"
+      ]
+    },
+    "1.1": {
+      "reference_id": "RQ-RIVER-1.1",
+      "kind": "原创虚构需求修订，不是已发布标准",
+      "requirements": [
+        "R01",
+        "R02",
+        "R03",
+        "R04",
+        "R05",
+        "R07",
+        "R08",
+        "R09",
+        "R10"
+      ],
+      "supersedes_for_new_candidate": "RQ-RIVER-1.0，仅对 V 案新稿；不改写 N/C 案或旧运行记录"
+    }
+  },
+  "performance": "未提供吞吐量/延时阈值、样本采样方案、测量环境或设备校准；不产生任何性能符合性结论。离散协议解析不需要物理测量校准或不确定度，但不免除真实产品验证。",
+  "verification_scope": "model.py 是一个有限、单实现、内存串行模型；固定向量证明只限该模型在给定输入的实际行为。两家真实独立实现的双向互操作、真实终端、持久化和性能试验未执行。"
+}

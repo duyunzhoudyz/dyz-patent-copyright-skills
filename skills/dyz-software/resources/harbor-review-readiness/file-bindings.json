@@ -1,0 +1,52 @@
+{
+  "date": "2026-11-03",
+  "kind": "actual_software_readiness_docx_and_field_table_binding",
+  "material_revision": "RS4",
+  "document": {
+    "input": "skills/dyz-software/resources/harbor-review-readiness/document-input.json",
+    "docx_sha256": "3a73bbd58e3fa1ecbb8b1fb685c4f6e844d7de2b25f5b11c5996579f32623546",
+    "pdf_sha256": "ac78e4a97c3527a8451d17a33e49523b70869372a452e0867e18f6ec5b9889bc",
+    "output_hint": "outputs/maturity-i04-software-review-readiness/current-package-final",
+    "unique_components": 22,
+    "pages": 4,
+    "field_rows": 20,
+    "targets": [
+      {
+        "bookmark": "HbrExpression",
+        "text_sha256": "6440bc5e9c117a3153c8d2510507eec0341d272a9e33f7975bdf86be158439cf"
+      },
+      {
+        "bookmark": "HbrContribution",
+        "text_sha256": "b5e43219657bcae0e310516b8e3f77abe983d4957b666f399d7ea83ee8231a8e"
+      },
+      {
+        "bookmark": "HbrCases",
+        "text_sha256": "6f9a7ce61deef912c942180db5d5e59097ae418c1a5f22394035c5d238a78090"
+      },
+      {
+        "bookmark": "HbrSecretChoices",
+        "text_sha256": "ffc99afe042340e001be5a1782c7f6d7db3936230be21a307c57e70c269f72b8"
+      },
+      {
+        "bookmark": "HbrFields",
+        "text_sha256": "f9b83f9f5fc065007b8838f47f201a7f3fcc3a8c85c5e25c212a12bc8c15e0c4"
+      },
+      {
+        "bookmark": "HbrHandoff",
+        "text_sha256": "311c37946d7d951b142e4598066337a7006e6035dfa66b49bca827a66082be2a"
+      }
+    ]
+  },
+  "changed_from_first_material": [
+    "HbrRemaining",
+    "HbrReviewIdentity"
+  ],
+  "limits": [
+    "Observation hint is not a package dependency; rebuild from included sources.",
+    "All20 fields share one HbrFields table bookmark, not20 separate Word identities.",
+    "No actual title, contributor, date, deposit or public permission supplied; hypothetical cases not merged."
+  ],
+  "professional_review": "not_performed",
+  "external_action": "not_performed",
+  "readset_guard_revision": "fixed9source pre-read and core.safe_path; current4scenarios replayed, body DOCX identical to RS4"
+}

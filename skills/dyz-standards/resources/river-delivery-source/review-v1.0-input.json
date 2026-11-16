@@ -1,0 +1,235 @@
+{
+  "sensitivity": "research_example",
+  "document_id": "RiverReview",
+  "version": "1.0_RS2",
+  "business": "standard",
+  "sources": [
+    {
+      "id": "Draft",
+      "path": "skills/dyz-standards/resources/river-delivery-source/review-v1.0.md",
+      "sha256": "657b73c9799661bbadd8ee22534a1630f34205381ffad9f58af530c800c38e3c"
+    }
+  ],
+  "dependencies": [
+    {
+      "path": "skills/dyz-standards/resources/river-demo/requirements.json",
+      "sha256": "1abf48e50746bd600a7555ceb345ad8d8f8dbbe7a8f9d4ab653b73a31cf805f2"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-demo/model.py",
+      "sha256": "4214ff76e9364e2fa66cf999d5a42ba5490a0197d76efbbfd8a54a1091ff5aa0"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-demo/vectors.json",
+      "sha256": "22770d1dfd0602f56f14f653dfeb8e8631561ee9ab35da7ccad03f78eb7f3227"
+    },
+    {
+      "path": "references/standards/river-source-evidence-20261103.md",
+      "sha256": "cd2bb37107acb23ebfeff65ca0410fccb4a3b7a0a6767eb9e6f06cf5e93e1f30"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-delivery-source/model-run.json",
+      "sha256": "d054543c34685a2113d3e5935a9f50846ce79d219ec43be49b85496c59ca6fde"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-delivery-source/draft-v1.0.md",
+      "sha256": "d3002dc1b91ebbfe95a509355300b2f60f615408ea39da26a40892a916df8a9f"
+    }
+  ],
+  "research_materials": [
+    {
+      "path": "skills/dyz-standards/resources/river-delivery-source/review-v1.0.md",
+      "sha256": "657b73c9799661bbadd8ee22534a1630f34205381ffad9f58af530c800c38e3c",
+      "content_kind": "original_mixed_research",
+      "third_party_text": "not_included",
+      "processing_basis": "Original project text, public-source observations or local execution over original synthetic fixtures; authorized current internal engineering. No private case, raw standard text, account or credential.",
+      "export_basis": "Original material under project LICENSE and commercial terms; only local internal example assembly here. Third-party source rights retained; no publication, model permission or external sending right is granted by this declaration."
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-demo/requirements.json",
+      "sha256": "1abf48e50746bd600a7555ceb345ad8d8f8dbbe7a8f9d4ab653b73a31cf805f2",
+      "content_kind": "original_synthetic",
+      "third_party_text": "not_included",
+      "processing_basis": "Original project text, public-source observations or local execution over original synthetic fixtures; authorized current internal engineering. No private case, raw standard text, account or credential.",
+      "export_basis": "Original material under project LICENSE and commercial terms; only local internal example assembly here. Third-party source rights retained; no publication, model permission or external sending right is granted by this declaration."
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-demo/model.py",
+      "sha256": "4214ff76e9364e2fa66cf999d5a42ba5490a0197d76efbbfd8a54a1091ff5aa0",
+      "content_kind": "original_synthetic",
+      "third_party_text": "not_included",
+      "processing_basis": "Original project text, public-source observations or local execution over original synthetic fixtures; authorized current internal engineering. No private case, raw standard text, account or credential.",
+      "export_basis": "Original material under project LICENSE and commercial terms; only local internal example assembly here. Third-party source rights retained; no publication, model permission or external sending right is granted by this declaration."
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-demo/vectors.json",
+      "sha256": "22770d1dfd0602f56f14f653dfeb8e8631561ee9ab35da7ccad03f78eb7f3227",
+      "content_kind": "original_synthetic",
+      "third_party_text": "not_included",
+      "processing_basis": "Original project text, public-source observations or local execution over original synthetic fixtures; authorized current internal engineering. No private case, raw standard text, account or credential.",
+      "export_basis": "Original material under project LICENSE and commercial terms; only local internal example assembly here. Third-party source rights retained; no publication, model permission or external sending right is granted by this declaration."
+    },
+    {
+      "path": "references/standards/river-source-evidence-20261103.md",
+      "sha256": "cd2bb37107acb23ebfeff65ca0410fccb4a3b7a0a6767eb9e6f06cf5e93e1f30",
+      "content_kind": "original_public_research",
+      "third_party_text": "not_included",
+      "processing_basis": "Original project text, public-source observations or local execution over original synthetic fixtures; authorized current internal engineering. No private case, raw standard text, account or credential.",
+      "export_basis": "Original material under project LICENSE and commercial terms; only local internal example assembly here. Third-party source rights retained; no publication, model permission or external sending right is granted by this declaration."
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-delivery-source/model-run.json",
+      "sha256": "d054543c34685a2113d3e5935a9f50846ce79d219ec43be49b85496c59ca6fde",
+      "content_kind": "original_execution_evidence",
+      "third_party_text": "not_included",
+      "processing_basis": "Original project text, public-source observations or local execution over original synthetic fixtures; authorized current internal engineering. No private case, raw standard text, account or credential.",
+      "export_basis": "Original material under project LICENSE and commercial terms; only local internal example assembly here. Third-party source rights retained; no publication, model permission or external sending right is granted by this declaration."
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-delivery-source/draft-v1.0.md",
+      "sha256": "d3002dc1b91ebbfe95a509355300b2f60f615408ea39da26a40892a916df8a9f",
+      "content_kind": "original_mixed_research",
+      "third_party_text": "not_included",
+      "processing_basis": "Original project text, public-source observations or local execution over original synthetic fixtures; authorized current internal engineering. No private case, raw standard text, account or credential.",
+      "export_basis": "Original material under project LICENSE and commercial terms; only local internal example assembly here. Third-party source rights retained; no publication, model permission or external sending right is granted by this declaration."
+    }
+  ],
+  "blocks": [
+    {
+      "id": "ReviewTitle",
+      "kind": "heading1",
+      "audience": "body",
+      "source_id": "Draft",
+      "start_line": 2,
+      "end_line": 2
+    },
+    {
+      "id": "ReviewIdentity",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "Draft",
+      "start_line": 5,
+      "end_line": 5
+    },
+    {
+      "id": "ReviewBasisHead",
+      "kind": "heading2",
+      "audience": "body",
+      "source_id": "Draft",
+      "start_line": 8,
+      "end_line": 8
+    },
+    {
+      "id": "ReviewBasis",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "Draft",
+      "start_line": 11,
+      "end_line": 11
+    },
+    {
+      "id": "ReviewSources",
+      "kind": "table",
+      "audience": "body",
+      "source_id": "Draft",
+      "start_line": 14,
+      "end_line": 20
+    },
+    {
+      "id": "ReviewRights",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "Draft",
+      "start_line": 23,
+      "end_line": 23
+    },
+    {
+      "id": "ReviewPlanHead",
+      "kind": "heading2",
+      "audience": "body",
+      "source_id": "Draft",
+      "start_line": 26,
+      "end_line": 26
+    },
+    {
+      "id": "ReviewConditions",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "Draft",
+      "start_line": 29,
+      "end_line": 29
+    },
+    {
+      "id": "ReviewMatrix",
+      "kind": "table",
+      "audience": "body",
+      "source_id": "Draft",
+      "start_line": 32,
+      "end_line": 41
+    },
+    {
+      "id": "ReviewActual",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "Draft",
+      "start_line": 44,
+      "end_line": 44
+    },
+    {
+      "id": "ReviewMore",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "Draft",
+      "start_line": 47,
+      "end_line": 47
+    },
+    {
+      "id": "ReviewOpinionHead",
+      "kind": "heading2",
+      "audience": "body",
+      "source_id": "Draft",
+      "start_line": 50,
+      "end_line": 50
+    },
+    {
+      "id": "ReviewOpinions",
+      "kind": "table",
+      "audience": "body",
+      "source_id": "Draft",
+      "start_line": 53,
+      "end_line": 59
+    },
+    {
+      "id": "ReviewGovernance",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "Draft",
+      "start_line": 62,
+      "end_line": 62
+    },
+    {
+      "id": "ReviewTransitionHead",
+      "kind": "heading2",
+      "audience": "body",
+      "source_id": "Draft",
+      "start_line": 65,
+      "end_line": 65
+    },
+    {
+      "id": "ReviewTransition",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "Draft",
+      "start_line": 68,
+      "end_line": 68
+    },
+    {
+      "id": "ReviewIP",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "Draft",
+      "start_line": 71,
+      "end_line": 71
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "contract_version": "1",
+  "template_origin": "original_internal_fixture",
+  "official_template": "not_asserted",
+  "external_adapters": "not_verified_separately_requires_licensed_template_and_explicit_column_mapping",
+  "profiles": [
+    {
+      "profile_id": "dyz-comment-three-column-v1",
+      "version": "1",
+      "template_origin": "original_internal_fixture",
+      "official_template": "not_asserted",
+      "header_row": 1,
+      "columns": [
+        {"column": 1, "key": "location_and_original_comment", "header": "位置／原意见", "width_weight": 40},
+        {"column": 2, "key": "suggestion", "header": "建议", "width_weight": 35},
+        {"column": 3, "key": "rationale", "header": "理由", "width_weight": 25}
+      ],
+      "locator_basis": "one_based_table_row_and_logical_grid_column",
+      "merge_policy": "gridSpan_and_vMerge_normalize_to_top_left_owner",
+      "editable_rows": "data_rows_after_header",
+      "editable_cell_shape": "one_paragraph_adjacent_identical_style_text_only_runs",
+      "unsupported_objects": ["nested_table", "hMerge", "gridBefore", "gridAfter", "mixed_style", "fields", "revisions", "textbox", "tab", "break", "formula", "nonempty_vertical_continuation", "multiple_cell_paragraphs"],
+      "professional_review": "not_performed"
+    },
+    {
+      "profile_id": "dyz-comment-six-column-v1",
+      "version": "1",
+      "template_origin": "original_internal_fixture",
+      "official_template": "not_asserted",
+      "header_row": 1,
+      "columns": [
+        {"column": 1, "key": "sequence", "header": "序号", "width_weight": 6},
+        {"column": 2, "key": "clause", "header": "条款", "width_weight": 10},
+        {"column": 3, "key": "original_comment", "header": "原意见", "width_weight": 24},
+        {"column": 4, "key": "decision", "header": "决定", "width_weight": 20},
+        {"column": 5, "key": "rationale", "header": "理由", "width_weight": 24},
+        {"column": 6, "key": "implementation_status", "header": "落实／状态", "width_weight": 16}
+      ],
+      "locator_basis": "one_based_table_row_and_logical_grid_column",
+      "merge_policy": "gridSpan_and_vMerge_normalize_to_top_left_owner",
+      "editable_rows": "data_rows_after_header",
+      "editable_cell_shape": "one_paragraph_adjacent_identical_style_text_only_runs",
+      "unsupported_objects": ["nested_table", "hMerge", "gridBefore", "gridAfter", "mixed_style", "fields", "revisions", "textbox", "tab", "break", "formula", "nonempty_vertical_continuation", "multiple_cell_paragraphs"],
+      "professional_review": "not_performed"
+    }
+  ]
+}

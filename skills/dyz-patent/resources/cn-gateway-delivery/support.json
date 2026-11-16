@@ -1,0 +1,206 @@
+{
+  "date": "2026-11-03",
+  "kind": "author_original_support_and_actual_draft_position_map",
+  "original_case": {
+    "path": "skills/dyz-patent/resources/cn-gateway-example.md",
+    "sha256": "779af8d05685f6bf566201f272c7956fec9225fcb5aa7321ef71a7c91ba597a7",
+    "source_fact_lines": [
+      17,
+      31
+    ],
+    "original_complete_draft_lines": [
+      89,
+      179
+    ]
+  },
+  "source_research": {
+    "path": "references/jurisdictions/patent-official-evidence-20261103.md",
+    "sha256": "b15a2076a023424118c387b8959459fd198c8433848941318861c957efd32b8b",
+    "not_original_case_support": true
+  },
+  "method_scope": "Author reviewed natural-language correspondence, not independent/professional/automated entailment acceptance.",
+  "versions": {
+    "1.0": {
+      "draft": "skills/dyz-patent/resources/cn-gateway-delivery/draft-v1.0.md",
+      "draft_sha256": "81af58bf390e07d15f820311f48be12da4d348b6cf71057e9d5d3abd1fd4784f",
+      "claims": [
+        {
+          "id": "PatClaim01",
+          "parent": null,
+          "original_lines": [
+            97
+          ],
+          "facts": [
+            "S-06/07",
+            "S-09/10",
+            "S-13/14/15"
+          ]
+        },
+        {
+          "id": "PatClaim02",
+          "parent": 1,
+          "original_lines": [
+            99
+          ],
+          "facts": [
+            "S-06/07/08"
+          ]
+        },
+        {
+          "id": "PatClaim03",
+          "parent": 1,
+          "original_lines": [
+            101
+          ],
+          "facts": [
+            "S-11/12"
+          ]
+        },
+        {
+          "id": "PatClaim04",
+          "parent": 1,
+          "original_lines": [
+            103
+          ],
+          "facts": [
+            "S-10",
+            "S-16"
+          ]
+        },
+        {
+          "id": "PatClaim05",
+          "parent": 1,
+          "original_lines": [
+            105
+          ],
+          "facts": [
+            "S-14/15",
+            "S-18/20"
+          ]
+        },
+        {
+          "id": "PatClaim06",
+          "parent": 1,
+          "original_lines": [
+            107
+          ],
+          "facts": [
+            "S-17"
+          ]
+        },
+        {
+          "id": "PatClaim07",
+          "parent": 1,
+          "original_lines": [
+            109
+          ],
+          "facts": [
+            "S-04/05"
+          ]
+        }
+      ]
+    },
+    "1.1": {
+      "draft": "skills/dyz-patent/resources/cn-gateway-delivery/draft-v1.1.md",
+      "draft_sha256": "1cb4ac9cb23c2d526063d3c3ef725f0db4a70dce8ce26f4686f82af697b8867a",
+      "claims": [
+        {
+          "id": "PatClaim01",
+          "parent": null,
+          "original_lines": [
+            97,
+            101
+          ],
+          "facts": [
+            "S-06/07",
+            "S-09/10",
+            "S-13/14/15",
+            "S-11/12"
+          ]
+        },
+        {
+          "id": "PatClaim02",
+          "parent": 1,
+          "original_lines": [
+            99
+          ],
+          "facts": [
+            "S-06/07/08"
+          ]
+        },
+        {
+          "id": "PatClaim03",
+          "parent": 1,
+          "original_lines": [
+            101
+          ],
+          "facts": [
+            "S-11/12"
+          ]
+        },
+        {
+          "id": "PatClaim04",
+          "parent": 1,
+          "original_lines": [
+            103
+          ],
+          "facts": [
+            "S-10",
+            "S-16"
+          ]
+        },
+        {
+          "id": "PatClaim05",
+          "parent": 1,
+          "original_lines": [
+            105
+          ],
+          "facts": [
+            "S-14/15",
+            "S-18/20"
+          ]
+        },
+        {
+          "id": "PatClaim06",
+          "parent": 1,
+          "original_lines": [
+            107
+          ],
+          "facts": [
+            "S-17"
+          ]
+        },
+        {
+          "id": "PatClaim07",
+          "parent": 1,
+          "original_lines": [
+            109
+          ],
+          "facts": [
+            "S-04/05"
+          ]
+        }
+      ]
+    }
+  },
+  "retained_unknowns": [
+    {
+      "id": "QHighWater",
+      "fact": "q recovery basis after confirmed segments erased; metadata layout unspecified",
+      "no_new_action": "Do not invent metadata or scan only remaining records"
+    },
+    {
+      "id": "ReceiverRetention",
+      "fact": "C commit results and record-key cleanup unspecified",
+      "no_new_action": "Do not assert infinite retention"
+    },
+    {
+      "id": "SlotGenerationEnd",
+      "fact": "z must not wrap/reuse; exhaustion action unspecified",
+      "no_new_action": "Do not transfer q overflow pause to z"
+    }
+  ],
+  "professional": "not_performed",
+  "independent_acceptance": "not_executed",
+  "historical_d23": "not_passed"
+}

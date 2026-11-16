@@ -1,0 +1,49 @@
+{
+  "normative_docx_sha256": "bebe6d6f18d84bc3d16caa509f14b9f719a18b387c9de11c8bd8ec06785f0a7b",
+  "normative_input_sha256": "aa4702033e6699afa64d1414e500a264d2307986363015676c42eae3080ed705",
+  "source_sha256": "145d38e9aac50a606d9631331b1e6eb9c25f468bfea0be915d0245469d241386",
+  "stable_clause_bookmarks": [
+    "RIV_01",
+    "RIV_02",
+    "RIV_03",
+    "RIV_04",
+    "RIV_05",
+    "RIV_06",
+    "RIV_07",
+    "RIV_08"
+  ],
+  "comments": [
+    {
+      "id": "N_01",
+      "clauses": [
+        "RIV_02",
+        "RIV_03",
+        "RIV_05"
+      ],
+      "source_line": 215,
+      "status": "proposal_not_formal_decision"
+    },
+    {
+      "id": "N_02",
+      "clauses": [
+        "RIV_05",
+        "RIV_06"
+      ],
+      "source_line": 216,
+      "status": "proposal_not_formal_decision"
+    },
+    {
+      "id": "N_03",
+      "clauses": [
+        "RIV_07"
+      ],
+      "source_line": 217,
+      "status": "proposal_not_formal_decision"
+    }
+  ],
+  "version": "N_1.0_r1",
+  "generator_version": "1.2",
+  "binding_revision": "docx1.2_bookmark_span",
+  "previous_normative_docx_sha256": "e35479bdeb3b659d6089acddb7cc11d2f2f7c829e457c7f3ffcda0cc1d5a40a7",
+  "normative_manifest_input_sha256": "5626a1634cca0790ddf3e220a09f40a1b459252b2324e661ab76ec1134aab314"
+}

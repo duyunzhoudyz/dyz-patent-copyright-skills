@@ -1,0 +1,63 @@
+{
+  "sensitivity": "synthetic",
+  "document_id": "River_explanation",
+  "version": "N_1.0_r1",
+  "business": "standard",
+  "sources": [
+    {
+      "id": "River",
+      "path": "skills/dyz-standards/resources/river-example.md",
+      "sha256": "145d38e9aac50a606d9631331b1e6eb9c25f468bfea0be915d0245469d241386"
+    }
+  ],
+  "blocks": [
+    {
+      "id": "explanation_199",
+      "source_id": "River",
+      "start_line": 199,
+      "end_line": 199,
+      "kind": "heading2",
+      "audience": "body"
+    },
+    {
+      "id": "explanation_201",
+      "source_id": "River",
+      "start_line": 201,
+      "end_line": 201,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "explanation_203",
+      "source_id": "River",
+      "start_line": 203,
+      "end_line": 203,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "explanation_205",
+      "source_id": "River",
+      "start_line": 205,
+      "end_line": 205,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "explanation_207",
+      "source_id": "River",
+      "start_line": 207,
+      "end_line": 207,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "explanation_209",
+      "source_id": "River",
+      "start_line": 209,
+      "end_line": 209,
+      "kind": "paragraph",
+      "audience": "body"
+    }
+  ]
+}

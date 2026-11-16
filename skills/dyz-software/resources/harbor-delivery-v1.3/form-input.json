@@ -1,0 +1,178 @@
+{
+  "sensitivity": "synthetic",
+  "document_id": "Harbor_R11_fields",
+  "version": "1.3_fields_20261103.r1",
+  "business": "software",
+  "sources": [
+    {
+      "id": "S",
+      "path": "skills/dyz-software/resources/harbor-delivery-v1.3/form-candidate.md",
+      "sha256": "3212523f09ba1a0861837dd9e3f77f9e6301339bca54a5c67379421a59ac65bf"
+    },
+    {
+      "id": "Code_api",
+      "path": "skills/dyz-software/resources/harbor-demo/v1.3/api.py",
+      "sha256": "d7a5c8493a1c9b150a9f17ef372b3ad0fbcc6419517f8c9b7a3c065135042ef7"
+    },
+    {
+      "id": "Code_cli",
+      "path": "skills/dyz-software/resources/harbor-demo/v1.3/cli.py",
+      "sha256": "de887993b20563ae0ce2d0a32f9ca837e928320fd50dad9b5347d013cd0c0edd"
+    },
+    {
+      "id": "Code_core",
+      "path": "skills/dyz-software/resources/harbor-demo/v1.3/core.py",
+      "sha256": "e6acd5ed00bd9ff64069fef84fb6489f4986c03ba441a2367fd383ad68e419a9"
+    },
+    {
+      "id": "Code_gui",
+      "path": "skills/dyz-software/resources/harbor-demo/v1.3/gui.py",
+      "sha256": "ce462a1e279b9cbdb4346b9533ffc092b3f713a1443e715e0755d0a2d6bffaea"
+    },
+    {
+      "id": "Code_index",
+      "path": "skills/dyz-software/resources/harbor-demo/v1.3/index.html",
+      "sha256": "00fb5fa5a9d6e9a0137dbff985f6b109e0cbf8d3c18422d75de9bf49a48a86c7"
+    }
+  ],
+  "blocks": [
+    {
+      "id": "R11F_001",
+      "source_id": "S",
+      "start_line": 1,
+      "end_line": 1,
+      "kind": "heading1",
+      "audience": "body"
+    },
+    {
+      "id": "R11F_003",
+      "source_id": "S",
+      "start_line": 3,
+      "end_line": 3,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "R11F_005",
+      "source_id": "S",
+      "start_line": 5,
+      "end_line": 5,
+      "kind": "heading2",
+      "audience": "body"
+    },
+    {
+      "id": "R11F_007",
+      "source_id": "S",
+      "start_line": 7,
+      "end_line": 28,
+      "kind": "table",
+      "audience": "body"
+    },
+    {
+      "id": "R11F_028",
+      "source_id": "S",
+      "start_line": 30,
+      "end_line": 30,
+      "kind": "heading2",
+      "audience": "body"
+    },
+    {
+      "id": "R11F_030",
+      "source_id": "S",
+      "start_line": 32,
+      "end_line": 38,
+      "kind": "table",
+      "audience": "body"
+    },
+    {
+      "id": "R11F_038",
+      "source_id": "S",
+      "start_line": 40,
+      "end_line": 40,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "R11F_040",
+      "source_id": "S",
+      "start_line": 42,
+      "end_line": 42,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "R11F_042",
+      "source_id": "S",
+      "start_line": 44,
+      "end_line": 44,
+      "kind": "heading2",
+      "audience": "internal"
+    },
+    {
+      "id": "R11F_044",
+      "source_id": "S",
+      "start_line": 46,
+      "end_line": 46,
+      "kind": "paragraph",
+      "audience": "internal"
+    },
+    {
+      "id": "R11F_046",
+      "source_id": "S",
+      "start_line": 48,
+      "end_line": 48,
+      "kind": "paragraph",
+      "audience": "internal"
+    },
+    {
+      "id": "R11F_048",
+      "source_id": "S",
+      "start_line": 50,
+      "end_line": 50,
+      "kind": "paragraph",
+      "audience": "internal"
+    },
+    {
+      "id": "R11F_050",
+      "source_id": "S",
+      "start_line": 52,
+      "end_line": 52,
+      "kind": "paragraph",
+      "audience": "internal"
+    }
+  ],
+  "dependencies": [
+    {
+      "path": "skills/dyz-software/resources/harbor-delivery-v1.3/facts.json",
+      "sha256": "7d794c758fa83a5b2e56346890bbdc74de9b0e98d1eb91c8b06eafd589366ba0"
+    },
+    {
+      "path": "skills/dyz-software/resources/harbor-delivery-v1.3/source-lines.json",
+      "sha256": "ee3463b7ecf52ebcc8aa214402e047645eac4ccf097ae7b40ce5c61c42eb15cf"
+    },
+    {
+      "path": "skills/dyz-software/resources/harbor-delivery-v1.3/scope-and-rights.md",
+      "sha256": "246ac49a6cc20d907766bc9e0429d352c9c666ca3100fbbb916a7d2dffc4ff23"
+    },
+    {
+      "path": "skills/dyz-software/resources/harbor-delivery-v1.3/gui-default.png",
+      "sha256": "d2a4ee8124a5ad2a012ffae087f0123e616e564ee7123b9901c7900ea477ee3f"
+    },
+    {
+      "path": "skills/dyz-software/resources/harbor-delivery-v1.3/gui-sorted.png",
+      "sha256": "28277fb51e6cc8de86decae51b29c5e045ecb43cc3b1bd1a02361723562eb990"
+    },
+    {
+      "path": "skills/dyz-software/resources/harbor-delivery-v1.3/gui-duplicate-id.png",
+      "sha256": "fb4426408ccea7382a2494be8543f5b9297edf797a3c6c1fba8b21eb292b1ae3"
+    },
+    {
+      "path": "skills/dyz-software/resources/harbor-delivery-v1.3/manual.md",
+      "sha256": "1a0c1bf88e4f2f054aaa953c33c4006a6e9cbf5e0a11c2fc81631cd7c6ea874f"
+    },
+    {
+      "path": "references/jurisdictions/cn-software-guide-20261103.md",
+      "sha256": "7dd95a49dbd872f4a83c837cbfbfbdd05d8c66271af3b4fe7e525accc845813d"
+    }
+  ]
+}

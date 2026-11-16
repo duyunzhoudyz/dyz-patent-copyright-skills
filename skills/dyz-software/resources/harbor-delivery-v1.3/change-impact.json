@@ -1,0 +1,35 @@
+{
+  "sensitivity": "synthetic",
+  "software_name": "港湾记录整理器",
+  "from_version": "1.2",
+  "to_version": "1.3",
+  "actual_feature_delta": "Optional Unicode lexicographic id sorting in core, CLI, HTTP and GUI; default preserves input order. All records validated before output.",
+  "previous_facts": {
+    "path": "skills/dyz-software/resources/harbor-delivery-v1.2/facts.json",
+    "sha256": "437854d2a0a2e35a2963d1e93dab73e3470c4b44e3c7e3928f77d2699f85e1f9"
+  },
+  "current_facts": {
+    "path": "skills/dyz-software/resources/harbor-delivery-v1.3/facts.json",
+    "sha256": "7d794c758fa83a5b2e56346890bbdc74de9b0e98d1eb91c8b06eafd589366ba0"
+  },
+  "previous_sources_unchanged": true,
+  "affected_current_inputs": [
+    {
+      "path": "skills/dyz-software/resources/harbor-delivery-v1.3/source-input.json",
+      "sha256": "1cf72163c3855e82264e2e653f7bf5644921eb28c6b6abe646950773c5eee5ae"
+    },
+    {
+      "path": "skills/dyz-software/resources/harbor-delivery-v1.3/manual-input.json",
+      "sha256": "601c70861e0b952901a8c56e06bf7274e605605a2628e59edcd49af1375361c0"
+    },
+    {
+      "path": "skills/dyz-software/resources/harbor-delivery-v1.3/form-input.json",
+      "sha256": "a9f05cffeba1c73de1fc2fe049832144a74ca4fe4c94f2efacb1530cf2311c7e"
+    }
+  ],
+  "dependency_invalidation_scope": "Old 1.2 materials remain historical for 1.2. They cannot serve as 1.3 evidence. Replacing bytes at a bound source path must reject old input before output; new version paths alone do not globally invalidate old records.",
+  "review_reuse": "separate current-version text, visual and professional review required; historical record bytes not altered",
+  "professional_review": "not_performed",
+  "registration_or_filing_choice": "not_decided",
+  "manual_identity_limit": "Four new/merged paragraphs use distinct new bookmark names; only 17 supported old logical body IDs retained. Same position is not identity. Software remains 1.3; material input revision r2."
+}

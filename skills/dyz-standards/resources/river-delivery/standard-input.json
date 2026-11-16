@@ -1,0 +1,335 @@
+{
+  "sensitivity": "synthetic",
+  "document_id": "River_standard",
+  "version": "N_1.0_r1",
+  "business": "standard",
+  "sources": [
+    {
+      "id": "River",
+      "path": "skills/dyz-standards/resources/river-example.md",
+      "sha256": "145d38e9aac50a606d9631331b1e6eb9c25f468bfea0be915d0245469d241386"
+    }
+  ],
+  "blocks": [
+    {
+      "id": "standard_53",
+      "source_id": "River",
+      "start_line": 53,
+      "end_line": 53,
+      "kind": "heading1",
+      "audience": "body"
+    },
+    {
+      "id": "standard_55",
+      "source_id": "River",
+      "start_line": 55,
+      "end_line": 55,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "standard_57",
+      "source_id": "River",
+      "start_line": 57,
+      "end_line": 57,
+      "kind": "heading2",
+      "audience": "body"
+    },
+    {
+      "id": "standard_59",
+      "source_id": "River",
+      "start_line": 59,
+      "end_line": 59,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "standard_61",
+      "source_id": "River",
+      "start_line": 61,
+      "end_line": 61,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "standard_63",
+      "source_id": "River",
+      "start_line": 63,
+      "end_line": 63,
+      "kind": "heading2",
+      "audience": "body"
+    },
+    {
+      "id": "standard_65",
+      "source_id": "River",
+      "start_line": 65,
+      "end_line": 65,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "standard_67",
+      "source_id": "River",
+      "start_line": 67,
+      "end_line": 67,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "standard_69",
+      "source_id": "River",
+      "start_line": 69,
+      "end_line": 69,
+      "kind": "heading2",
+      "audience": "body"
+    },
+    {
+      "id": "standard_71",
+      "source_id": "River",
+      "start_line": 71,
+      "end_line": 71,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "standard_73",
+      "source_id": "River",
+      "start_line": 73,
+      "end_line": 73,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "standard_75",
+      "source_id": "River",
+      "start_line": 75,
+      "end_line": 75,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "standard_77",
+      "source_id": "River",
+      "start_line": 77,
+      "end_line": 77,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "RIV_01",
+      "source_id": "River",
+      "start_line": 79,
+      "end_line": 79,
+      "kind": "heading2",
+      "audience": "body"
+    },
+    {
+      "id": "standard_81",
+      "source_id": "River",
+      "start_line": 81,
+      "end_line": 81,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "RIV_02",
+      "source_id": "River",
+      "start_line": 83,
+      "end_line": 83,
+      "kind": "heading2",
+      "audience": "body"
+    },
+    {
+      "id": "standard_85",
+      "source_id": "River",
+      "start_line": 85,
+      "end_line": 85,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "standard_87",
+      "source_id": "River",
+      "start_line": 87,
+      "end_line": 87,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "RIV_03",
+      "source_id": "River",
+      "start_line": 89,
+      "end_line": 89,
+      "kind": "heading2",
+      "audience": "body"
+    },
+    {
+      "id": "standard_91",
+      "source_id": "River",
+      "start_line": 91,
+      "end_line": 91,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "RIV_04",
+      "source_id": "River",
+      "start_line": 93,
+      "end_line": 93,
+      "kind": "heading2",
+      "audience": "body"
+    },
+    {
+      "id": "standard_95",
+      "source_id": "River",
+      "start_line": 95,
+      "end_line": 95,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "RIV_05",
+      "source_id": "River",
+      "start_line": 97,
+      "end_line": 97,
+      "kind": "heading2",
+      "audience": "body"
+    },
+    {
+      "id": "standard_99",
+      "source_id": "River",
+      "start_line": 99,
+      "end_line": 99,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "RIV_06",
+      "source_id": "River",
+      "start_line": 101,
+      "end_line": 101,
+      "kind": "heading2",
+      "audience": "body"
+    },
+    {
+      "id": "standard_103",
+      "source_id": "River",
+      "start_line": 103,
+      "end_line": 103,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "standard_105",
+      "source_id": "River",
+      "start_line": 105,
+      "end_line": 105,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "standard_107",
+      "source_id": "River",
+      "start_line": 107,
+      "end_line": 107,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "RIV_07",
+      "source_id": "River",
+      "start_line": 109,
+      "end_line": 109,
+      "kind": "heading2",
+      "audience": "body"
+    },
+    {
+      "id": "standard_111",
+      "source_id": "River",
+      "start_line": 111,
+      "end_line": 111,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "standard_113",
+      "source_id": "River",
+      "start_line": 113,
+      "end_line": 113,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "RIV_08",
+      "source_id": "River",
+      "start_line": 115,
+      "end_line": 115,
+      "kind": "heading2",
+      "audience": "body"
+    },
+    {
+      "id": "standard_117",
+      "source_id": "River",
+      "start_line": 117,
+      "end_line": 117,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "standard_119",
+      "source_id": "River",
+      "start_line": 119,
+      "end_line": 119,
+      "kind": "heading2",
+      "audience": "body"
+    },
+    {
+      "id": "standard_121",
+      "source_id": "River",
+      "start_line": 121,
+      "end_line": 132,
+      "kind": "table",
+      "audience": "body"
+    },
+    {
+      "id": "standard_134",
+      "source_id": "River",
+      "start_line": 134,
+      "end_line": 134,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "standard_136",
+      "source_id": "River",
+      "start_line": 136,
+      "end_line": 136,
+      "kind": "heading2",
+      "audience": "body"
+    },
+    {
+      "id": "standard_138",
+      "source_id": "River",
+      "start_line": 138,
+      "end_line": 138,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "standard_141",
+      "source_id": "River",
+      "start_line": 141,
+      "end_line": 141,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "standard_144",
+      "source_id": "River",
+      "start_line": 144,
+      "end_line": 144,
+      "kind": "paragraph",
+      "audience": "body"
+    }
+  ]
+}

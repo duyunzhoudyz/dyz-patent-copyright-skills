@@ -1,0 +1,1275 @@
+{
+  "date": "2026-11-03",
+  "kind": "bounded_source_version_family_and_priority_followup_not_legal_opinion",
+  "developer_acquisition_record": "evals/workflows/maturity-i04-priority-family-acquisition-run.json",
+  "acquisition": {
+    "http200_once_each": 5,
+    "metadata_reads": 3,
+    "pdf_xml_pairs": 1,
+    "response_bytes_total": 850126,
+    "native_topic_queries": 0,
+    "new_exact_reference_web_searches": 2,
+    "known_google_publication_pages": 4,
+    "concurrency": 1,
+    "client_rate_bytes_per_second": 80000
+  },
+  "sources": [
+    {
+      "id": "EP3327589-B1-metadata",
+      "url": "https://data.epo.org/linked-data/data/publication/EP/3327589/B1/-.json",
+      "format": "json",
+      "attempts": 1,
+      "http_status": 200,
+      "response_bytes": 5720,
+      "sha256": "4617fac33eeb21d279a38e443d9f17c9d2ad74c7fe0cbd80f920e0bb18c158b7",
+      "requested_at_client_utc": "2026-11-03T00:00:08.769060+00:00",
+      "returned_at_client_utc": "2026-11-03T00:00:10.735246+00:00",
+      "server_http_date": "Tue, 03 Nov 2026 00:00:10 GMT"
+    },
+    {
+      "id": "EP17001923-application",
+      "url": "https://data.epo.org/linked-data/doc/application/EP/17001923.json",
+      "format": "json",
+      "attempts": 1,
+      "http_status": 200,
+      "response_bytes": 3859,
+      "sha256": "23034a60ba0a5948a08fc2bcc6cc5a867dc9dc9a475ef2e9e514b5bee6844bc3",
+      "requested_at_client_utc": "2026-11-03T00:00:10.735246+00:00",
+      "returned_at_client_utc": "2026-11-03T00:00:12.360433+00:00",
+      "server_http_date": "Tue, 03 Nov 2026 00:00:12 GMT"
+    },
+    {
+      "id": "EP3327589B1",
+      "url": "https://data.epo.org/publication-server/rest/v1.2/patents/EP3327589NWB1/document.pdf",
+      "format": "pdf",
+      "attempts": 1,
+      "http_status": 200,
+      "response_bytes": 697609,
+      "sha256": "9a05e9c572e8c4004a26db08ebd9420bf184ee004bfe5d41c3e9bf8ced75076f",
+      "requested_at_client_utc": "2026-11-03T00:00:12.360947+00:00",
+      "returned_at_client_utc": "2026-11-03T00:00:26.011571+00:00",
+      "server_http_date": "Tue, 03 Nov 2026 00:00:16 GMT"
+    },
+    {
+      "id": "EP3327589B1",
+      "url": "https://data.epo.org/publication-server/rest/v1.2/patents/EP3327589NWB1/document.xml",
+      "format": "xml",
+      "attempts": 1,
+      "http_status": 200,
+      "response_bytes": 140836,
+      "sha256": "ff5c9d0bc4201327ea104a7254eace5f702e0d78540a8dc514f6a97f4724c547",
+      "requested_at_client_utc": "2026-11-03T00:00:26.012570+00:00",
+      "returned_at_client_utc": "2026-11-03T00:00:39.974259+00:00",
+      "server_http_date": "Tue, 03 Nov 2026 00:00:37 GMT"
+    },
+    {
+      "id": "family-60452341",
+      "url": "https://data.epo.org/linked-data/data/simple-family/60452341.json",
+      "format": "json",
+      "attempts": 1,
+      "http_status": 200,
+      "response_bytes": 2102,
+      "sha256": "8fa79570b9e1e569502aa43d82c67c797326c6fe197e7aba149d3718ecb5b1d8",
+      "requested_at_client_utc": "2026-11-03T00:00:39.974259+00:00",
+      "returned_at_client_utc": "2026-11-03T00:00:41.687141+00:00",
+      "server_http_date": "Tue, 03 Nov 2026 00:00:41 GMT"
+    }
+  ],
+  "metadata_observations": [
+    {
+      "id": "EP3327589-B1-metadata",
+      "source": "https://data.epo.org/linked-data/data/publication/EP/3327589/B1/-.json",
+      "response_sha256": "4617fac33eeb21d279a38e443d9f17c9d2ad74c7fe0cbd80f920e0bb18c158b7",
+      "retrieved_at_client_utc": "2026-11-03T00:00:10.735246+00:00",
+      "selected_original_fields": {
+        "_about": "http://data.epo.org/linked-data/data/publication/EP/3327589/B1/-",
+        "application": {
+          "_about": "http://data.epo.org/linked-data/id/application/EP/17001923",
+          "applicationAuthority": "http://data.epo.org/linked-data/id/st3/EP",
+          "applicationKind": {
+            "_about": "http://data.epo.org/linked-data/def/patent/applicationKind_A",
+            "label": "patent application"
+          },
+          "applicationNumber": "17001923",
+          "filingDate": "Thu, 23 Nov 2017"
+        },
+        "priority": "http://data.epo.org/linked-data/id/application/US/201615361760",
+        "publicationDate": "Wed, 01 Jan 2020",
+        "publicationKind": "http://data.epo.org/linked-data/def/patent/publicationKind_B1",
+        "publicationNumber": "3327589"
+      },
+      "license": "CC-BY-4.0",
+      "attribution": "European Patent Office, Linked open EP data",
+      "selection_notice": "Fields selected unchanged; no agent/inventor/person fields. Dataset response time does not prove legal-status freshness."
+    },
+    {
+      "id": "EP17001923-application",
+      "source": "https://data.epo.org/linked-data/doc/application/EP/17001923.json",
+      "response_sha256": "23034a60ba0a5948a08fc2bcc6cc5a867dc9dc9a475ef2e9e514b5bee6844bc3",
+      "retrieved_at_client_utc": "2026-11-03T00:00:12.360433+00:00",
+      "selected_original_fields": {
+        "_about": "http://data.epo.org/linked-data/id/application/EP/17001923",
+        "applicationNumber": "17001923",
+        "filingDate": "Thu, 23 Nov 2017",
+        "family": {
+          "_about": "http://data.epo.org/linked-data/data/simple-family/60452341",
+          "representativeFamilyMember": "http://data.epo.org/linked-data/id/application/EP/17001923"
+        },
+        "publication": [
+          {
+            "_about": "http://data.epo.org/linked-data/data/publication/EP/3327589/A1/-",
+            "label": "EP 3327589 A1",
+            "publicationAuthority": {
+              "_about": "http://data.epo.org/linked-data/id/st3/EP",
+              "label": "European Patent Office (EPO)"
+            },
+            "publicationDate": "Wed, 30 May 2018",
+            "publicationKind": {
+              "_about": "http://data.epo.org/linked-data/def/patent/publicationKind_A1",
+              "label": "A1"
+            }
+          },
+          {
+            "_about": "http://data.epo.org/linked-data/data/publication/EP/3327589/B1/-",
+            "label": "EP 3327589 B1",
+            "publicationAuthority": {
+              "_about": "http://data.epo.org/linked-data/id/st3/EP",
+              "label": "European Patent Office (EPO)"
+            },
+            "publicationDate": "Wed, 01 Jan 2020",
+            "publicationKind": {
+              "_about": "http://data.epo.org/linked-data/def/patent/publicationKind_B1",
+              "label": "B1"
+            }
+          }
+        ]
+      },
+      "license": "CC-BY-4.0",
+      "attribution": "European Patent Office, Linked open EP data",
+      "selection_notice": "Fields selected unchanged; no agent/inventor/person fields. Dataset response time does not prove legal-status freshness."
+    },
+    {
+      "id": "family-60452341",
+      "source": "https://data.epo.org/linked-data/data/simple-family/60452341.json",
+      "response_sha256": "8fa79570b9e1e569502aa43d82c67c797326c6fe197e7aba149d3718ecb5b1d8",
+      "retrieved_at_client_utc": "2026-11-03T00:00:41.687141+00:00",
+      "selected_original_fields": {
+        "_about": "http://data.epo.org/linked-data/data/simple-family/60452341",
+        "familyMember": [
+          {
+            "_about": "http://data.epo.org/linked-data/id/application/EP/17001923",
+            "applicationAuthority": {
+              "_about": "http://data.epo.org/linked-data/id/st3/EP",
+              "label": "European Patent Office (EPO)"
+            },
+            "applicationKind": "http://data.epo.org/linked-data/def/patent/applicationKind_A",
+            "applicationNumber": "17001923"
+          },
+          {
+            "_about": "http://data.epo.org/linked-data/id/application/US/201615361760",
+            "applicationAuthority": {
+              "_about": "http://data.epo.org/linked-data/id/st3/US",
+              "label": "United States of America"
+            },
+            "applicationKind": "http://data.epo.org/linked-data/def/patent/applicationKind_A",
+            "applicationNumber": "201615361760"
+          },
+          {
+            "_about": "http://data.epo.org/linked-data/id/application/US/201916576498",
+            "applicationAuthority": {
+              "_about": "http://data.epo.org/linked-data/id/st3/US",
+              "label": "United States of America"
+            },
+            "applicationKind": "http://data.epo.org/linked-data/def/patent/applicationKind_A",
+            "applicationNumber": "201916576498"
+          }
+        ],
+        "representativeFamilyMember": {
+          "_about": "http://data.epo.org/linked-data/id/application/EP/17001923",
+          "applicationAuthority": {
+            "_about": "http://data.epo.org/linked-data/id/st3/EP",
+            "label": "European Patent Office (EPO)"
+          },
+          "applicationKind": "http://data.epo.org/linked-data/def/patent/applicationKind_A",
+          "applicationNumber": "17001923"
+        }
+      },
+      "license": "CC-BY-4.0",
+      "attribution": "European Patent Office, Linked open EP data",
+      "selection_notice": "Fields selected unchanged; no agent/inventor/person fields. Dataset response time does not prove legal-status freshness."
+    }
+  ],
+  "official_publication": {
+    "publication": "EP3327589B1",
+    "publication_date": "2020-01-01",
+    "application": "EP17001923.6",
+    "filing_date": "2017-11-23",
+    "cover_priority_reference": "US201615361760",
+    "cover_priority_date": "2016-11-28",
+    "a1_publication_date": "2018-05-30",
+    "pdf_pages": 39,
+    "xml_numbered_description_paragraphs": 126,
+    "english_claims": 6,
+    "german_claims": 6,
+    "french_claims": 6,
+    "xml_drawing_objects": 15,
+    "xml_root_status_attribute_not_legal_status": "n",
+    "actual_reading": {
+      "pdf_machine_text_pages": 39,
+      "pdf_rendered_and_visually_inspected_pages": [
+        1,
+        20,
+        37,
+        38
+      ],
+      "pdf_not_individually_visual_pages": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        39
+      ],
+      "english_claims_read": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "english_claims_physical_pdf_page": 20,
+      "english_claims_printed_columns": [
+        37,
+        38
+      ],
+      "description_paragraphs_actually_read": [
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        14,
+        15,
+        17,
+        18,
+        54,
+        84,
+        85,
+        104,
+        105,
+        119,
+        120
+      ],
+      "full_B1_description_read": false,
+      "german_french_claims_substantive_read": false,
+      "logical_figures_visually_inspected": [
+        20,
+        21
+      ],
+      "visual_evidence": [
+        {
+          "workspace_hint": "outputs/maturity-i04-priority-family/pdf-visual/page-01.png",
+          "sha256": "b3a87917986482090b4bee190e541216627a868228458f0ff9121881d10d042a"
+        },
+        {
+          "workspace_hint": "outputs/maturity-i04-priority-family/pdf-visual/page-20.png",
+          "sha256": "b18b70c63bce715c6aa05c007541d3954fdcf8b3fa6e25d39ed7c7608f6fa794"
+        },
+        {
+          "workspace_hint": "outputs/maturity-i04-priority-family/pdf-visual/page-37.png",
+          "sha256": "733ca473d82e6f424038d28bfa08d6f6156d0686f1b5ca58c898cd8d02609c1c"
+        },
+        {
+          "workspace_hint": "outputs/maturity-i04-priority-family/pdf-visual/page-38.png",
+          "sha256": "b19e14d865584300fabf81a9e53b3dfa32b56dc07e76c6323bb7921c40c826d4"
+        }
+      ],
+      "truncated_diff_output": "Not counted as full reading; changed paragraphs were reopened in bounded groups. No full39-page visual claim."
+    }
+  },
+  "version_comparison": {
+    "a1_claim_count": 15,
+    "b1_english_claim_count": 6,
+    "a1_claims_reopened_this_slice": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "a1_full_reading_history": "skills/dyz-patent/resources/cn-epo-fulltext-record.json",
+    "b1_claim_hashes": [
+      {
+        "claim": 1,
+        "normalized_text_sha256": "97dbec6e005fc143eff1bc4d2519520cfd7e20b66203ae965b1616a1b1280bcb"
+      },
+      {
+        "claim": 2,
+        "normalized_text_sha256": "35aee39a00d7ca0706cefd2ff0ff665c564dc241a16601c4bc51b154e99d29ad"
+      },
+      {
+        "claim": 3,
+        "normalized_text_sha256": "e4ce1e88b736cf3328a51f97a9c798c702a394dcc9a571230b8c6d295cc4ec8e"
+      },
+      {
+        "claim": 4,
+        "normalized_text_sha256": "93ad94273f0719a50328e7bb0ad9fa7e2abff568a45908cfae6848c278322f23"
+      },
+      {
+        "claim": 5,
+        "normalized_text_sha256": "23e7cd851adebe9c50054bf14eba4835c60ffb2b3ab63078853d88db72e89aee"
+      },
+      {
+        "claim": 6,
+        "normalized_text_sha256": "e21cc049efd783f71854c2c4ebfa5078d09c4ff070780d5585f1b934a12ad946"
+      }
+    ],
+    "description_diff_rule": "Compare numbered paragraph text after whitespace collapse only; number and body location tracked separately.",
+    "description_diff_blocks": [
+      {
+        "op": "replace",
+        "a1_paragraphs": [
+          "0005",
+          "0006",
+          "0007"
+        ],
+        "b1_paragraphs": [
+          "0005",
+          "0006",
+          "0007",
+          "0008",
+          "0009",
+          "0010",
+          "0011",
+          "0012"
+        ],
+        "a1_normalized_text_sha256": [
+          "9ac5289821d0d8490f97906a33aaaaf3459b6be7de149370228a9a46b138cf30",
+          "c400f0ddd2839a7b37cbf97c208272efd8e4966bd4e7040c437585b25b84f55f",
+          "969acd6b52af7a39879f197a1fea0b051bb282a9cd70570e6fcb06f8e74b9843"
+        ],
+        "b1_normalized_text_sha256": [
+          "32bc3f65ccbe59238200de823947be846a52090cfa7c62a5571425e8e944979f",
+          "29fb07ef3063a097e43c98170f75956aac773d7d9104ae2af645481e2ef03dd8",
+          "d04b3cd7935ffc85fcc805432f9e7da91ec86cd26aea4ddd3c3b461421ea6fb0",
+          "4db509864e54838ee2e6c533886329b942d848e4b12efa4232fb297814c785ff",
+          "2e94b71cc1d98b5321c31a5ffda3efb1910515ba96c70d4fdca3e855e5355c3f",
+          "1bedad219bb3f20722f08e33be7643fae6f945dd18dfce6663a13c1c17b37f45",
+          "f6cb1fd8a0182add0c9ade54736ba07b258364c52b7ff174f823f35a4eac7825",
+          "9dd6436e5f40e5a326bfedb7b72d10a14d4c16aad5d6284452d0ffec4d4faff4"
+        ]
+      },
+      {
+        "op": "replace",
+        "a1_paragraphs": [
+          "0009",
+          "0010"
+        ],
+        "b1_paragraphs": [
+          "0014",
+          "0015"
+        ],
+        "a1_normalized_text_sha256": [
+          "c400f0ddd2839a7b37cbf97c208272efd8e4966bd4e7040c437585b25b84f55f",
+          "74612a1516e858dd3df7f8db1de31b60748f240670ed948dfd1f28454e523d43"
+        ],
+        "b1_normalized_text_sha256": [
+          "f6cb1fd8a0182add0c9ade54736ba07b258364c52b7ff174f823f35a4eac7825",
+          "3d62bb5802c330ad2d2a40c2b47a29cf96a6f1974b8125e6361e10d888cb8a6c"
+        ]
+      },
+      {
+        "op": "replace",
+        "a1_paragraphs": [
+          "0012",
+          "0013"
+        ],
+        "b1_paragraphs": [
+          "0017",
+          "0018"
+        ],
+        "a1_normalized_text_sha256": [
+          "c400f0ddd2839a7b37cbf97c208272efd8e4966bd4e7040c437585b25b84f55f",
+          "16557079a55671e1ec1606b9085f337b80d51f4beac659857909c9c53cec67b4"
+        ],
+        "b1_normalized_text_sha256": [
+          "f6cb1fd8a0182add0c9ade54736ba07b258364c52b7ff174f823f35a4eac7825",
+          "cf63f2d6f85594308075035a7af09650c829448314acc7acd21b1fcb125d5a94"
+        ]
+      },
+      {
+        "op": "replace",
+        "a1_paragraphs": [
+          "0049"
+        ],
+        "b1_paragraphs": [
+          "0054"
+        ],
+        "a1_normalized_text_sha256": [
+          "a27c43c0554af5aecd4428dcee9c51d0bed7b97deffc1f4f0b1afd9901ccf39f"
+        ],
+        "b1_normalized_text_sha256": [
+          "9b1947dc5f913933b4dbb542405e359bf6589bc2e7f26f9a070e785ac34403ba"
+        ]
+      },
+      {
+        "op": "replace",
+        "a1_paragraphs": [
+          "0080"
+        ],
+        "b1_paragraphs": [
+          "0085"
+        ],
+        "a1_normalized_text_sha256": [
+          "c6fab52bd6f6afee115f0aa59541030087cad2c484eb2fa33b70221eed6cbbff"
+        ],
+        "b1_normalized_text_sha256": [
+          "b4497913a7937b3efae96bc5566eb95a9cc48522f054330f4a913ff5b84e198f"
+        ]
+      },
+      {
+        "op": "replace",
+        "a1_paragraphs": [
+          "0099",
+          "0100"
+        ],
+        "b1_paragraphs": [
+          "0104",
+          "0105"
+        ],
+        "a1_normalized_text_sha256": [
+          "d77f848453bcd171feddc8c641c5742aa81a04e0cb4f08ec847497b854643b45",
+          "acafa503f86c22631592913c37be8a37a671f3c6e94168898a7249ad87dffb9e"
+        ],
+        "b1_normalized_text_sha256": [
+          "0827326c081588f75acb6bc9a39d51d73dd383dfdaeb38b4e01eee8bd2e07b13",
+          "2d1f4823a1f83027e543acd91a4bc8e7f986fe2b5c020e581434b657eaf2cc19"
+        ]
+      },
+      {
+        "op": "replace",
+        "a1_paragraphs": [
+          "0115"
+        ],
+        "b1_paragraphs": [
+          "0120"
+        ],
+        "a1_normalized_text_sha256": [
+          "e3122db15c6f20be257b3578aeb426c522f56b6b4f6df46a7dd2dbd0f8f2e0f9"
+        ],
+        "b1_normalized_text_sha256": [
+          "48cd5fe84138d077e828c834ffc38d52ca105f640e83859ec6a1818fda27739d"
+        ]
+      }
+    ],
+    "a1_to_b1_locator_shift_examples": [
+      {
+        "a1": "[0079]",
+        "b1": "[0084]",
+        "topic": "timestamp assignment ordering"
+      },
+      {
+        "a1": "[0114]",
+        "b1": "[0119]",
+        "topic": "transaction-label issue"
+      },
+      {
+        "a1": "[0115]",
+        "b1": "[0120]",
+        "topic": "example-value/figure-reference issue"
+      }
+    ],
+    "b1_claim1_explicit_features": [
+      "second database receiving and group-wise parallel replay",
+      "group dispatch complete before end-of-group creation and fan-out",
+      "all queues reach group end before system timestamp update",
+      "minimum of pending precommit timestamp and greatest replayed-commit timestamp",
+      "query snapshot tied to current system timestamp and visible commit timestamp <= snapshot"
+    ],
+    "not_a_legal_conclusion": "Technical text differences only; no claim-validity, amendment legality, current enforceability or FTO conclusion."
+  },
+  "family_scope": {
+    "official_dataset": "EPO Linked open EP data",
+    "definition_uri": "http://data.epo.org/linked-data/data/simple-family/60452341",
+    "returned_application_ids": [
+      "http://data.epo.org/linked-data/id/application/EP/17001923",
+      "http://data.epo.org/linked-data/id/application/US/201615361760",
+      "http://data.epo.org/linked-data/id/application/US/201916576498"
+    ],
+    "returned_count": 3,
+    "worldwide_exhaustive": false,
+    "not_inferred": [
+      "full extended family",
+      "all national phases",
+      "current per-country legal status",
+      "priority entitlement",
+      "continuation relationship from the bare family list"
+    ]
+  },
+  "third_party_leads": [
+    {
+      "source": "https://patents.google.com/patent/EP1197856A2/en",
+      "source_locations": [
+        "Applications Claiming Priority",
+        "Family",
+        "Legal Events"
+      ],
+      "application": "EP01119968A",
+      "shown_family_id": "26071405",
+      "priority_reference_strings": [
+        "EP00120362"
+      ],
+      "status_label": "Withdrawn",
+      "official_status_verified": false
+    },
+    {
+      "source": "https://patents.google.com/patent/US20020035590A1/en",
+      "source_locations": [
+        "Applications Claiming Priority",
+        "Family",
+        "Country Status"
+      ],
+      "application": "US09/951,237",
+      "shown_family_id": "8169860",
+      "priority_reference_strings": [
+        "EP00120362",
+        "EP00120362.9"
+      ],
+      "publication_date": "2002-03-21",
+      "country_link_lead": "TWI244617B",
+      "status_label": "Abandoned",
+      "official_status_verified": false,
+      "handling": "Same title and shared priority-reference lead, different displayed family identifiers; not declared one complete family or priority-as-filed text. No Taiwan page or new priority original read."
+    },
+    {
+      "source": "https://patents.google.com/patent/US20180150496A1/en",
+      "source_locations": [
+        "Info",
+        "publication link"
+      ],
+      "application": "US15/361,760",
+      "publication_date": "2018-05-31",
+      "other_version_lead": "US10452636B2",
+      "status_label": "Granted",
+      "official_priority_as_filed_content_verified": false,
+      "official_status_verified": false
+    }
+  ],
+  "official_access_scope": {
+    "fair_use_source": "https://www.epo.org/en/service-support/ordering/fair-use",
+    "Register_or_Bulletin_GUI_automation": false,
+    "OPS_registered_or_authenticated": false,
+    "meaning": "Official grant publication verified; no current per-country register state checked. Absent legal-state fields and XML status=n do not prove expiry or active rights."
+  },
+  "current_document_bindings": [
+    {
+      "role": "draft",
+      "version": "GW-1.2_RS1",
+      "input": "skills/dyz-patent/resources/cn-gateway-delivery/draft-v1.2-input.json",
+      "input_sha256": "ae537dba4ec0bcbb5d9fb0fc1fb5f844cc2d6dd96dfac655abcaa629997aae98",
+      "docx_sha256": "12486aad0ebf7046aa18a858bb38ec499bee53a604bd451a38fad3b4c4efe552",
+      "pdf_sha256": "931212ee09cd80dd560df3877345ea25509abb9585756201c252c815dff74037",
+      "workspace_output_hint": "outputs/maturity-i04-gateway-v12/GW12-draft",
+      "targets": [
+        {
+          "bookmark": "PatP0002c",
+          "text_sha256": "b2df67290e9eb985945abe39aaa8f0d81b1a3ab3fa9a5f6a07d468307db7c300",
+          "locator": "body/p[19]/bookmarkStart[1]",
+          "end_locator": "body/p[19]/bookmarkEnd[1]",
+          "characters": 146
+        }
+      ],
+      "scope": "Existing bytes and literal locations verified, not new source integration, visual review or professional signoff."
+    },
+    {
+      "role": "review",
+      "version": "GW-1.2_RS1",
+      "input": "skills/dyz-patent/resources/cn-gateway-delivery/review-v1.2-input.json",
+      "input_sha256": "93a5db57c6231daf00acaee724b26ded4ac1224c22500115d182164e85c7d570",
+      "docx_sha256": "2adc4c187db6471beb3cde9bc8825d283aea4e7313ef218567525f74905c2602",
+      "pdf_sha256": "a191576fcc895fc7b02984337cf50bb126d40c2a5d2df2a4ca83d69887033e1e",
+      "workspace_output_hint": "outputs/maturity-i04-gateway-v12/GW12-review",
+      "targets": [
+        {
+          "bookmark": "PatSource",
+          "text_sha256": "1f5df61b3a07b7fefa4f3ddc81916a2500ca148905db24152df9a006731ee1b8",
+          "locator": "body/p[10]/bookmarkStart[1]",
+          "end_locator": "body/p[10]/bookmarkEnd[1]",
+          "characters": 294
+        },
+        {
+          "bookmark": "PatComparison",
+          "text_sha256": "ed1eb88abf38480311d76cb9bfdbd2938e206118dcbda2d627210c487b6e0f59",
+          "locator": "body/tbl[1]/tr[1]/tc[1]/p[1]/bookmarkStart[1]",
+          "end_locator": "body/tbl[1]/tr[6]/tc[3]/p[1]/bookmarkEnd[1]",
+          "characters": 297
+        },
+        {
+          "bookmark": "PatEpoReplay",
+          "text_sha256": "2e9dee71d45bc0cf97dbf721ec98c88754ebbad0ca29d67ed5d53093968a157e",
+          "locator": "body/p[13]/bookmarkStart[1]",
+          "end_locator": "body/p[13]/bookmarkEnd[1]",
+          "characters": 248
+        },
+        {
+          "bookmark": "PatEpoSourceIssues",
+          "text_sha256": "37554389d2a524530018ee30cfe0d58290a8cf5bdaa008265f99dba08da1d20d",
+          "locator": "body/p[14]/bookmarkStart[1]",
+          "end_locator": "body/p[14]/bookmarkEnd[1]",
+          "characters": 185
+        },
+        {
+          "bookmark": "PatEpoDateScope",
+          "text_sha256": "db0d932602dd37d3dc73b43a9bd8753add159e557ff163b89099af16b3791058",
+          "locator": "body/p[15]/bookmarkStart[1]",
+          "end_locator": "body/p[15]/bookmarkEnd[1]",
+          "characters": 280
+        },
+        {
+          "bookmark": "PatHandoff",
+          "text_sha256": "68b86ac66e621c4e43227a571ec5f9b22b81aa0a683868f23997283a36be3134",
+          "locator": "body/p[23]/bookmarkStart[1]",
+          "end_locator": "body/p[23]/bookmarkEnd[1]",
+          "characters": 195
+        }
+      ],
+      "scope": "Existing bytes and literal locations verified, not new source integration, visual review or professional signoff."
+    }
+  ],
+  "review_actions": [
+    {
+      "id": "R-PF-01",
+      "targets": [
+        "review:PatSource",
+        "review:PatComparison",
+        "review:PatEpoReplay"
+      ],
+      "action": "Select purpose first: A1 historical disclosure comparison remains dated A1; current-claims analysis must separately use B1 and any later official amendments/state. Do not cite A1 claim1 as B1 claim1.",
+      "state": "source_analysis_completed_document_integration_not_claimed"
+    },
+    {
+      "id": "R-PF-02",
+      "targets": [
+        "review:PatEpoDateScope",
+        "review:PatHandoff"
+      ],
+      "action": "Record returned3-member simple-family scope and US publication leads; obtain priority-as-filed support and current official jurisdiction status before any corresponding conclusion.",
+      "state": "specific_source_and_professional_conditions_pending"
+    },
+    {
+      "id": "R-PF-03",
+      "targets": [
+        "review:PatEpoSourceIssues"
+      ],
+      "action": "Use B1[0084]/[0119]/[0120] when reading B1, retain A1 locators in historical work. Preserve source example inconsistencies; figures20/21 separately located.",
+      "state": "version_locator_analysis_completed_not_silent_source_correction"
+    },
+    {
+      "id": "R-PF-04",
+      "targets": [
+        "draft:PatP0002c"
+      ],
+      "action": "Existing A1 background is a dated publication statement. Do not overwrite its historical date with2020 B1, import B1 conditions into original S, or pretend gateway has database-snapshot features.",
+      "state": "current_A1_background_retained_no_new_GW_fact"
+    }
+  ],
+  "copy_and_license": {
+    "original_analysis": "Project license",
+    "selected_metadata": "CC-BY-4.0; European Patent Office attribution; unchanged selected fields only",
+    "original_pdf_xml_images_in_bundle": false,
+    "raw_Google_page_copy_in_bundle": false,
+    "rights_for_unacquired_sources": "not_inferred"
+  },
+  "not_completed": [
+    "priority_as_filed_content_and_entitlement",
+    "worldwide_exhaustive_family",
+    "current_official_per_country_status",
+    "new_GW_document_integration_or_signoff",
+    "new_independent_model_acceptance",
+    "professional_or_host_acceptance",
+    "P2_activation"
+  ],
+  "historical_state": "d23/B06 not passed;83 synthetic_helper_only,14real combination gaps and17professional findings unchanged.",
+  "web_query_scope": [
+    {
+      "query": "\"15/361,760\" \"Delayed snapshot isolation\"",
+      "result_scope": "Returned US publication identifiers used as secondary leads; not a native patent database result window or recall measure."
+    },
+    {
+      "date": "2026-11-03",
+      "query": "\"EP00120362.9\"",
+      "route": "web search tool",
+      "observed_response": "Empty search results; no results for the provided exact query",
+      "interpretation": "Only this exact query returned empty; not proof priority document unpublished, absent or inaccessible by all routes. No native source search or official legal-status lookup."
+    }
+  ],
+  "professional_review_preparation": {
+    "date": "2026-11-03",
+    "kind": "concrete_patent_core_professional_review_preparation",
+    "original_plan": {
+      "iteration": 8,
+      "source_line": 232,
+      "step": 1
+    },
+    "status": "questions_and_current_material_handoff_prepared_not_professionally_reviewed",
+    "object": "CN invention writing route / original synthetic industrial gateway / internal drafting",
+    "synthetic_key_date_not_real_filing_or_priority": "2025-02-10",
+    "review_sources": [
+      {
+        "path": "skills/dyz-patent/resources/cn-gateway-example.md",
+        "sha256": "779af8d05685f6bf566201f272c7956fec9225fcb5aa7321ef71a7c91ba597a7"
+      },
+      {
+        "path": "skills/dyz-patent/resources/cn-gateway-delivery/draft-v1.0.md",
+        "sha256": "81af58bf390e07d15f820311f48be12da4d348b6cf71057e9d5d3abd1fd4784f"
+      },
+      {
+        "path": "skills/dyz-patent/resources/cn-gateway-delivery/draft-v1.1.md",
+        "sha256": "1cb4ac9cb23c2d526063d3c3ef725f0db4a70dce8ce26f4686f82af697b8867a"
+      },
+      {
+        "path": "skills/dyz-patent/resources/cn-gateway-delivery/draft-v1.2.md",
+        "sha256": "08c9f12b6e60c98fb40197c82fc26a6ed3453af8124c19fa980be7aeca61ddc8"
+      },
+      {
+        "path": "skills/dyz-patent/resources/cn-gateway-delivery/review-v1.1.md",
+        "sha256": "963b0187ea1ebd498f1ab2a576c776bcc8be120f8831c02f1b0743cd19e00a26"
+      },
+      {
+        "path": "skills/dyz-patent/resources/cn-gateway-delivery/review-v1.2.md",
+        "sha256": "cb3ed4792ad2b70eb6c2e109989c18dfbe412035e9c7a49478526f7496579be7"
+      },
+      {
+        "path": "skills/dyz-patent/resources/cn-gateway-delivery/support.json",
+        "sha256": "3acb03157e04919e86ea93c9e18aef89889a44a0178c3a4403181334e5b34221"
+      },
+      {
+        "path": "skills/dyz-patent/resources/cn-gateway-delivery/change-impact.json",
+        "sha256": "91ffdc4a35a6ea407c6ffc2f2cd9b0bdfc90450ae36dff86f0c4123dd0bb6869"
+      },
+      {
+        "path": "skills/dyz-patent/resources/cn-gateway-delivery/source-update-v1.2.json",
+        "sha256": "5e900a72bbf9637f9062d084c4522ca4a5d644543a8721dae0f467ea1ccc2479"
+      },
+      {
+        "path": "skills/dyz-patent/resources/cn-gateway-delivery/file-bindings-v1.2.json",
+        "sha256": "548a2e7e424ad49126f907128781fa7c6155233daab8c6016b7ea2f5b287af8e"
+      },
+      {
+        "path": "skills/dyz-patent/resources/cn-gateway-delivery/draft-v1.2-input.json",
+        "sha256": "ae537dba4ec0bcbb5d9fb0fc1fb5f844cc2d6dd96dfac655abcaa629997aae98"
+      },
+      {
+        "path": "skills/dyz-patent/resources/cn-gateway-delivery/review-v1.2-input.json",
+        "sha256": "93a5db57c6231daf00acaee724b26ded4ac1224c22500115d182164e85c7d570"
+      },
+      {
+        "path": "skills/dyz-patent/resources/cn-gateway-search.md",
+        "sha256": "18bca79d3b90e69b4830d39bba018fe86302bc00a291a4d785e3510de12b532c"
+      },
+      {
+        "path": "skills/dyz-patent/resources/cn-gateway-search-record.json",
+        "sha256": "20fd02571816ec4f3d7733154eddf90d16d9871e87ee7c26e4ec93b9e49176b7"
+      },
+      {
+        "path": "skills/dyz-patent/resources/cn-epo-fulltext-study.md",
+        "sha256": "aca2b40319a28b213590096f5dae4e248363398e55e8d0e256daaf8f530480fb"
+      },
+      {
+        "path": "skills/dyz-patent/resources/cn-epo-fulltext-record.json",
+        "sha256": "543d571ea1fcd430c234e3cd24422fc7d10fc1190ae9c0fc3689e5216d295781"
+      },
+      {
+        "path": "skills/dyz-patent/resources/cn-priority-family-study.md",
+        "sha256": "514fdae0ad2db206e568465b4f30bc84e8c05eba55494e7742b72fe36cef3db3"
+      },
+      {
+        "path": "skills/dyz-patent/resources/cn-gateway-flow.png",
+        "sha256": "88620c8e3364807f7c502e7a461f6abe4e4deddb92d5467d3f05ef84957b152b"
+      },
+      {
+        "path": "skills/dyz-patent/resources/fact-and-support-review.md",
+        "sha256": "10d7f208d0e9633947aa4ec6551f2516f614a748d58b598605e2d40c6cf54176"
+      }
+    ],
+    "native_documents": [
+      {
+        "role": "draft",
+        "version": "1.2_RS1",
+        "input": "skills/dyz-patent/resources/cn-gateway-delivery/draft-v1.2-input.json",
+        "input_sha256": "ae537dba4ec0bcbb5d9fb0fc1fb5f844cc2d6dd96dfac655abcaa629997aae98",
+        "observed_docx": "outputs/maturity-i04-gateway-v12/GW12-draft/body/document.docx",
+        "docx_sha256": "12486aad0ebf7046aa18a858bb38ec499bee53a604bd451a38fad3b4c4efe552",
+        "observed_pdf": "outputs/maturity-i04-gateway-v12/GW12-draft/body/document.pdf",
+        "pdf_sha256": "931212ee09cd80dd560df3877345ea25509abb9585756201c252c815dff74037",
+        "pages_previously_observed": 6,
+        "current_literal_readback_state": "partial",
+        "unread_parts": [
+          {
+            "path": "word/media/image1.png",
+            "scope": "not_interpreted"
+          },
+          {
+            "path": "word/styles.xml",
+            "scope": "style_inheritance_not_resolved"
+          }
+        ],
+        "unresolved_fragments": [
+          {
+            "kind": "unread_drawing",
+            "locator": "body/p[50]/r[1]/drawing[1]",
+            "text": ""
+          }
+        ],
+        "new_visual_or_professional_review": "not_performed",
+        "scope": "Existing actual files and main-body literal locations; image meaning and style inheritance are not certified."
+      },
+      {
+        "role": "review",
+        "version": "1.2_RS1",
+        "input": "skills/dyz-patent/resources/cn-gateway-delivery/review-v1.2-input.json",
+        "input_sha256": "93a5db57c6231daf00acaee724b26ded4ac1224c22500115d182164e85c7d570",
+        "observed_docx": "outputs/maturity-i04-gateway-v12/GW12-review/body/document.docx",
+        "docx_sha256": "2adc4c187db6471beb3cde9bc8825d283aea4e7313ef218567525f74905c2602",
+        "observed_pdf": "outputs/maturity-i04-gateway-v12/GW12-review/body/document.pdf",
+        "pdf_sha256": "a191576fcc895fc7b02984337cf50bb126d40c2a5d2df2a4ca83d69887033e1e",
+        "pages_previously_observed": 3,
+        "current_literal_readback_state": "complete_supported_subset",
+        "unread_parts": [
+          {
+            "path": "word/styles.xml",
+            "scope": "style_inheritance_not_resolved"
+          }
+        ],
+        "unresolved_fragments": [],
+        "new_visual_or_professional_review": "not_performed",
+        "scope": "Existing actual files and main-body literal locations; image meaning and style inheritance are not certified."
+      }
+    ],
+    "questions": [
+      {
+        "id": "PQ01",
+        "title": "未给技术关系与公开充分性",
+        "question_source": "skills/dyz-patent/resources/cn-priority-family-study.md",
+        "state": "awaiting_responsible_professional_or_fact_response",
+        "native_targets": [
+          {
+            "document_role": "review",
+            "bookmark": "PatUnknown",
+            "text_sha256": "a1e21fe84bf5588bc7cbd17831cd31d57931e154a0ed2857d6ef0a9bb3db13e4",
+            "locator": "body/p[18]/bookmarkStart[1]",
+            "end_locator": "body/p[18]/bookmarkEnd[1]"
+          },
+          {
+            "document_role": "draft",
+            "bookmark": "PatClaim01",
+            "text_sha256": "eb92cd3e55029f42a9db08a94e548042350f152a49d750b9863c9204918ba370",
+            "locator": "body/p[5]/bookmarkStart[1]",
+            "end_locator": "body/p[5]/bookmarkEnd[1]"
+          }
+        ]
+      },
+      {
+        "id": "PQ02",
+        "title": "权项主体与范围代价",
+        "question_source": "skills/dyz-patent/resources/cn-priority-family-study.md",
+        "state": "awaiting_responsible_professional_or_fact_response",
+        "native_targets": [
+          {
+            "document_role": "draft",
+            "bookmark": "PatClaim01",
+            "text_sha256": "eb92cd3e55029f42a9db08a94e548042350f152a49d750b9863c9204918ba370",
+            "locator": "body/p[5]/bookmarkStart[1]",
+            "end_locator": "body/p[5]/bookmarkEnd[1]"
+          },
+          {
+            "document_role": "draft",
+            "bookmark": "PatClaim03",
+            "text_sha256": "b95280cc20470d511a98bd469da1070565139317f7ce2da512686b8b7e7b16a6",
+            "locator": "body/p[7]/bookmarkStart[1]",
+            "end_locator": "body/p[7]/bookmarkEnd[1]"
+          },
+          {
+            "document_role": "review",
+            "bookmark": "PatRoute",
+            "text_sha256": "84fe326f8bde01cf9d8580a629756f81390f08a8dcea3d5f2eeef99157b49884",
+            "locator": "body/p[7]/bookmarkStart[1]",
+            "end_locator": "body/p[7]/bookmarkEnd[1]"
+          },
+          {
+            "document_role": "review",
+            "bookmark": "PatAlternatives",
+            "text_sha256": "0a8a11eb4449d0564efc4af6aa189c60d0de95b9ead8ab6280ce6c7384bf2cf0",
+            "locator": "body/p[8]/bookmarkStart[1]",
+            "end_locator": "body/p[8]/bookmarkEnd[1]"
+          }
+        ]
+      },
+      {
+        "id": "PQ03",
+        "title": "分版本的文献比较与可专利性",
+        "question_source": "skills/dyz-patent/resources/cn-priority-family-study.md",
+        "state": "awaiting_responsible_professional_or_fact_response",
+        "native_targets": [
+          {
+            "document_role": "review",
+            "bookmark": "PatComparison",
+            "text_sha256": "ed1eb88abf38480311d76cb9bfdbd2938e206118dcbda2d627210c487b6e0f59",
+            "locator": "body/tbl[1]/tr[1]/tc[1]/p[1]/bookmarkStart[1]",
+            "end_locator": "body/tbl[1]/tr[6]/tc[3]/p[1]/bookmarkEnd[1]"
+          },
+          {
+            "document_role": "review",
+            "bookmark": "PatEpoRequest",
+            "text_sha256": "e3a6255592e5adb8bfb37d74f7a0440d5e290efe40a8398258eead100d186e98",
+            "locator": "body/p[12]/bookmarkStart[1]",
+            "end_locator": "body/p[12]/bookmarkEnd[1]"
+          },
+          {
+            "document_role": "review",
+            "bookmark": "PatEpoReplay",
+            "text_sha256": "2e9dee71d45bc0cf97dbf721ec98c88754ebbad0ca29d67ed5d53093968a157e",
+            "locator": "body/p[13]/bookmarkStart[1]",
+            "end_locator": "body/p[13]/bookmarkEnd[1]"
+          },
+          {
+            "document_role": "draft",
+            "bookmark": "PatP0002c",
+            "text_sha256": "b2df67290e9eb985945abe39aaa8f0d81b1a3ab3fa9a5f6a07d468307db7c300",
+            "locator": "body/p[19]/bookmarkStart[1]",
+            "end_locator": "body/p[19]/bookmarkEnd[1]"
+          }
+        ]
+      },
+      {
+        "id": "PQ04",
+        "title": "日期、优先、同族与当前状态",
+        "question_source": "skills/dyz-patent/resources/cn-priority-family-study.md",
+        "state": "awaiting_responsible_professional_or_fact_response",
+        "native_targets": [
+          {
+            "document_role": "review",
+            "bookmark": "PatEpoDateScope",
+            "text_sha256": "db0d932602dd37d3dc73b43a9bd8753add159e557ff163b89099af16b3791058",
+            "locator": "body/p[15]/bookmarkStart[1]",
+            "end_locator": "body/p[15]/bookmarkEnd[1]"
+          }
+        ]
+      },
+      {
+        "id": "PQ05",
+        "title": "原件矛盾与技术解释",
+        "question_source": "skills/dyz-patent/resources/cn-priority-family-study.md",
+        "state": "awaiting_responsible_professional_or_fact_response",
+        "native_targets": [
+          {
+            "document_role": "review",
+            "bookmark": "PatEpoSourceIssues",
+            "text_sha256": "37554389d2a524530018ee30cfe0d58290a8cf5bdaa008265f99dba08da1d20d",
+            "locator": "body/p[14]/bookmarkStart[1]",
+            "end_locator": "body/p[14]/bookmarkEnd[1]"
+          },
+          {
+            "document_role": "review",
+            "bookmark": "PatEpoReplay",
+            "text_sha256": "2e9dee71d45bc0cf97dbf721ec98c88754ebbad0ca29d67ed5d53093968a157e",
+            "locator": "body/p[13]/bookmarkStart[1]",
+            "end_locator": "body/p[13]/bookmarkEnd[1]"
+          }
+        ]
+      },
+      {
+        "id": "PQ06",
+        "title": "修改支持与参数条件",
+        "question_source": "skills/dyz-patent/resources/cn-priority-family-study.md",
+        "state": "awaiting_responsible_professional_or_fact_response",
+        "native_targets": [
+          {
+            "document_role": "draft",
+            "bookmark": "PatClaim01",
+            "text_sha256": "eb92cd3e55029f42a9db08a94e548042350f152a49d750b9863c9204918ba370",
+            "locator": "body/p[5]/bookmarkStart[1]",
+            "end_locator": "body/p[5]/bookmarkEnd[1]"
+          },
+          {
+            "document_role": "draft",
+            "bookmark": "PatClaim03",
+            "text_sha256": "b95280cc20470d511a98bd469da1070565139317f7ce2da512686b8b7e7b16a6",
+            "locator": "body/p[7]/bookmarkStart[1]",
+            "end_locator": "body/p[7]/bookmarkEnd[1]"
+          },
+          {
+            "document_role": "review",
+            "bookmark": "PatSupport",
+            "text_sha256": "781388884d8ce631af0cc627a3cfe162b4d8b9e99de25e48eb2a12ba621eca4c",
+            "locator": "body/tbl[2]/tr[1]/tc[1]/p[1]/bookmarkStart[1]",
+            "end_locator": "body/tbl[2]/tr[5]/tc[3]/p[1]/bookmarkEnd[1]"
+          },
+          {
+            "document_role": "review",
+            "bookmark": "PatModification",
+            "text_sha256": "50177c7694e845021104b6ef0546e8d40aff13a332d715e4684e2b4ce510a9c9",
+            "locator": "body/p[20]/bookmarkStart[1]",
+            "end_locator": "body/p[20]/bookmarkEnd[1]"
+          }
+        ]
+      },
+      {
+        "id": "PQ07",
+        "title": "正文、图与恢复关系",
+        "question_source": "skills/dyz-patent/resources/cn-priority-family-study.md",
+        "state": "awaiting_responsible_professional_or_fact_response",
+        "native_targets": [
+          {
+            "document_role": "draft",
+            "bookmark": "PatP0016",
+            "text_sha256": "2edec010bae6ab0de4c8de5d6b96e27bc0cc4b9114c78d966c4d373e49a21104",
+            "locator": "body/p[36]/bookmarkStart[1]",
+            "end_locator": "body/p[36]/bookmarkEnd[1]"
+          },
+          {
+            "document_role": "draft",
+            "bookmark": "PatP0017",
+            "text_sha256": "c24a13f50165c24db882a6bf226a4efeab67aa2bf0ee88d09fe269e5ed2549f1",
+            "locator": "body/p[37]/bookmarkStart[1]",
+            "end_locator": "body/p[37]/bookmarkEnd[1]"
+          },
+          {
+            "document_role": "draft",
+            "bookmark": "PatP0018",
+            "text_sha256": "5287e1b4bc5a15ba0c87b4736a5f225126b1e3aa96c19772308d31c2ecea6328",
+            "locator": "body/p[38]/bookmarkStart[1]",
+            "end_locator": "body/p[38]/bookmarkEnd[1]"
+          },
+          {
+            "document_role": "draft",
+            "bookmark": "PatP0019",
+            "text_sha256": "3248c306f2e09a32ae39a64f9f74800fd9d2d9f8b1aa4bfe64717a5ca4beb66a",
+            "locator": "body/p[39]/bookmarkStart[1]",
+            "end_locator": "body/p[39]/bookmarkEnd[1]"
+          },
+          {
+            "document_role": "draft",
+            "bookmark": "PatP0020",
+            "text_sha256": "624fd9f12a97cc6bf84becc728f1997fd5f7ce97f223ad125be33afb17172d37",
+            "locator": "body/p[40]/bookmarkStart[1]",
+            "end_locator": "body/p[40]/bookmarkEnd[1]"
+          },
+          {
+            "document_role": "draft",
+            "bookmark": "PatP0022",
+            "text_sha256": "df0b110bef5425c6461e29d10b804524aa1c38be0a49fb57c493d322b997d470",
+            "locator": "body/p[42]/bookmarkStart[1]",
+            "end_locator": "body/p[42]/bookmarkEnd[1]"
+          },
+          {
+            "document_role": "draft",
+            "bookmark": "PatP0023",
+            "text_sha256": "bc0c951bcd4aab20e88f3db51166906d8ad3d6678d985cc8062ddadda0b25d6e",
+            "locator": "body/p[43]/bookmarkStart[1]",
+            "end_locator": "body/p[43]/bookmarkEnd[1]"
+          },
+          {
+            "document_role": "draft",
+            "bookmark": "PatP0024",
+            "text_sha256": "4b04eceb0ddaa6e2abf4d7417bae24df3f8970cc68c68275e6ded76dbceef82e",
+            "locator": "body/p[44]/bookmarkStart[1]",
+            "end_locator": "body/p[44]/bookmarkEnd[1]"
+          },
+          {
+            "document_role": "draft",
+            "bookmark": "PatP0025",
+            "text_sha256": "dbd98859b11d7af130b81773f915680e3f7d16764c55fd610bade05274a05824",
+            "locator": "body/p[45]/bookmarkStart[1]",
+            "end_locator": "body/p[45]/bookmarkEnd[1]"
+          },
+          {
+            "document_role": "draft",
+            "bookmark": "PatP0026",
+            "text_sha256": "2c0306e7b4833d47810df489f2b4a54fbfeeee0dad9891977b5d1977b9652dbc",
+            "locator": "body/p[46]/bookmarkStart[1]",
+            "end_locator": "body/p[46]/bookmarkEnd[1]"
+          },
+          {
+            "document_role": "draft",
+            "bookmark": "PatAbstract",
+            "text_sha256": "bf18db8219af219a50c7178066b324964305d696a63b4b8e5274baa1869ef86d",
+            "locator": "body/p[49]/bookmarkStart[1]",
+            "end_locator": "body/p[49]/bookmarkEnd[1]"
+          },
+          {
+            "document_role": "review",
+            "bookmark": "PatProcess",
+            "text_sha256": "01952fa4c3a576191a63da1551ae9f3e373a469c445279ac5e339f54e2ec6870",
+            "locator": "body/p[5]/bookmarkStart[1]",
+            "end_locator": "body/p[5]/bookmarkEnd[1]"
+          }
+        ]
+      },
+      {
+        "id": "PQ08",
+        "title": "交付、权限与审核恢复",
+        "question_source": "skills/dyz-patent/resources/cn-priority-family-study.md",
+        "state": "awaiting_responsible_professional_or_fact_response",
+        "native_targets": [
+          {
+            "document_role": "review",
+            "bookmark": "PatHandoff",
+            "text_sha256": "68b86ac66e621c4e43227a571ec5f9b22b81aa0a683868f23997283a36be3134",
+            "locator": "body/p[23]/bookmarkStart[1]",
+            "end_locator": "body/p[23]/bookmarkEnd[1]"
+          },
+          {
+            "document_role": "review",
+            "bookmark": "PatReviewStatus",
+            "text_sha256": "f4d237ee8b4ea75ff738576eefd3ce87fd693745a2b7507c240ee63d6e7e2c1f",
+            "locator": "body/p[2]/bookmarkStart[1]",
+            "end_locator": "body/p[2]/bookmarkEnd[1]"
+          },
+          {
+            "document_role": "review",
+            "bookmark": "PatFileChecks",
+            "text_sha256": "d44b81d7124ab28654032dc65d728ec79bd2d8de44c2496c291016019e1b64d6",
+            "locator": "body/p[21]/bookmarkStart[1]",
+            "end_locator": "body/p[21]/bookmarkEnd[1]"
+          }
+        ]
+      }
+    ],
+    "defect_summary": {
+      "development_record_reference": "evals/workflows/acceptance-d23-repeat-review-summary.json",
+      "sha256": "303e7770fe4e283ce358b45aa8752d143e658148f04c50fb3b51450825b6089f",
+      "counts": {
+        "passed": 34,
+        "failed": 2
+      },
+      "check_counts": {
+        "passed": 142,
+        "failed": 2
+      },
+      "retained_failures": [
+        {
+          "case_id": "PAT-R-N2",
+          "repeat": 1,
+          "development_record_reference": "evals/workflows/acceptance-d23-repeat-PAT-R-N2-r1-author-review.json",
+          "record_sha256": "0afaca0177e3a2afb0aa7a94a5286a653d688fb1ee87c2a72e2dd4e76bcb1179",
+          "check_number": 3,
+          "reason": "两路线覆盖与证明负担、实际独权和数值后备均有，但实际权项新增L≤p≤H全区间保持及恢复有效后未复位继续保持阀位。O#1仅明确等界保持，O#2仅给失效时保持和恢复后人工复位再按有效读数控制，未给中间区间或恢复等待阀位。答卷把未知关系称为逻辑展开并贯穿正文/摘要/状态表，不能用D2滞回或没有其他触发的推断倒填O原支持。原第3项要求实际成稿有支持，因此失败。",
+          "state": "original_failure_preserved_not_retested_or_regraded",
+          "case_relationship": "Separate historical valve/cache facts, not current gateway facts.",
+          "included_in_runtime_package": false
+        },
+        {
+          "case_id": "PAT-R-V1",
+          "repeat": 2,
+          "development_record_reference": "evals/workflows/acceptance-d23-repeat-PAT-R-V1-r2-author-review-amendment.json",
+          "record_sha256": "8d899e89a5c9011ddd6f669a21f719be5b08d73c0fa6fbe6d8f5fc238963fa14",
+          "check_number": 2,
+          "reason": "保留C及16示例、32仅为新产品事实且不自动认可修改均正确；但原第2项还要求对原申请一般参数记载是否能够支持具体32修改作条件性评估。第71行仅讨论32实现是否符合候选范围，第68/79行仅说没有具体数值记载而本次不纳入；未分析概括记载在原文参数边界/技术语境和组合条件下可能支持该具体值的条件，也未给出相应评估恢复路径。一般性的全文/地区规则待核不替代这项实际分析。原完整四项中的第2项遗漏，判失败；不因保留C这条有限路线本身扣分。",
+          "state": "original_failure_preserved_not_retested_or_regraded",
+          "case_relationship": "Separate historical valve/cache facts, not current gateway facts.",
+          "included_in_runtime_package": false
+        }
+      ]
+    },
+    "material_handoff": [
+      {
+        "group": "current_candidate",
+        "objects": [
+          "GW1.2 complete draft",
+          "S facts and prior versions"
+        ],
+        "purpose": "local internal technical and CN professional review"
+      },
+      {
+        "group": "necessary_review_material",
+        "objects": [
+          "internal review",
+          "support/change/source records",
+          "B1 later appendix separately",
+          "unknowns and source issues",
+          "historical failure summary"
+        ],
+        "purpose": "sufficient context for review without hiding material unknowns"
+      },
+      {
+        "group": "internal_analysis",
+        "objects": [
+          "scope/proof tradeoffs",
+          "disclosure/rights gaps",
+          "original development grades and audit references"
+        ],
+        "purpose": "internal responsibility and quality work"
+      },
+      {
+        "group": "external_action_conditions",
+        "status": "not_provided_or_approved",
+        "required": [
+          "actual_file_package",
+          "recipient_and_authority",
+          "purpose",
+          "channel",
+          "validity_conditions",
+          "authorized_signoff",
+          "pre_send_recheck",
+          "receipt_handling"
+        ]
+      }
+    ],
+    "expected_response_fields": [
+      "actual_reviewer_identity_and_role",
+      "question_id",
+      "files_and_versions",
+      "basis_locations",
+      "decision_and_reasons",
+      "missing_evidence",
+      "major_or_local_rework",
+      "affected_items_and_recheck"
+    ],
+    "response_entries": [],
+    "professional_review": "not_performed",
+    "external_action": "not_performed",
+    "original_research_fields_preserved": true,
+    "existing_seven_target_bindings_preserved": true,
+    "technical_draft_and_seven_claims_unchanged": true,
+    "B1_or_new_questions_incorporated_into_existing_Word": false,
+    "independent_acceptance_or_new_model_task": "not_performed",
+    "native_authoring_conversion_or_new_rendering": "not_performed",
+    "capability_or_gate_upgrade": "none_d23_B06_83_14_17_and_P2_conditions_unchanged"
+  }
+}

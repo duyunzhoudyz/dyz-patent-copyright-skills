@@ -1,0 +1,275 @@
+{
+  "sensitivity": "research_example",
+  "document_id": "RiverV11Verification",
+  "version": "V11_VER1",
+  "business": "standard",
+  "sources": [
+    {
+      "id": "Current",
+      "path": "skills/dyz-standards/resources/river-v11-verification/verification.md",
+      "sha256": "652e5c6f003fa07b65f2c2929b0dfa2f91ae64b98d85f6e8ccce221118ead995"
+    }
+  ],
+  "dependencies": [
+    {
+      "path": "skills/dyz-standards/resources/river-demo/requirements.json",
+      "sha256": "1abf48e50746bd600a7555ceb345ad8d8f8dbbe7a8f9d4ab653b73a31cf805f2"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-demo/model.py",
+      "sha256": "4214ff76e9364e2fa66cf999d5a42ba5490a0197d76efbbfd8a54a1091ff5aa0"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-demo/v11-boundary-vectors.json",
+      "sha256": "640aa3177d686fd707fb95bb395ad06ff72b6777403b1de537c42345d7ae19aa"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-demo/verify-v11.py",
+      "sha256": "f2b5d73e3eb12615b5758c88a9fe2a8e13e983edf88a2e63763860a4f5ca1b7f"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-v11-verification/model-run.json",
+      "sha256": "7ecd3479388f0862bd2a194bcf21487852dcca63cfd5d22ce2a944ab7699121d"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-delivery-source/draft-v1.1.md",
+      "sha256": "6288da4f6d92b98959d75f4b05127753dd713f888a85360c1568fecf83521802"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-delivery-source/review-v1.1.md",
+      "sha256": "112bc7331788971f23bcf9cad57cbc9e508606280ba1fa594c40706a71a5d033"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-delivery-source/file-bindings.json",
+      "sha256": "372d671476722b54117aadbb02833203a96f03ca1dfcb8af6e2fe9c25cbd47f2"
+    }
+  ],
+  "blocks": [
+    {
+      "id": "V11Title",
+      "kind": "heading1",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 2,
+      "end_line": 2
+    },
+    {
+      "id": "V11Identity",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 5,
+      "end_line": 5
+    },
+    {
+      "id": "V11ScopeHead",
+      "kind": "heading2",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 8,
+      "end_line": 8
+    },
+    {
+      "id": "V11Scopes",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 11,
+      "end_line": 11
+    },
+    {
+      "id": "V11Method",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 14,
+      "end_line": 14
+    },
+    {
+      "id": "V11MatrixHead",
+      "kind": "heading2",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 17,
+      "end_line": 17
+    },
+    {
+      "id": "V11Matrix",
+      "kind": "table",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 20,
+      "end_line": 30
+    },
+    {
+      "id": "V11PriorityHead",
+      "kind": "heading2",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 33,
+      "end_line": 33
+    },
+    {
+      "id": "V11Priority",
+      "kind": "table",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 36,
+      "end_line": 46
+    },
+    {
+      "id": "V11ActualHead",
+      "kind": "heading2",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 49,
+      "end_line": 49
+    },
+    {
+      "id": "V11Actual",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 52,
+      "end_line": 52
+    },
+    {
+      "id": "V11Sequences",
+      "kind": "table",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 55,
+      "end_line": 59
+    },
+    {
+      "id": "V11Controls",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 62,
+      "end_line": 62
+    },
+    {
+      "id": "V11ImpactHead",
+      "kind": "heading2",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 65,
+      "end_line": 65
+    },
+    {
+      "id": "V11Impact",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 68,
+      "end_line": 68
+    },
+    {
+      "id": "V11Opinion",
+      "kind": "table",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 71,
+      "end_line": 75
+    },
+    {
+      "id": "V11RemainingHead",
+      "kind": "heading2",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 78,
+      "end_line": 78
+    },
+    {
+      "id": "V11Remaining",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 81,
+      "end_line": 81
+    },
+    {
+      "id": "V11Delivery",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 84,
+      "end_line": 84
+    }
+  ],
+  "research_materials": [
+    {
+      "path": "skills/dyz-standards/resources/river-v11-verification/verification.md",
+      "sha256": "652e5c6f003fa07b65f2c2929b0dfa2f91ae64b98d85f6e8ccce221118ead995",
+      "content_kind": "original_mixed_research",
+      "third_party_text": "not_included",
+      "processing_basis": "Original synthetic protocol, author analysis and actual local execution; current authorized internal engineering, no private case or raw standard text.",
+      "export_basis": "Original project material under LICENSE/commercial terms; local internal assembly only, no external sending/publication/organization approval or third-party rights granted."
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-demo/requirements.json",
+      "sha256": "1abf48e50746bd600a7555ceb345ad8d8f8dbbe7a8f9d4ab653b73a31cf805f2",
+      "content_kind": "original_synthetic",
+      "third_party_text": "not_included",
+      "processing_basis": "Original synthetic protocol, author analysis and actual local execution; current authorized internal engineering, no private case or raw standard text.",
+      "export_basis": "Original project material under LICENSE/commercial terms; local internal assembly only, no external sending/publication/organization approval or third-party rights granted."
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-demo/model.py",
+      "sha256": "4214ff76e9364e2fa66cf999d5a42ba5490a0197d76efbbfd8a54a1091ff5aa0",
+      "content_kind": "original_synthetic",
+      "third_party_text": "not_included",
+      "processing_basis": "Original synthetic protocol, author analysis and actual local execution; current authorized internal engineering, no private case or raw standard text.",
+      "export_basis": "Original project material under LICENSE/commercial terms; local internal assembly only, no external sending/publication/organization approval or third-party rights granted."
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-demo/v11-boundary-vectors.json",
+      "sha256": "640aa3177d686fd707fb95bb395ad06ff72b6777403b1de537c42345d7ae19aa",
+      "content_kind": "original_synthetic",
+      "third_party_text": "not_included",
+      "processing_basis": "Original synthetic protocol, author analysis and actual local execution; current authorized internal engineering, no private case or raw standard text.",
+      "export_basis": "Original project material under LICENSE/commercial terms; local internal assembly only, no external sending/publication/organization approval or third-party rights granted."
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-demo/verify-v11.py",
+      "sha256": "f2b5d73e3eb12615b5758c88a9fe2a8e13e983edf88a2e63763860a4f5ca1b7f",
+      "content_kind": "original_synthetic",
+      "third_party_text": "not_included",
+      "processing_basis": "Original synthetic protocol, author analysis and actual local execution; current authorized internal engineering, no private case or raw standard text.",
+      "export_basis": "Original project material under LICENSE/commercial terms; local internal assembly only, no external sending/publication/organization approval or third-party rights granted."
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-v11-verification/model-run.json",
+      "sha256": "7ecd3479388f0862bd2a194bcf21487852dcca63cfd5d22ce2a944ab7699121d",
+      "content_kind": "original_execution_evidence",
+      "third_party_text": "not_included",
+      "processing_basis": "Original synthetic protocol, author analysis and actual local execution; current authorized internal engineering, no private case or raw standard text.",
+      "export_basis": "Original project material under LICENSE/commercial terms; local internal assembly only, no external sending/publication/organization approval or third-party rights granted."
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-delivery-source/draft-v1.1.md",
+      "sha256": "6288da4f6d92b98959d75f4b05127753dd713f888a85360c1568fecf83521802",
+      "content_kind": "original_mixed_research",
+      "third_party_text": "not_included",
+      "processing_basis": "Original synthetic protocol, author analysis and actual local execution; current authorized internal engineering, no private case or raw standard text.",
+      "export_basis": "Original project material under LICENSE/commercial terms; local internal assembly only, no external sending/publication/organization approval or third-party rights granted."
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-delivery-source/review-v1.1.md",
+      "sha256": "112bc7331788971f23bcf9cad57cbc9e508606280ba1fa594c40706a71a5d033",
+      "content_kind": "original_mixed_research",
+      "third_party_text": "not_included",
+      "processing_basis": "Original synthetic protocol, author analysis and actual local execution; current authorized internal engineering, no private case or raw standard text.",
+      "export_basis": "Original project material under LICENSE/commercial terms; local internal assembly only, no external sending/publication/organization approval or third-party rights granted."
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-delivery-source/file-bindings.json",
+      "sha256": "372d671476722b54117aadbb02833203a96f03ca1dfcb8af6e2fe9c25cbd47f2",
+      "content_kind": "original_execution_evidence",
+      "third_party_text": "not_included",
+      "processing_basis": "Original synthetic protocol, author analysis and actual local execution; current authorized internal engineering, no private case or raw standard text.",
+      "export_basis": "Original project material under LICENSE/commercial terms; local internal assembly only, no external sending/publication/organization approval or third-party rights granted."
+    }
+  ]
+}

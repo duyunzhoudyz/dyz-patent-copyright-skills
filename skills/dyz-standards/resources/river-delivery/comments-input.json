@@ -1,0 +1,49 @@
+{
+  "sensitivity": "synthetic",
+  "document_id": "River_comments",
+  "version": "N_1.0_r1",
+  "business": "standard",
+  "sources": [
+    {
+      "id": "River",
+      "path": "skills/dyz-standards/resources/river-example.md",
+      "sha256": "145d38e9aac50a606d9631331b1e6eb9c25f468bfea0be915d0245469d241386"
+    }
+  ],
+  "blocks": [
+    {
+      "id": "comments_211",
+      "source_id": "River",
+      "start_line": 211,
+      "end_line": 211,
+      "kind": "heading2",
+      "audience": "body"
+    },
+    {
+      "id": "comments_213",
+      "source_id": "River",
+      "start_line": 213,
+      "end_line": 217,
+      "kind": "table",
+      "audience": "body"
+    },
+    {
+      "id": "comments_219",
+      "source_id": "River",
+      "start_line": 219,
+      "end_line": 219,
+      "kind": "paragraph",
+      "audience": "body"
+    }
+  ],
+  "dependencies": [
+    {
+      "path": "skills/dyz-standards/resources/river-delivery/comment-bindings.json",
+      "sha256": "d802e51a31278cd95bad6af932403a2453fb683aeb760b5638ae43e6a6580ff6"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-delivery/standard-input.json",
+      "sha256": "aa4702033e6699afa64d1414e500a264d2307986363015676c42eae3080ed705"
+    }
+  ]
+}

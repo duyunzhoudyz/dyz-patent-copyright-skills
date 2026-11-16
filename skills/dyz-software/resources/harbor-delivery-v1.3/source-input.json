@@ -1,0 +1,2242 @@
+{
+  "sensitivity": "synthetic",
+  "document_id": "Harbor_source",
+  "version": "1.3",
+  "business": "software",
+  "sources": [
+    {
+      "id": "S",
+      "path": "skills/dyz-software/resources/harbor-delivery-v1.3/source.txt",
+      "sha256": "bf0a41433f359330858cd34c3d19118dae206d1ea7fc7874cb44dc307528f1a0"
+    },
+    {
+      "id": "Code_api",
+      "path": "skills/dyz-software/resources/harbor-demo/v1.3/api.py",
+      "sha256": "d7a5c8493a1c9b150a9f17ef372b3ad0fbcc6419517f8c9b7a3c065135042ef7"
+    },
+    {
+      "id": "Code_cli",
+      "path": "skills/dyz-software/resources/harbor-demo/v1.3/cli.py",
+      "sha256": "de887993b20563ae0ce2d0a32f9ca837e928320fd50dad9b5347d013cd0c0edd"
+    },
+    {
+      "id": "Code_core",
+      "path": "skills/dyz-software/resources/harbor-demo/v1.3/core.py",
+      "sha256": "e6acd5ed00bd9ff64069fef84fb6489f4986c03ba441a2367fd383ad68e419a9"
+    },
+    {
+      "id": "Code_gui",
+      "path": "skills/dyz-software/resources/harbor-demo/v1.3/gui.py",
+      "sha256": "ce462a1e279b9cbdb4346b9533ffc092b3f713a1443e715e0755d0a2d6bffaea"
+    },
+    {
+      "id": "Code_index",
+      "path": "skills/dyz-software/resources/harbor-demo/v1.3/index.html",
+      "sha256": "00fb5fa5a9d6e9a0137dbff985f6b109e0cbf8d3c18422d75de9bf49a48a86c7"
+    }
+  ],
+  "blocks": [
+    {
+      "id": "V13_source_title",
+      "source_id": "S",
+      "start_line": 1,
+      "end_line": 1,
+      "kind": "heading1",
+      "audience": "body"
+    },
+    {
+      "id": "V13_file_api",
+      "source_id": "S",
+      "start_line": 2,
+      "end_line": 2,
+      "kind": "heading2",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_001",
+      "source_id": "S",
+      "start_line": 3,
+      "end_line": 3,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_002",
+      "source_id": "S",
+      "start_line": 4,
+      "end_line": 4,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_003",
+      "source_id": "S",
+      "start_line": 5,
+      "end_line": 5,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_004",
+      "source_id": "S",
+      "start_line": 6,
+      "end_line": 6,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_005",
+      "source_id": "S",
+      "start_line": 7,
+      "end_line": 7,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_006",
+      "source_id": "S",
+      "start_line": 8,
+      "end_line": 8,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_007",
+      "source_id": "S",
+      "start_line": 9,
+      "end_line": 9,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_008",
+      "source_id": "S",
+      "start_line": 10,
+      "end_line": 10,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_009",
+      "source_id": "S",
+      "start_line": 11,
+      "end_line": 11,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_010",
+      "source_id": "S",
+      "start_line": 12,
+      "end_line": 12,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_011",
+      "source_id": "S",
+      "start_line": 13,
+      "end_line": 13,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_012",
+      "source_id": "S",
+      "start_line": 14,
+      "end_line": 14,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_013",
+      "source_id": "S",
+      "start_line": 15,
+      "end_line": 15,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_014",
+      "source_id": "S",
+      "start_line": 16,
+      "end_line": 16,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_015",
+      "source_id": "S",
+      "start_line": 17,
+      "end_line": 17,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_016",
+      "source_id": "S",
+      "start_line": 18,
+      "end_line": 18,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_017",
+      "source_id": "S",
+      "start_line": 19,
+      "end_line": 19,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_018",
+      "source_id": "S",
+      "start_line": 20,
+      "end_line": 20,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_019",
+      "source_id": "S",
+      "start_line": 21,
+      "end_line": 21,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_020",
+      "source_id": "S",
+      "start_line": 22,
+      "end_line": 22,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_021",
+      "source_id": "S",
+      "start_line": 23,
+      "end_line": 23,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_022",
+      "source_id": "S",
+      "start_line": 24,
+      "end_line": 24,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_023",
+      "source_id": "S",
+      "start_line": 25,
+      "end_line": 25,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_024",
+      "source_id": "S",
+      "start_line": 26,
+      "end_line": 26,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_025",
+      "source_id": "S",
+      "start_line": 27,
+      "end_line": 27,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_026",
+      "source_id": "S",
+      "start_line": 28,
+      "end_line": 28,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_027",
+      "source_id": "S",
+      "start_line": 29,
+      "end_line": 29,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_028",
+      "source_id": "S",
+      "start_line": 30,
+      "end_line": 30,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_029",
+      "source_id": "S",
+      "start_line": 31,
+      "end_line": 31,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_030",
+      "source_id": "S",
+      "start_line": 32,
+      "end_line": 32,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_031",
+      "source_id": "S",
+      "start_line": 33,
+      "end_line": 33,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_032",
+      "source_id": "S",
+      "start_line": 34,
+      "end_line": 34,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_033",
+      "source_id": "S",
+      "start_line": 35,
+      "end_line": 35,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_034",
+      "source_id": "S",
+      "start_line": 36,
+      "end_line": 36,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_035",
+      "source_id": "S",
+      "start_line": 37,
+      "end_line": 37,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_036",
+      "source_id": "S",
+      "start_line": 38,
+      "end_line": 38,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_037",
+      "source_id": "S",
+      "start_line": 39,
+      "end_line": 39,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_038",
+      "source_id": "S",
+      "start_line": 40,
+      "end_line": 40,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_039",
+      "source_id": "S",
+      "start_line": 41,
+      "end_line": 41,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_040",
+      "source_id": "S",
+      "start_line": 42,
+      "end_line": 42,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_041",
+      "source_id": "S",
+      "start_line": 43,
+      "end_line": 43,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_042",
+      "source_id": "S",
+      "start_line": 44,
+      "end_line": 44,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_043",
+      "source_id": "S",
+      "start_line": 45,
+      "end_line": 45,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_044",
+      "source_id": "S",
+      "start_line": 46,
+      "end_line": 46,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_045",
+      "source_id": "S",
+      "start_line": 47,
+      "end_line": 47,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_046",
+      "source_id": "S",
+      "start_line": 48,
+      "end_line": 48,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_047",
+      "source_id": "S",
+      "start_line": 49,
+      "end_line": 49,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_048",
+      "source_id": "S",
+      "start_line": 50,
+      "end_line": 50,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_049",
+      "source_id": "S",
+      "start_line": 51,
+      "end_line": 51,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_050",
+      "source_id": "S",
+      "start_line": 52,
+      "end_line": 52,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_051",
+      "source_id": "S",
+      "start_line": 53,
+      "end_line": 53,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_052",
+      "source_id": "S",
+      "start_line": 54,
+      "end_line": 54,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_053",
+      "source_id": "S",
+      "start_line": 55,
+      "end_line": 55,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_054",
+      "source_id": "S",
+      "start_line": 56,
+      "end_line": 56,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_055",
+      "source_id": "S",
+      "start_line": 57,
+      "end_line": 57,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_056",
+      "source_id": "S",
+      "start_line": 58,
+      "end_line": 58,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_057",
+      "source_id": "S",
+      "start_line": 59,
+      "end_line": 59,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_058",
+      "source_id": "S",
+      "start_line": 60,
+      "end_line": 60,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_059",
+      "source_id": "S",
+      "start_line": 61,
+      "end_line": 61,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_060",
+      "source_id": "S",
+      "start_line": 62,
+      "end_line": 62,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_061",
+      "source_id": "S",
+      "start_line": 63,
+      "end_line": 63,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_062",
+      "source_id": "S",
+      "start_line": 64,
+      "end_line": 64,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_063",
+      "source_id": "S",
+      "start_line": 65,
+      "end_line": 65,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_064",
+      "source_id": "S",
+      "start_line": 66,
+      "end_line": 66,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_api_065",
+      "source_id": "S",
+      "start_line": 67,
+      "end_line": 67,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_file_cli",
+      "source_id": "S",
+      "start_line": 68,
+      "end_line": 68,
+      "kind": "heading2",
+      "audience": "body"
+    },
+    {
+      "id": "V13_cli_001",
+      "source_id": "S",
+      "start_line": 69,
+      "end_line": 69,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_cli_002",
+      "source_id": "S",
+      "start_line": 70,
+      "end_line": 70,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_cli_003",
+      "source_id": "S",
+      "start_line": 71,
+      "end_line": 71,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_cli_004",
+      "source_id": "S",
+      "start_line": 72,
+      "end_line": 72,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_cli_005",
+      "source_id": "S",
+      "start_line": 73,
+      "end_line": 73,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_cli_006",
+      "source_id": "S",
+      "start_line": 74,
+      "end_line": 74,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_cli_007",
+      "source_id": "S",
+      "start_line": 75,
+      "end_line": 75,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_cli_008",
+      "source_id": "S",
+      "start_line": 76,
+      "end_line": 76,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_cli_009",
+      "source_id": "S",
+      "start_line": 77,
+      "end_line": 77,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_cli_010",
+      "source_id": "S",
+      "start_line": 78,
+      "end_line": 78,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_cli_011",
+      "source_id": "S",
+      "start_line": 79,
+      "end_line": 79,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_cli_012",
+      "source_id": "S",
+      "start_line": 80,
+      "end_line": 80,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_cli_013",
+      "source_id": "S",
+      "start_line": 81,
+      "end_line": 81,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_cli_014",
+      "source_id": "S",
+      "start_line": 82,
+      "end_line": 82,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_cli_015",
+      "source_id": "S",
+      "start_line": 83,
+      "end_line": 83,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_cli_016",
+      "source_id": "S",
+      "start_line": 84,
+      "end_line": 84,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_cli_017",
+      "source_id": "S",
+      "start_line": 85,
+      "end_line": 85,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_cli_018",
+      "source_id": "S",
+      "start_line": 86,
+      "end_line": 86,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_cli_019",
+      "source_id": "S",
+      "start_line": 87,
+      "end_line": 87,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_cli_020",
+      "source_id": "S",
+      "start_line": 88,
+      "end_line": 88,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_cli_021",
+      "source_id": "S",
+      "start_line": 89,
+      "end_line": 89,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_cli_022",
+      "source_id": "S",
+      "start_line": 90,
+      "end_line": 90,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_cli_023",
+      "source_id": "S",
+      "start_line": 91,
+      "end_line": 91,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_cli_024",
+      "source_id": "S",
+      "start_line": 92,
+      "end_line": 92,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_cli_025",
+      "source_id": "S",
+      "start_line": 93,
+      "end_line": 93,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_cli_026",
+      "source_id": "S",
+      "start_line": 94,
+      "end_line": 94,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_cli_027",
+      "source_id": "S",
+      "start_line": 95,
+      "end_line": 95,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_cli_028",
+      "source_id": "S",
+      "start_line": 96,
+      "end_line": 96,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_cli_029",
+      "source_id": "S",
+      "start_line": 97,
+      "end_line": 97,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_cli_030",
+      "source_id": "S",
+      "start_line": 98,
+      "end_line": 98,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_cli_031",
+      "source_id": "S",
+      "start_line": 99,
+      "end_line": 99,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_cli_032",
+      "source_id": "S",
+      "start_line": 100,
+      "end_line": 100,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_cli_033",
+      "source_id": "S",
+      "start_line": 101,
+      "end_line": 101,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_cli_034",
+      "source_id": "S",
+      "start_line": 102,
+      "end_line": 102,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_cli_035",
+      "source_id": "S",
+      "start_line": 103,
+      "end_line": 103,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_cli_036",
+      "source_id": "S",
+      "start_line": 104,
+      "end_line": 104,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_cli_037",
+      "source_id": "S",
+      "start_line": 105,
+      "end_line": 105,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_cli_038",
+      "source_id": "S",
+      "start_line": 106,
+      "end_line": 106,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_cli_039",
+      "source_id": "S",
+      "start_line": 107,
+      "end_line": 107,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_cli_040",
+      "source_id": "S",
+      "start_line": 108,
+      "end_line": 108,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_cli_041",
+      "source_id": "S",
+      "start_line": 109,
+      "end_line": 109,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_cli_042",
+      "source_id": "S",
+      "start_line": 110,
+      "end_line": 110,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_cli_043",
+      "source_id": "S",
+      "start_line": 111,
+      "end_line": 111,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_cli_044",
+      "source_id": "S",
+      "start_line": 112,
+      "end_line": 112,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_cli_045",
+      "source_id": "S",
+      "start_line": 113,
+      "end_line": 113,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_cli_046",
+      "source_id": "S",
+      "start_line": 114,
+      "end_line": 114,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_cli_047",
+      "source_id": "S",
+      "start_line": 115,
+      "end_line": 115,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_cli_048",
+      "source_id": "S",
+      "start_line": 116,
+      "end_line": 116,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_file_core",
+      "source_id": "S",
+      "start_line": 117,
+      "end_line": 117,
+      "kind": "heading2",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_001",
+      "source_id": "S",
+      "start_line": 118,
+      "end_line": 118,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_002",
+      "source_id": "S",
+      "start_line": 119,
+      "end_line": 119,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_003",
+      "source_id": "S",
+      "start_line": 120,
+      "end_line": 120,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_004",
+      "source_id": "S",
+      "start_line": 121,
+      "end_line": 121,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_005",
+      "source_id": "S",
+      "start_line": 122,
+      "end_line": 122,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_006",
+      "source_id": "S",
+      "start_line": 123,
+      "end_line": 123,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_007",
+      "source_id": "S",
+      "start_line": 124,
+      "end_line": 124,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_008",
+      "source_id": "S",
+      "start_line": 125,
+      "end_line": 125,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_009",
+      "source_id": "S",
+      "start_line": 126,
+      "end_line": 126,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_010",
+      "source_id": "S",
+      "start_line": 127,
+      "end_line": 127,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_011",
+      "source_id": "S",
+      "start_line": 128,
+      "end_line": 128,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_012",
+      "source_id": "S",
+      "start_line": 129,
+      "end_line": 129,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_013",
+      "source_id": "S",
+      "start_line": 130,
+      "end_line": 130,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_014",
+      "source_id": "S",
+      "start_line": 131,
+      "end_line": 131,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_015",
+      "source_id": "S",
+      "start_line": 132,
+      "end_line": 132,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_016",
+      "source_id": "S",
+      "start_line": 133,
+      "end_line": 133,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_017",
+      "source_id": "S",
+      "start_line": 134,
+      "end_line": 134,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_018",
+      "source_id": "S",
+      "start_line": 135,
+      "end_line": 135,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_019",
+      "source_id": "S",
+      "start_line": 136,
+      "end_line": 136,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_020",
+      "source_id": "S",
+      "start_line": 137,
+      "end_line": 137,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_021",
+      "source_id": "S",
+      "start_line": 138,
+      "end_line": 138,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_022",
+      "source_id": "S",
+      "start_line": 139,
+      "end_line": 139,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_023",
+      "source_id": "S",
+      "start_line": 140,
+      "end_line": 140,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_024",
+      "source_id": "S",
+      "start_line": 141,
+      "end_line": 141,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_025",
+      "source_id": "S",
+      "start_line": 142,
+      "end_line": 142,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_026",
+      "source_id": "S",
+      "start_line": 143,
+      "end_line": 143,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_027",
+      "source_id": "S",
+      "start_line": 144,
+      "end_line": 144,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_028",
+      "source_id": "S",
+      "start_line": 145,
+      "end_line": 145,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_029",
+      "source_id": "S",
+      "start_line": 146,
+      "end_line": 146,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_030",
+      "source_id": "S",
+      "start_line": 147,
+      "end_line": 147,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_031",
+      "source_id": "S",
+      "start_line": 148,
+      "end_line": 148,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_032",
+      "source_id": "S",
+      "start_line": 149,
+      "end_line": 149,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_033",
+      "source_id": "S",
+      "start_line": 150,
+      "end_line": 150,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_034",
+      "source_id": "S",
+      "start_line": 151,
+      "end_line": 151,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_035",
+      "source_id": "S",
+      "start_line": 152,
+      "end_line": 152,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_036",
+      "source_id": "S",
+      "start_line": 153,
+      "end_line": 153,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_037",
+      "source_id": "S",
+      "start_line": 154,
+      "end_line": 154,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_038",
+      "source_id": "S",
+      "start_line": 155,
+      "end_line": 155,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_039",
+      "source_id": "S",
+      "start_line": 156,
+      "end_line": 156,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_040",
+      "source_id": "S",
+      "start_line": 157,
+      "end_line": 157,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_041",
+      "source_id": "S",
+      "start_line": 158,
+      "end_line": 158,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_042",
+      "source_id": "S",
+      "start_line": 159,
+      "end_line": 159,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_043",
+      "source_id": "S",
+      "start_line": 160,
+      "end_line": 160,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_044",
+      "source_id": "S",
+      "start_line": 161,
+      "end_line": 161,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_045",
+      "source_id": "S",
+      "start_line": 162,
+      "end_line": 162,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_046",
+      "source_id": "S",
+      "start_line": 163,
+      "end_line": 163,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_047",
+      "source_id": "S",
+      "start_line": 164,
+      "end_line": 164,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_048",
+      "source_id": "S",
+      "start_line": 165,
+      "end_line": 165,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_049",
+      "source_id": "S",
+      "start_line": 166,
+      "end_line": 166,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_050",
+      "source_id": "S",
+      "start_line": 167,
+      "end_line": 167,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_051",
+      "source_id": "S",
+      "start_line": 168,
+      "end_line": 168,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_052",
+      "source_id": "S",
+      "start_line": 169,
+      "end_line": 169,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_053",
+      "source_id": "S",
+      "start_line": 170,
+      "end_line": 170,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_054",
+      "source_id": "S",
+      "start_line": 171,
+      "end_line": 171,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_055",
+      "source_id": "S",
+      "start_line": 172,
+      "end_line": 172,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_056",
+      "source_id": "S",
+      "start_line": 173,
+      "end_line": 173,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_057",
+      "source_id": "S",
+      "start_line": 174,
+      "end_line": 174,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_058",
+      "source_id": "S",
+      "start_line": 175,
+      "end_line": 175,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_059",
+      "source_id": "S",
+      "start_line": 176,
+      "end_line": 176,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_060",
+      "source_id": "S",
+      "start_line": 177,
+      "end_line": 177,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_061",
+      "source_id": "S",
+      "start_line": 178,
+      "end_line": 178,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_062",
+      "source_id": "S",
+      "start_line": 179,
+      "end_line": 179,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_063",
+      "source_id": "S",
+      "start_line": 180,
+      "end_line": 180,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_064",
+      "source_id": "S",
+      "start_line": 181,
+      "end_line": 181,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_065",
+      "source_id": "S",
+      "start_line": 182,
+      "end_line": 182,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_066",
+      "source_id": "S",
+      "start_line": 183,
+      "end_line": 183,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_067",
+      "source_id": "S",
+      "start_line": 184,
+      "end_line": 184,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_068",
+      "source_id": "S",
+      "start_line": 185,
+      "end_line": 185,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_069",
+      "source_id": "S",
+      "start_line": 186,
+      "end_line": 186,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_070",
+      "source_id": "S",
+      "start_line": 187,
+      "end_line": 187,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_core_071",
+      "source_id": "S",
+      "start_line": 188,
+      "end_line": 188,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_file_gui",
+      "source_id": "S",
+      "start_line": 189,
+      "end_line": 189,
+      "kind": "heading2",
+      "audience": "body"
+    },
+    {
+      "id": "V13_gui_001",
+      "source_id": "S",
+      "start_line": 190,
+      "end_line": 190,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_gui_002",
+      "source_id": "S",
+      "start_line": 191,
+      "end_line": 191,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_gui_003",
+      "source_id": "S",
+      "start_line": 192,
+      "end_line": 192,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_gui_004",
+      "source_id": "S",
+      "start_line": 193,
+      "end_line": 193,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_gui_005",
+      "source_id": "S",
+      "start_line": 194,
+      "end_line": 194,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_gui_006",
+      "source_id": "S",
+      "start_line": 195,
+      "end_line": 195,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_gui_007",
+      "source_id": "S",
+      "start_line": 196,
+      "end_line": 196,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_gui_008",
+      "source_id": "S",
+      "start_line": 197,
+      "end_line": 197,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_gui_009",
+      "source_id": "S",
+      "start_line": 198,
+      "end_line": 198,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_gui_010",
+      "source_id": "S",
+      "start_line": 199,
+      "end_line": 199,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_gui_011",
+      "source_id": "S",
+      "start_line": 200,
+      "end_line": 200,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_gui_012",
+      "source_id": "S",
+      "start_line": 201,
+      "end_line": 201,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_gui_013",
+      "source_id": "S",
+      "start_line": 202,
+      "end_line": 202,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_gui_014",
+      "source_id": "S",
+      "start_line": 203,
+      "end_line": 203,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_gui_015",
+      "source_id": "S",
+      "start_line": 204,
+      "end_line": 204,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_gui_016",
+      "source_id": "S",
+      "start_line": 205,
+      "end_line": 205,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_gui_017",
+      "source_id": "S",
+      "start_line": 206,
+      "end_line": 206,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_gui_018",
+      "source_id": "S",
+      "start_line": 207,
+      "end_line": 207,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_gui_019",
+      "source_id": "S",
+      "start_line": 208,
+      "end_line": 208,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_gui_020",
+      "source_id": "S",
+      "start_line": 209,
+      "end_line": 209,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_gui_021",
+      "source_id": "S",
+      "start_line": 210,
+      "end_line": 210,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_gui_022",
+      "source_id": "S",
+      "start_line": 211,
+      "end_line": 211,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_gui_023",
+      "source_id": "S",
+      "start_line": 212,
+      "end_line": 212,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_gui_024",
+      "source_id": "S",
+      "start_line": 213,
+      "end_line": 213,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_gui_025",
+      "source_id": "S",
+      "start_line": 214,
+      "end_line": 214,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_gui_026",
+      "source_id": "S",
+      "start_line": 215,
+      "end_line": 215,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_gui_027",
+      "source_id": "S",
+      "start_line": 216,
+      "end_line": 216,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_gui_028",
+      "source_id": "S",
+      "start_line": 217,
+      "end_line": 217,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_gui_029",
+      "source_id": "S",
+      "start_line": 218,
+      "end_line": 218,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_gui_030",
+      "source_id": "S",
+      "start_line": 219,
+      "end_line": 219,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_gui_031",
+      "source_id": "S",
+      "start_line": 220,
+      "end_line": 220,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_gui_032",
+      "source_id": "S",
+      "start_line": 221,
+      "end_line": 221,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_gui_033",
+      "source_id": "S",
+      "start_line": 222,
+      "end_line": 222,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_gui_034",
+      "source_id": "S",
+      "start_line": 223,
+      "end_line": 223,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_gui_035",
+      "source_id": "S",
+      "start_line": 224,
+      "end_line": 224,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_gui_036",
+      "source_id": "S",
+      "start_line": 225,
+      "end_line": 225,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_gui_037",
+      "source_id": "S",
+      "start_line": 226,
+      "end_line": 226,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_gui_038",
+      "source_id": "S",
+      "start_line": 227,
+      "end_line": 227,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_gui_039",
+      "source_id": "S",
+      "start_line": 228,
+      "end_line": 228,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_gui_040",
+      "source_id": "S",
+      "start_line": 229,
+      "end_line": 229,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_gui_041",
+      "source_id": "S",
+      "start_line": 230,
+      "end_line": 230,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_gui_042",
+      "source_id": "S",
+      "start_line": 231,
+      "end_line": 231,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_gui_043",
+      "source_id": "S",
+      "start_line": 232,
+      "end_line": 232,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_gui_044",
+      "source_id": "S",
+      "start_line": 233,
+      "end_line": 233,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_gui_045",
+      "source_id": "S",
+      "start_line": 234,
+      "end_line": 234,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_gui_046",
+      "source_id": "S",
+      "start_line": 235,
+      "end_line": 235,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_gui_047",
+      "source_id": "S",
+      "start_line": 236,
+      "end_line": 236,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_gui_048",
+      "source_id": "S",
+      "start_line": 237,
+      "end_line": 237,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_gui_049",
+      "source_id": "S",
+      "start_line": 238,
+      "end_line": 238,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_gui_050",
+      "source_id": "S",
+      "start_line": 239,
+      "end_line": 239,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_gui_051",
+      "source_id": "S",
+      "start_line": 240,
+      "end_line": 240,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_file_index",
+      "source_id": "S",
+      "start_line": 241,
+      "end_line": 241,
+      "kind": "heading2",
+      "audience": "body"
+    },
+    {
+      "id": "V13_index_001",
+      "source_id": "S",
+      "start_line": 242,
+      "end_line": 242,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_index_002",
+      "source_id": "S",
+      "start_line": 243,
+      "end_line": 243,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_index_003",
+      "source_id": "S",
+      "start_line": 244,
+      "end_line": 244,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_index_004",
+      "source_id": "S",
+      "start_line": 245,
+      "end_line": 245,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_index_005",
+      "source_id": "S",
+      "start_line": 246,
+      "end_line": 246,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_index_006",
+      "source_id": "S",
+      "start_line": 247,
+      "end_line": 247,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_index_007",
+      "source_id": "S",
+      "start_line": 248,
+      "end_line": 248,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_index_008",
+      "source_id": "S",
+      "start_line": 249,
+      "end_line": 249,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_index_009",
+      "source_id": "S",
+      "start_line": 250,
+      "end_line": 250,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_index_010",
+      "source_id": "S",
+      "start_line": 251,
+      "end_line": 251,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_index_011",
+      "source_id": "S",
+      "start_line": 252,
+      "end_line": 252,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_index_012",
+      "source_id": "S",
+      "start_line": 253,
+      "end_line": 253,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_index_013",
+      "source_id": "S",
+      "start_line": 254,
+      "end_line": 254,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_index_014",
+      "source_id": "S",
+      "start_line": 255,
+      "end_line": 255,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_index_015",
+      "source_id": "S",
+      "start_line": 256,
+      "end_line": 256,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_index_016",
+      "source_id": "S",
+      "start_line": 257,
+      "end_line": 257,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_index_017",
+      "source_id": "S",
+      "start_line": 258,
+      "end_line": 258,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_index_018",
+      "source_id": "S",
+      "start_line": 259,
+      "end_line": 259,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_index_019",
+      "source_id": "S",
+      "start_line": 260,
+      "end_line": 260,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_index_020",
+      "source_id": "S",
+      "start_line": 261,
+      "end_line": 261,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_index_021",
+      "source_id": "S",
+      "start_line": 262,
+      "end_line": 262,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_index_022",
+      "source_id": "S",
+      "start_line": 263,
+      "end_line": 263,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_index_023",
+      "source_id": "S",
+      "start_line": 264,
+      "end_line": 264,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_index_024",
+      "source_id": "S",
+      "start_line": 265,
+      "end_line": 265,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_index_025",
+      "source_id": "S",
+      "start_line": 266,
+      "end_line": 266,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_index_026",
+      "source_id": "S",
+      "start_line": 267,
+      "end_line": 267,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_index_027",
+      "source_id": "S",
+      "start_line": 268,
+      "end_line": 268,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_index_028",
+      "source_id": "S",
+      "start_line": 269,
+      "end_line": 269,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_index_029",
+      "source_id": "S",
+      "start_line": 270,
+      "end_line": 270,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_index_030",
+      "source_id": "S",
+      "start_line": 271,
+      "end_line": 271,
+      "kind": "code",
+      "audience": "body"
+    },
+    {
+      "id": "V13_index_031",
+      "source_id": "S",
+      "start_line": 272,
+      "end_line": 272,
+      "kind": "code",
+      "audience": "body"
+    }
+  ],
+  "dependencies": [
+    {
+      "path": "skills/dyz-software/resources/harbor-delivery-v1.3/facts.json",
+      "sha256": "7d794c758fa83a5b2e56346890bbdc74de9b0e98d1eb91c8b06eafd589366ba0"
+    },
+    {
+      "path": "skills/dyz-software/resources/harbor-delivery-v1.3/source-lines.json",
+      "sha256": "ee3463b7ecf52ebcc8aa214402e047645eac4ccf097ae7b40ce5c61c42eb15cf"
+    },
+    {
+      "path": "skills/dyz-software/resources/harbor-delivery-v1.3/scope-and-rights.md",
+      "sha256": "246ac49a6cc20d907766bc9e0429d352c9c666ca3100fbbb916a7d2dffc4ff23"
+    },
+    {
+      "path": "skills/dyz-software/resources/harbor-delivery-v1.3/gui-default.png",
+      "sha256": "d2a4ee8124a5ad2a012ffae087f0123e616e564ee7123b9901c7900ea477ee3f"
+    },
+    {
+      "path": "skills/dyz-software/resources/harbor-delivery-v1.3/gui-sorted.png",
+      "sha256": "28277fb51e6cc8de86decae51b29c5e045ecb43cc3b1bd1a02361723562eb990"
+    },
+    {
+      "path": "skills/dyz-software/resources/harbor-delivery-v1.3/gui-duplicate-id.png",
+      "sha256": "fb4426408ccea7382a2494be8543f5b9297edf797a3c6c1fba8b21eb292b1ae3"
+    }
+  ]
+}

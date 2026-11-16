@@ -1,0 +1,71 @@
+{
+  "sensitivity": "synthetic",
+  "software_name": "港湾记录整理器",
+  "version": "1.3",
+  "previous_version": {
+    "version": "1.2",
+    "path": "skills/dyz-software/resources/harbor-delivery-v1.2/facts.json",
+    "sha256": "437854d2a0a2e35a2963d1e93dab73e3470c4b44e3c7e3928f77d2699f85e1f9"
+  },
+  "source_files": [
+    {
+      "file": "api.py",
+      "sha256": "d7a5c8493a1c9b150a9f17ef372b3ad0fbcc6419517f8c9b7a3c065135042ef7",
+      "physical_lines": 65
+    },
+    {
+      "file": "cli.py",
+      "sha256": "de887993b20563ae0ce2d0a32f9ca837e928320fd50dad9b5347d013cd0c0edd",
+      "physical_lines": 48
+    },
+    {
+      "file": "core.py",
+      "sha256": "e6acd5ed00bd9ff64069fef84fb6489f4986c03ba441a2367fd383ad68e419a9",
+      "physical_lines": 71
+    },
+    {
+      "file": "gui.py",
+      "sha256": "ce462a1e279b9cbdb4346b9533ffc092b3f713a1443e715e0755d0a2d6bffaea",
+      "physical_lines": 51
+    },
+    {
+      "file": "index.html",
+      "sha256": "00fb5fa5a9d6e9a0137dbff985f6b109e0cbf8d3c18422d75de9bf49a48a86c7",
+      "physical_lines": 31
+    }
+  ],
+  "physical_lines": 266,
+  "source_count_scope": "Five explicit project demo files; physical lines include comments and blanks, not official source-program quantity or original-expression count.",
+  "feature_delta": "Optional Unicode lexicographic id sorting in core, CLI, HTTP and GUI; default preserves input order. All records validated before output.",
+  "applicant": null,
+  "development_completion_date": null,
+  "first_publication": null,
+  "rights_basis": "not_professionally_reviewed",
+  "registration": "not_performed",
+  "screenshots": [
+    {
+      "path": "gui-default.png",
+      "sha256": "d2a4ee8124a5ad2a012ffae087f0123e616e564ee7123b9901c7900ea477ee3f",
+      "pixels": [
+        1200,
+        900
+      ]
+    },
+    {
+      "path": "gui-sorted.png",
+      "sha256": "28277fb51e6cc8de86decae51b29c5e045ecb43cc3b1bd1a02361723562eb990",
+      "pixels": [
+        1200,
+        900
+      ]
+    },
+    {
+      "path": "gui-duplicate-id.png",
+      "sha256": "fb4426408ccea7382a2494be8543f5b9297edf797a3c6c1fba8b21eb292b1ae3",
+      "pixels": [
+        1200,
+        900
+      ]
+    }
+  ]
+}

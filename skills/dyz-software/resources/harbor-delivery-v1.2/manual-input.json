@@ -1,0 +1,226 @@
+{
+  "sensitivity": "synthetic",
+  "document_id": "Harbor_manual",
+  "version": "1.2",
+  "business": "software",
+  "sources": [
+    {
+      "id": "S",
+      "path": "skills/dyz-software/resources/harbor-delivery-v1.2/manual.md",
+      "sha256": "0e8131838fbb3a4c0a7a7d1b8e7e4cbe7899f06dda4f250f1596e8531e35af3a"
+    },
+    {
+      "id": "Code_api",
+      "path": "skills/dyz-software/resources/harbor-demo/v1.2/api.py",
+      "sha256": "b406d4feb39224557dd73d0aad3565e2b11cdb84729668bb45470a15c31398d5"
+    },
+    {
+      "id": "Code_cli",
+      "path": "skills/dyz-software/resources/harbor-demo/v1.2/cli.py",
+      "sha256": "17d16810181a82a31a99d60da863d91e6f64ca8467527049ae5491ade9614cc9"
+    },
+    {
+      "id": "Code_core",
+      "path": "skills/dyz-software/resources/harbor-demo/v1.2/core.py",
+      "sha256": "a2840b6097524f5b5c95ba60e3313004d28cbf86963a1933bdcedd3486ce49c5"
+    },
+    {
+      "id": "Code_gui",
+      "path": "skills/dyz-software/resources/harbor-demo/v1.2/gui.py",
+      "sha256": "78088ab67941836bcfc0c5258b8acf8dee64ff3643a1ddd65afa82ec94d74494"
+    },
+    {
+      "id": "Code_index",
+      "path": "skills/dyz-software/resources/harbor-demo/v1.2/index.html",
+      "sha256": "f406ae71dd05f63eecc5bcf27e7857c79961085d575489c9aecf4118bcb1708b"
+    }
+  ],
+  "blocks": [
+    {
+      "id": "manual_1",
+      "source_id": "S",
+      "start_line": 1,
+      "end_line": 1,
+      "kind": "heading1",
+      "audience": "body"
+    },
+    {
+      "id": "manual_3",
+      "source_id": "S",
+      "start_line": 3,
+      "end_line": 3,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "manual_5",
+      "source_id": "S",
+      "start_line": 5,
+      "end_line": 5,
+      "kind": "heading2",
+      "audience": "body"
+    },
+    {
+      "id": "manual_7",
+      "source_id": "S",
+      "start_line": 7,
+      "end_line": 7,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "manual_9",
+      "source_id": "S",
+      "start_line": 9,
+      "end_line": 9,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "manual_11",
+      "source_id": "S",
+      "start_line": 11,
+      "end_line": 11,
+      "kind": "heading2",
+      "audience": "body"
+    },
+    {
+      "id": "manual_13",
+      "source_id": "S",
+      "start_line": 13,
+      "end_line": 13,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "manual_15",
+      "source_id": "S",
+      "start_line": 15,
+      "end_line": 15,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "manual_17",
+      "source_id": "S",
+      "start_line": 17,
+      "end_line": 17,
+      "kind": "heading2",
+      "audience": "body"
+    },
+    {
+      "id": "manual_19",
+      "source_id": "S",
+      "start_line": 19,
+      "end_line": 19,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "manual_21",
+      "source_id": "S",
+      "start_line": 21,
+      "end_line": 21,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "manual_23",
+      "source_id": "S",
+      "start_line": 23,
+      "end_line": 23,
+      "kind": "heading2",
+      "audience": "body"
+    },
+    {
+      "id": "manual_25",
+      "source_id": "S",
+      "start_line": 25,
+      "end_line": 25,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "manual_27",
+      "source_id": "S",
+      "start_line": 27,
+      "end_line": 27,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "manual_29",
+      "source_id": "S",
+      "start_line": 29,
+      "end_line": 29,
+      "kind": "heading2",
+      "audience": "body"
+    },
+    {
+      "id": "manual_31",
+      "source_id": "S",
+      "start_line": 31,
+      "end_line": 31,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "manual_33",
+      "source_id": "S",
+      "start_line": 33,
+      "end_line": 33,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "manual_35",
+      "source_id": "S",
+      "start_line": 35,
+      "end_line": 35,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "manual_37",
+      "source_id": "S",
+      "start_line": 37,
+      "end_line": 37,
+      "kind": "heading2",
+      "audience": "body"
+    },
+    {
+      "id": "manual_39",
+      "source_id": "S",
+      "start_line": 39,
+      "end_line": 39,
+      "kind": "paragraph",
+      "audience": "body"
+    },
+    {
+      "id": "manual_41",
+      "source_id": "S",
+      "start_line": 41,
+      "end_line": 41,
+      "kind": "paragraph",
+      "audience": "body"
+    }
+  ],
+  "dependencies": [
+    {
+      "path": "skills/dyz-software/resources/harbor-delivery-v1.2/facts.json",
+      "sha256": "437854d2a0a2e35a2963d1e93dab73e3470c4b44e3c7e3928f77d2699f85e1f9"
+    },
+    {
+      "path": "skills/dyz-software/resources/harbor-delivery-v1.2/source-lines.json",
+      "sha256": "6df7cc24b38ed181a5f754b122e962d9e00778dc7e1f17322d4f31b5bbc0dec1"
+    },
+    {
+      "path": "skills/dyz-software/resources/harbor-delivery-v1.2/gui-success.png",
+      "sha256": "64d6d9fe13f216ddffd251e32ea894a2fed6d6306faebf9351fac9e0ac2a7714"
+    },
+    {
+      "path": "skills/dyz-software/resources/harbor-delivery-v1.2/gui-duplicate-id.png",
+      "sha256": "56610baba354fafd8e76103ebdd71851dc995f887e39a568ae8bc1c18c05eba3"
+    }
+  ]
+}

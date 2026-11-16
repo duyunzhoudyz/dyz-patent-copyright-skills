@@ -1,0 +1,22 @@
+{
+  "sensitivity": "synthetic",
+  "adaptation": {
+    "jurisdiction": "unverified",
+    "right_type": "invention",
+    "domain": "synthetic-control",
+    "stage": "internal_draft"
+  },
+  "title": "合成温度控制方案",
+  "features": [
+    {"id": "f1", "text": "通过温度传感器采集温度", "evidence_id": "synthetic-design-1"},
+    {"id": "f2", "text": "在温度超过给定阈值时停止加热", "evidence_id": "synthetic-design-2"}
+  ],
+  "claims": [
+    {"id": 1, "category": "method", "depends_on": [], "feature_ids": ["f1"], "introduces": ["温度传感器"], "uses": []},
+    {"id": 2, "category": "method", "depends_on": [1], "feature_ids": ["f2"], "introduces": ["给定阈值"], "uses": ["温度传感器"]}
+  ],
+  "evidence": [
+    {"id": "synthetic-design-1", "source": "synthetic", "locator": "features/f1", "version": "1"},
+    {"id": "synthetic-design-2", "source": "synthetic", "locator": "features/f2", "version": "1"}
+  ]
+}

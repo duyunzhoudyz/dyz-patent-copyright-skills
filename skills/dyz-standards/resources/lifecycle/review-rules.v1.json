@@ -1,0 +1,29 @@
+{
+  "schema": "dyz-standard-finite-review-rules-v1",
+  "id": "dyz-standard-finite-review",
+  "version": "1.0",
+  "scope": "internal",
+  "basis": "原创内部工程核对规则；不代表完整GB/T、ISO或组织审查规则。",
+  "license": "PolyForm-Noncommercial-1.0.0 OR separately agreed commercial license",
+  "verified_on": "2026-11-14",
+  "professional_review": "not_performed",
+  "grammar": {
+    "condition_forms": ["仅在P时Q", "只有P时Q", "P时Q", "如果P则Q"],
+    "exception_forms": ["E除外", "除E外，Q"],
+    "modal_tokens": {"应": "requirement", "不应": "requirement", "必须": "requirement", "不得": "requirement", "宜": "recommendation", "不宜": "recommendation", "可": "permission"},
+    "nonmodal_words": ["响应", "适应", "相应", "对应", "供应", "应用", "反应", "可靠性", "可靠", "可用性", "可用", "可能", "可行性", "可行", "能力", "性能", "功能", "能源", "能量"],
+    "units": ["ms", "s", "min", "h", "mm", "cm", "m", "km", "mg", "g", "kg", "mL", "L", "Hz", "kHz", "MHz", "V", "mV", "A", "mA", "W", "kW", "Pa", "kPa", "MPa", "K", "℃", "°C", "%", "次", "个", "台", "秒", "毫秒", "分钟", "小时", "米", "毫米"],
+    "unsupported_markers": ["且", "或者", "或", "任一", "另有", "除非", "并非", "未必", "不构成", "必要时", "其", "上述", "下述", "该", "（", "）", "(", ")", "“", "”", "\"", "参照", "见表", "见附录"],
+    "explanatory_prefixes": ["注", "说明", "示例", "原文", "引用"],
+    "sentence_separators": "。；;\n"
+  },
+  "rules": [
+    {"id": "SR-REF-01", "version": "1", "implementation": "reference_integrity", "scope": "internal", "basis": "本资产：reference_integrity；引用身份解析由standards_contract所属层完成", "rights": "original_internal_rule", "objects": ["stable clause IDs", "display numbers", "references"], "deterministic_conditions": "重复稳定ID、声明显示号冲突；已存在引用解析报告可投影", "pending_conditions": "没有解析器结果或身份不唯一的引用", "uncovered": ["组织编号体例", "任意外部标准适用性"]},
+    {"id": "SR-TERM-01", "version": "1", "implementation": "term_consistency", "scope": "internal", "basis": "本资产：term_consistency；只消费显式term/definition/aliases声明", "rights": "original_internal_rule", "objects": ["terms", "actual clause text"], "deterministic_conditions": "同名术语显式定义不同；精确声明的别名可定位", "pending_conditions": "声明缺定义、同义词关系或未声明替换", "uncovered": ["自动推断同义关系", "学科术语专业认可"]},
+    {"id": "SR-QTY-01", "version": "1", "implementation": "quantity_unit", "scope": "internal", "basis": "本资产：quantity_unit；数字与有限单位逐字对应", "rights": "original_internal_rule", "objects": ["quantities", "literal number-unit expressions"], "deterministic_conditions": "支持单位的有序字面量能唯一对应时，比较数字与单位；不换算", "pending_conditions": "复杂表达、科学计数、容差、范围、多个量无法一一对应", "uncovered": ["单位换算", "不确定度", "试验判定规则"]},
+    {"id": "SR-COND-01", "version": "1", "implementation": "condition_direction", "scope": "internal", "basis": "本资产：condition_direction；只对grammar.condition_forms的单条件、同对象同动作子集判断方向", "rights": "original_internal_rule", "objects": ["literal source sentence", "actual final sentence"], "deterministic_conditions": "条件和结论文字相同且只有必要/充分方向不同", "pending_conditions": "嵌套、未知指代、多个条件或不同动作", "uncovered": ["任意自然语言蕴涵证明", "领域因果关系"]},
+    {"id": "SR-EXC-01", "version": "1", "implementation": "exception", "scope": "internal", "basis": "本资产：exception；只对grammar.exception_forms显式例外比较", "rights": "original_internal_rule", "objects": ["explicit exception", "actual final text"], "deterministic_conditions": "一个可定位E除外或除E外结构的存在与同一性", "pending_conditions": "例外跨句指代、附表或复杂嵌套", "uncovered": ["默示例外", "跨文档解释"]},
+    {"id": "SR-STR-01", "version": "1", "implementation": "strength", "scope": "internal", "basis": "本资产：strength；grammar.modal_tokens及完整词排除", "rights": "original_internal_rule", "objects": ["strength field", "normative literal sentence"], "deterministic_conditions": "普通单句中独立强度词与声明或来源不一致", "pending_conditions": "否定解释、原文引述、多个模态词或说明性上下文", "uncovered": ["普遍法律强制性", "组织批准", "自动改文"]},
+    {"id": "SR-VERIFY-01", "version": "1", "implementation": "verification_link", "scope": "internal", "basis": "本资产：verification_link；显式method_ids及verification_matrix", "rights": "original_internal_rule", "objects": ["clauses", "verification_matrix"], "deterministic_conditions": "声明的方法ID可连接同一条款；变化定位受影响方法", "pending_conditions": "无方法或实际试验/专业适用性缺证", "uncovered": ["真实试验", "认证", "方法技术充分性"]}
+  ]
+}

@@ -1,0 +1,136 @@
+{
+  "date": "2026-11-03",
+  "kind": "original_synthetic_protocol_change_chain_with_original_public_research",
+  "baseline_protocol": "1.0",
+  "current_protocol": "1.1",
+  "material_revision": "RS-2 separately from protocol version",
+  "basis": "Existing RQ-RIVER1.1 replaces R06 with R07; no invented parameter thresholds or official adoption. Original three independent N/C/V tasks remain unchanged.",
+  "unchanged_requirements": [
+    "R01",
+    "R02",
+    "R03 version comparison mechanism",
+    "R04",
+    "R05",
+    "R08",
+    "R09",
+    "R10"
+  ],
+  "changed_semantics": [
+    {
+      "clause": "RIV-03",
+      "from": "configured and message exact1.0",
+      "to": "configured and message exact1.1; no fallback or conversion"
+    },
+    {
+      "clause": "RIV-06",
+      "from": "integer seq exactly1..n; value nonboolean integer0..1000; null rejected",
+      "to": "nonboolean integer seq1..999 strictly increasing; arbitrary start/gaps allowed; null missing, not0; no fill/interpolation"
+    }
+  ],
+  "opinion_identity": "O-01..O-05 are baseline hypothetical opinions; O-V01..O-V05 are new revision opinions, not falsely paired old IDs. ReviewOpinions is stable whole-table role only.",
+  "old_review_reuse": "not_allowed; all four generated files and their actual hashes require current readback; previous original DOCX and comment bindings untouched",
+  "counterversion_behavior": "wrong exact version rejected before later fields, no automatic transformation or validated deployment coexistence",
+  "inputs": [
+    {
+      "role": "draft",
+      "version": "1.0",
+      "path": "skills/dyz-standards/resources/river-delivery-source/draft-v1.0-input.json",
+      "sha256": "712ea3dbf18711d69a6a23fd8c16c8d9e044e1bc81afc7b72eb6ea8430ae1cd7",
+      "blocks": 28,
+      "materials": 7
+    },
+    {
+      "role": "review",
+      "version": "1.0",
+      "path": "skills/dyz-standards/resources/river-delivery-source/review-v1.0-input.json",
+      "sha256": "a05a39bc92b2df4f612d4d24e112b60bfb6bf834f7404b81a94d3a5f75662b93",
+      "blocks": 17,
+      "materials": 7
+    },
+    {
+      "role": "draft",
+      "version": "1.1",
+      "path": "skills/dyz-standards/resources/river-delivery-source/draft-v1.1-input.json",
+      "sha256": "d6a916352aa751c03c7d0ca8db4f839a3e807486f1afe889e1ebbf3c566d7426",
+      "blocks": 28,
+      "materials": 7
+    },
+    {
+      "role": "review",
+      "version": "1.1",
+      "path": "skills/dyz-standards/resources/river-delivery-source/review-v1.1-input.json",
+      "sha256": "6024c85146a61ef0dc9d2adf1ed9e39b1be0a9790ca383de88a93254ae550b8e",
+      "blocks": 17,
+      "materials": 7
+    }
+  ],
+  "remaining": [
+    "GB full text and rights",
+    "RFC5318 adjudication",
+    "1.1 complete common-error boundary coverage",
+    "independent product interoperability",
+    "professional/organization acceptance"
+  ],
+  "initial_anticipated_affected_blocks": [
+    "RivEdition",
+    "RivScope",
+    "RivReference",
+    "RivTerms",
+    "Riv03",
+    "Riv06",
+    "RivExample",
+    "ReviewIdentity",
+    "ReviewBasis",
+    "ReviewSources",
+    "ReviewConditions",
+    "ReviewMatrix",
+    "ReviewActual",
+    "ReviewMore",
+    "ReviewOpinions",
+    "ReviewGovernance",
+    "ReviewTransition",
+    "ReviewIP"
+  ],
+  "material_revision_history": {
+    "RS-1": "Four PDFs generated and10 pages viewed; originals and input closure retained before adjustment.",
+    "RS-2": "ASCII separators replace Unicode dashes in new original prose; protocol values, conditions, exceptions and technical semantics unchanged. All output hashes must be rebuilt and reviewed."
+  },
+  "actual_word_changed_blocks": {
+    "v1.1-draft-r2": [
+      "Riv03",
+      "Riv06",
+      "RivEdition",
+      "RivExample",
+      "RivReference",
+      "RivScope",
+      "RivTerms"
+    ],
+    "v1.1-review-r2": [
+      "ReviewActual",
+      "ReviewBasis",
+      "ReviewConditions",
+      "ReviewGovernance",
+      "ReviewIP",
+      "ReviewIdentity",
+      "ReviewMatrix",
+      "ReviewMore",
+      "ReviewOpinionHead",
+      "ReviewOpinions",
+      "ReviewSources",
+      "ReviewTitle",
+      "ReviewTransition",
+      "ReviewTransitionHead"
+    ]
+  },
+  "actual_word_matching": {
+    "draft": {
+      "paired": 28,
+      "unresolved": 0
+    },
+    "review": {
+      "paired": 17,
+      "unresolved": 0
+    },
+    "material_revision": "RS-2"
+  }
+}

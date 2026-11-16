@@ -1,0 +1,135 @@
+{
+  "date": "2026-11-03",
+  "kind": "actual_docx_byte_and_bookmark_opinion_bindings_for_original_example",
+  "documents_and_opinions": [
+    {
+      "protocol": "1.0",
+      "documents": {
+        "draft": {
+          "document_id": "RiverDraft",
+          "version": "1.0_RS2",
+          "input": "skills/dyz-standards/resources/river-delivery-source/draft-v1.0-input.json",
+          "input_sha256": "712ea3dbf18711d69a6a23fd8c16c8d9e044e1bc81afc7b72eb6ea8430ae1cd7",
+          "docx_sha256": "1369da0e0edae090c0652818238305268a907d1acb3b0567b3e7591b98c6d464",
+          "source_md_sha256": "d3002dc1b91ebbfe95a509355300b2f60f615408ea39da26a40892a916df8a9f",
+          "observed_path": "outputs/maturity-i04-mixed-documents/v1.0-draft-r2/body/document.docx",
+          "path_note": "Ignored actual-output location, not a package runtime dependency. Reproduce in new output directory and compare actual DOCX bytes before reusing this binding."
+        },
+        "review": {
+          "document_id": "RiverReview",
+          "version": "1.0_RS2",
+          "input": "skills/dyz-standards/resources/river-delivery-source/review-v1.0-input.json",
+          "input_sha256": "a05a39bc92b2df4f612d4d24e112b60bfb6bf834f7404b81a94d3a5f75662b93",
+          "docx_sha256": "fd503b99b0800eb746fff4ef5f24875b28efab0abba7bce525196937fb32a0ce",
+          "source_md_sha256": "657b73c9799661bbadd8ee22534a1630f34205381ffad9f58af530c800c38e3c",
+          "observed_path": "outputs/maturity-i04-mixed-documents/v1.0-review-r2/body/document.docx",
+          "path_note": "Ignored actual-output location, not a package runtime dependency. Reproduce in new output directory and compare actual DOCX bytes before reusing this binding."
+        }
+      },
+      "opinions": [
+        {
+          "id": "O-01",
+          "nature": "original_hypothetical_author_recommendation_not_organization_decision",
+          "target_document": "draft",
+          "target_bookmark": "RivReference",
+          "target_docx_sha256": "1369da0e0edae090c0652818238305268a907d1acb3b0567b3e7591b98c6d464"
+        },
+        {
+          "id": "O-02",
+          "nature": "original_hypothetical_author_recommendation_not_organization_decision",
+          "target_document": "draft",
+          "target_bookmark": "Riv02",
+          "target_docx_sha256": "1369da0e0edae090c0652818238305268a907d1acb3b0567b3e7591b98c6d464"
+        },
+        {
+          "id": "O-03",
+          "nature": "original_hypothetical_author_recommendation_not_organization_decision",
+          "target_document": "draft",
+          "target_bookmark": "Riv06",
+          "target_docx_sha256": "1369da0e0edae090c0652818238305268a907d1acb3b0567b3e7591b98c6d464"
+        },
+        {
+          "id": "O-04",
+          "nature": "original_hypothetical_author_recommendation_not_organization_decision",
+          "target_document": "draft",
+          "target_bookmark": "Riv07",
+          "target_docx_sha256": "1369da0e0edae090c0652818238305268a907d1acb3b0567b3e7591b98c6d464"
+        },
+        {
+          "id": "O-05",
+          "nature": "original_hypothetical_author_recommendation_not_organization_decision",
+          "target_document": "draft",
+          "target_bookmark": "RivEdition",
+          "target_docx_sha256": "1369da0e0edae090c0652818238305268a907d1acb3b0567b3e7591b98c6d464"
+        }
+      ]
+    },
+    {
+      "protocol": "1.1",
+      "documents": {
+        "draft": {
+          "document_id": "RiverDraft",
+          "version": "1.1_RS2",
+          "input": "skills/dyz-standards/resources/river-delivery-source/draft-v1.1-input.json",
+          "input_sha256": "d6a916352aa751c03c7d0ca8db4f839a3e807486f1afe889e1ebbf3c566d7426",
+          "docx_sha256": "2e225447ed75c674188fead11e568a3e275fea4092848618ad2b7f576dd4de6b",
+          "source_md_sha256": "6288da4f6d92b98959d75f4b05127753dd713f888a85360c1568fecf83521802",
+          "observed_path": "outputs/maturity-i04-mixed-documents/v1.1-draft-r2/body/document.docx",
+          "path_note": "Ignored actual-output location, not a package runtime dependency. Reproduce in new output directory and compare actual DOCX bytes before reusing this binding."
+        },
+        "review": {
+          "document_id": "RiverReview",
+          "version": "1.1_RS2",
+          "input": "skills/dyz-standards/resources/river-delivery-source/review-v1.1-input.json",
+          "input_sha256": "6024c85146a61ef0dc9d2adf1ed9e39b1be0a9790ca383de88a93254ae550b8e",
+          "docx_sha256": "b15a63a5d2d39411169b41b4a6e1e2fe65909f57488b7797a790538bf68c9495",
+          "source_md_sha256": "112bc7331788971f23bcf9cad57cbc9e508606280ba1fa594c40706a71a5d033",
+          "observed_path": "outputs/maturity-i04-mixed-documents/v1.1-review-r2/body/document.docx",
+          "path_note": "Ignored actual-output location, not a package runtime dependency. Reproduce in new output directory and compare actual DOCX bytes before reusing this binding."
+        }
+      },
+      "opinions": [
+        {
+          "id": "O-V01",
+          "nature": "original_hypothetical_author_recommendation_not_organization_decision",
+          "target_document": "draft",
+          "target_bookmark": "Riv06",
+          "target_docx_sha256": "2e225447ed75c674188fead11e568a3e275fea4092848618ad2b7f576dd4de6b"
+        },
+        {
+          "id": "O-V02",
+          "nature": "original_hypothetical_author_recommendation_not_organization_decision",
+          "target_document": "draft",
+          "target_bookmark": "RivTerms",
+          "target_docx_sha256": "2e225447ed75c674188fead11e568a3e275fea4092848618ad2b7f576dd4de6b"
+        },
+        {
+          "id": "O-V03",
+          "nature": "original_hypothetical_author_recommendation_not_organization_decision",
+          "target_document": "draft",
+          "target_bookmark": "Riv03",
+          "target_docx_sha256": "2e225447ed75c674188fead11e568a3e275fea4092848618ad2b7f576dd4de6b"
+        },
+        {
+          "id": "O-V04",
+          "nature": "original_hypothetical_author_recommendation_not_organization_decision",
+          "target_document": "draft",
+          "target_bookmark": "Riv06",
+          "target_docx_sha256": "2e225447ed75c674188fead11e568a3e275fea4092848618ad2b7f576dd4de6b"
+        },
+        {
+          "id": "O-V05",
+          "nature": "original_hypothetical_author_recommendation_not_organization_decision",
+          "target_document": "review",
+          "target_bookmark": "ReviewMore",
+          "target_docx_sha256": "b15a63a5d2d39411169b41b4a6e1e2fe65909f57488b7797a790538bf68c9495"
+        }
+      ]
+    }
+  ],
+  "reuse_rule": "Target DOCX hash and actual unique bookmark must both match; any mismatch leaves opinion target not_currently_bound. Bytes/bookmark matches do not confer professional validity, acceptance or sending permission.",
+  "previous_original_comment_bindings": "unchanged; not reused here",
+  "actual_artifact_paths": "Observation locations only; runtime export takes explicit root/input/output and does not read these locations.",
+  "material_revision": "RS-2",
+  "previous_RS1_preserved": "outputs/maturity-i04-mixed-documents/before-material-ascii/skills/dyz-standards/resources/river-delivery-source/file-bindings.json"
+}

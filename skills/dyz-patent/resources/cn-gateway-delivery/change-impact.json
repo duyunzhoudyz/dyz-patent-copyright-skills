@@ -1,0 +1,44 @@
+{
+  "date": "2026-11-03",
+  "kind": "supported_author_internal_claim_refinement_not_new_technical_design",
+  "from": "GW-1.0",
+  "to": "GW-1.1",
+  "original_support": "S-11/12 and original claim3, N-0016/0017",
+  "substantive_change": "Move receiver count/range/hash validation, (g,e,q) record key and same-transaction new-record plus batch-result durable commit into gateway claim1 confirmation-generation conditions; retain idempotent replay/conflict in dependent3.",
+  "expected_changed_blocks": [
+    "PatEdition",
+    "PatClaim01",
+    "PatClaim03",
+    "PatP0004",
+    "PatAbstract"
+  ],
+  "claim_dependencies": "Claims2 to7 still directly depend on1; each inherits narrower1; same gateway method category but remote receiver-condition proof and actor interpretation remain professional questions.",
+  "figure_decision": {
+    "reuse": true,
+    "reason": "Same complete S embodiment already includes C durable transaction, content check/dedupe and postcommit ACK; gateway confirmation/reclamation path unchanged. Review actual current drawing again, not a new render claim."
+  },
+  "unsupported_changes_excluded": [
+    "z overflow action",
+    "persistent q metadata design",
+    "receiver cleanup policy",
+    "N AND M seal",
+    "timed continuous-online seal",
+    "performance or actual runtime claims"
+  ],
+  "versions": [
+    {
+      "version": "1.0",
+      "draft_sha256": "81af58bf390e07d15f820311f48be12da4d348b6cf71057e9d5d3abd1fd4784f",
+      "review_sha256": "ad67b44f4eb69a4e6e53b4b3f33d72b055a53890ffdadef68427b810d861c8ea"
+    },
+    {
+      "version": "1.1",
+      "draft_sha256": "1cb4ac9cb23c2d526063d3c3ef725f0db4a70dce8ce26f4686f82af697b8867a",
+      "review_sha256": "963b0187ea1ebd498f1ab2a576c776bcc8be120f8831c02f1b0743cd19e00a26"
+    }
+  ],
+  "professional": "not_performed",
+  "whole_goal": "active_not_complete",
+  "material_revision": "RS2",
+  "layout_refinement": "RS1 v1.1 abstract tail occupied a separate A4 page. Removed redundant wording from new summary/abstract, preserving original fact conditions, claim refinement and known unknowns. All RS1 source/input/output bytes retained; protocol/design version remains1.1."
+}

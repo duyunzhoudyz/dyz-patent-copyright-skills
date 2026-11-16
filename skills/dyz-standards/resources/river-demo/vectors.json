@@ -1,0 +1,1043 @@
+{
+  "fixture_id": "deepening-standards-d3",
+  "version": "1.0",
+  "kind": "predeclared_fixed_vectors",
+  "predeclaration": "Expected outputs written before model.py; do not change expected to accommodate implementation.",
+  "count": 58,
+  "vectors": [
+    {
+      "id": "10-minimum",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R01",
+        "R03",
+        "R04",
+        "R05",
+        "R06",
+        "R08"
+      ],
+      "initial_state": {},
+      "expected": {
+        "status": "accepted",
+        "reason": "accepted",
+        "state": {
+          "A": [
+            {
+              "seq": 1,
+              "value": 0
+            }
+          ]
+        }
+      },
+      "body_text": "{\"version\":\"1.0\",\"batch\":\"A\",\"records\":[{\"seq\":1,\"value\":0}]}"
+    },
+    {
+      "id": "10-four-max-value",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R04",
+        "R05",
+        "R06"
+      ],
+      "initial_state": {},
+      "expected": {
+        "status": "accepted",
+        "reason": "accepted",
+        "state": {
+          "ABCDEFGHIJKLMNO9": [
+            {
+              "seq": 1,
+              "value": 1000
+            },
+            {
+              "seq": 2,
+              "value": 1000
+            },
+            {
+              "seq": 3,
+              "value": 1000
+            },
+            {
+              "seq": 4,
+              "value": 1000
+            }
+          ]
+        }
+      },
+      "body_text": "{\"version\":\"1.0\",\"batch\":\"ABCDEFGHIJKLMNO9\",\"records\":[{\"seq\":1,\"value\":1000},{\"seq\":2,\"value\":1000},{\"seq\":3,\"value\":1000},{\"seq\":4,\"value\":1000}]}"
+    },
+    {
+      "id": "10-exact-1024",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R01"
+      ],
+      "initial_state": {},
+      "expected": {
+        "status": "accepted",
+        "reason": "accepted",
+        "state": {
+          "A": [
+            {
+              "seq": 1,
+              "value": 0
+            }
+          ]
+        }
+      },
+      "body_text": "{\"version\":\"1.0\",\"batch\":\"A\",\"records\":[{\"seq\":1,\"value\":0}]}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   "
+    },
+    {
+      "id": "10-over-1024",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R01"
+      ],
+      "initial_state": {},
+      "expected": {
+        "status": "rejected",
+        "reason": "size",
+        "state": {}
+      },
+      "body_text": "{\"version\":\"1.0\",\"batch\":\"A\",\"records\":[{\"seq\":1,\"value\":0}]}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    "
+    },
+    {
+      "id": "10-bad-first-and-replay",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R08",
+        "R09"
+      ],
+      "initial_state": {
+        "A": [
+          {
+            "seq": 1,
+            "value": 7
+          }
+        ]
+      },
+      "expected": {
+        "status": "rejected",
+        "reason": "field",
+        "state": {
+          "A": [
+            {
+              "seq": 1,
+              "value": 7
+            }
+          ]
+        }
+      },
+      "body_text": "{\"version\":\"1.0\",\"batch\":\"A\",\"records\":[{\"seq\":1,\"value\":true}]}"
+    },
+    {
+      "id": "10-last-record-invalid-atomic",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R08"
+      ],
+      "initial_state": {
+        "A": [
+          {
+            "seq": 1,
+            "value": 7
+          }
+        ]
+      },
+      "expected": {
+        "status": "rejected",
+        "reason": "field",
+        "state": {
+          "A": [
+            {
+              "seq": 1,
+              "value": 7
+            }
+          ]
+        }
+      },
+      "body_text": "{\"version\":\"1.0\",\"batch\":\"B\",\"records\":[{\"seq\":1,\"value\":4},{\"seq\":2,\"value\":1001}]}"
+    },
+    {
+      "id": "10-replay",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R08",
+        "R09"
+      ],
+      "initial_state": {
+        "A": [
+          {
+            "seq": 1,
+            "value": 0
+          }
+        ]
+      },
+      "expected": {
+        "status": "rejected",
+        "reason": "replay",
+        "state": {
+          "A": [
+            {
+              "seq": 1,
+              "value": 0
+            }
+          ]
+        }
+      },
+      "body_text": "{\"version\":\"1.0\",\"batch\":\"A\",\"records\":[{\"seq\":1,\"value\":0}]}"
+    },
+    {
+      "id": "10-version-mismatch",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R03"
+      ],
+      "initial_state": {},
+      "expected": {
+        "status": "rejected",
+        "reason": "version",
+        "state": {}
+      },
+      "body_text": "{\"version\":\"1.1\",\"batch\":\"A\",\"records\":[{\"seq\":1,\"value\":0}]}"
+    },
+    {
+      "id": "10-gap",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R06"
+      ],
+      "initial_state": {},
+      "expected": {
+        "status": "rejected",
+        "reason": "order",
+        "state": {}
+      },
+      "body_text": "{\"version\":\"1.0\",\"batch\":\"G\",\"records\":[{\"seq\":1,\"value\":2},{\"seq\":3,\"value\":4}]}"
+    },
+    {
+      "id": "10-nonone-start",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R06"
+      ],
+      "initial_state": {},
+      "expected": {
+        "status": "rejected",
+        "reason": "order",
+        "state": {}
+      },
+      "body_text": "{\"version\":\"1.0\",\"batch\":\"S\",\"records\":[{\"seq\":999,\"value\":8}]}"
+    },
+    {
+      "id": "10-null",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R06"
+      ],
+      "initial_state": {},
+      "expected": {
+        "status": "rejected",
+        "reason": "field",
+        "state": {}
+      },
+      "body_text": "{\"version\":\"1.0\",\"batch\":\"N\",\"records\":[{\"seq\":1,\"value\":null}]}"
+    },
+    {
+      "id": "10-duplicate-seq",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R06"
+      ],
+      "initial_state": {},
+      "expected": {
+        "status": "rejected",
+        "reason": "order",
+        "state": {}
+      },
+      "body_text": "{\"version\":\"1.0\",\"batch\":\"D\",\"records\":[{\"seq\":1,\"value\":4},{\"seq\":1,\"value\":5}]}"
+    },
+    {
+      "id": "10-descending",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R06"
+      ],
+      "initial_state": {},
+      "expected": {
+        "status": "rejected",
+        "reason": "order",
+        "state": {}
+      },
+      "body_text": "{\"version\":\"1.0\",\"batch\":\"D\",\"records\":[{\"seq\":2,\"value\":4},{\"seq\":1,\"value\":5}]}"
+    },
+    {
+      "id": "10-zero-seq",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R06"
+      ],
+      "initial_state": {},
+      "expected": {
+        "status": "rejected",
+        "reason": "order",
+        "state": {}
+      },
+      "body_text": "{\"version\":\"1.0\",\"batch\":\"Z\",\"records\":[{\"seq\":0,\"value\":4}]}"
+    },
+    {
+      "id": "10-bool-seq",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R06"
+      ],
+      "initial_state": {},
+      "expected": {
+        "status": "rejected",
+        "reason": "field",
+        "state": {}
+      },
+      "body_text": "{\"version\":\"1.0\",\"batch\":\"Z\",\"records\":[{\"seq\":true,\"value\":4}]}"
+    },
+    {
+      "id": "10-negative-value",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R06"
+      ],
+      "initial_state": {},
+      "expected": {
+        "status": "rejected",
+        "reason": "field",
+        "state": {}
+      },
+      "body_text": "{\"version\":\"1.0\",\"batch\":\"Z\",\"records\":[{\"seq\":1,\"value\":-1}]}"
+    },
+    {
+      "id": "11-minimum",
+      "receiver_version": "1.1",
+      "requirements": [
+        "R01",
+        "R03",
+        "R04",
+        "R05",
+        "R07",
+        "R08"
+      ],
+      "initial_state": {},
+      "expected": {
+        "status": "accepted",
+        "reason": "accepted",
+        "state": {
+          "A": [
+            {
+              "seq": 1,
+              "value": 0
+            }
+          ]
+        }
+      },
+      "body_text": "{\"version\":\"1.1\",\"batch\":\"A\",\"records\":[{\"seq\":1,\"value\":0}]}"
+    },
+    {
+      "id": "11-four-max-value",
+      "receiver_version": "1.1",
+      "requirements": [
+        "R04",
+        "R05",
+        "R07"
+      ],
+      "initial_state": {},
+      "expected": {
+        "status": "accepted",
+        "reason": "accepted",
+        "state": {
+          "ABCDEFGHIJKLMNO9": [
+            {
+              "seq": 1,
+              "value": 1000
+            },
+            {
+              "seq": 2,
+              "value": 1000
+            },
+            {
+              "seq": 3,
+              "value": 1000
+            },
+            {
+              "seq": 4,
+              "value": 1000
+            }
+          ]
+        }
+      },
+      "body_text": "{\"version\":\"1.1\",\"batch\":\"ABCDEFGHIJKLMNO9\",\"records\":[{\"seq\":1,\"value\":1000},{\"seq\":2,\"value\":1000},{\"seq\":3,\"value\":1000},{\"seq\":4,\"value\":1000}]}"
+    },
+    {
+      "id": "11-exact-1024",
+      "receiver_version": "1.1",
+      "requirements": [
+        "R01"
+      ],
+      "initial_state": {},
+      "expected": {
+        "status": "accepted",
+        "reason": "accepted",
+        "state": {
+          "A": [
+            {
+              "seq": 1,
+              "value": 0
+            }
+          ]
+        }
+      },
+      "body_text": "{\"version\":\"1.1\",\"batch\":\"A\",\"records\":[{\"seq\":1,\"value\":0}]}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   "
+    },
+    {
+      "id": "11-over-1024",
+      "receiver_version": "1.1",
+      "requirements": [
+        "R01"
+      ],
+      "initial_state": {},
+      "expected": {
+        "status": "rejected",
+        "reason": "size",
+        "state": {}
+      },
+      "body_text": "{\"version\":\"1.1\",\"batch\":\"A\",\"records\":[{\"seq\":1,\"value\":0}]}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    "
+    },
+    {
+      "id": "11-bad-first-and-replay",
+      "receiver_version": "1.1",
+      "requirements": [
+        "R08",
+        "R09"
+      ],
+      "initial_state": {
+        "A": [
+          {
+            "seq": 1,
+            "value": 7
+          }
+        ]
+      },
+      "expected": {
+        "status": "rejected",
+        "reason": "field",
+        "state": {
+          "A": [
+            {
+              "seq": 1,
+              "value": 7
+            }
+          ]
+        }
+      },
+      "body_text": "{\"version\":\"1.1\",\"batch\":\"A\",\"records\":[{\"seq\":1,\"value\":true}]}"
+    },
+    {
+      "id": "11-last-record-invalid-atomic",
+      "receiver_version": "1.1",
+      "requirements": [
+        "R08"
+      ],
+      "initial_state": {
+        "A": [
+          {
+            "seq": 1,
+            "value": 7
+          }
+        ]
+      },
+      "expected": {
+        "status": "rejected",
+        "reason": "field",
+        "state": {
+          "A": [
+            {
+              "seq": 1,
+              "value": 7
+            }
+          ]
+        }
+      },
+      "body_text": "{\"version\":\"1.1\",\"batch\":\"B\",\"records\":[{\"seq\":1,\"value\":4},{\"seq\":2,\"value\":1001}]}"
+    },
+    {
+      "id": "11-replay",
+      "receiver_version": "1.1",
+      "requirements": [
+        "R08",
+        "R09"
+      ],
+      "initial_state": {
+        "A": [
+          {
+            "seq": 1,
+            "value": 0
+          }
+        ]
+      },
+      "expected": {
+        "status": "rejected",
+        "reason": "replay",
+        "state": {
+          "A": [
+            {
+              "seq": 1,
+              "value": 0
+            }
+          ]
+        }
+      },
+      "body_text": "{\"version\":\"1.1\",\"batch\":\"A\",\"records\":[{\"seq\":1,\"value\":0}]}"
+    },
+    {
+      "id": "11-version-mismatch",
+      "receiver_version": "1.1",
+      "requirements": [
+        "R03"
+      ],
+      "initial_state": {},
+      "expected": {
+        "status": "rejected",
+        "reason": "version",
+        "state": {}
+      },
+      "body_text": "{\"version\":\"1.0\",\"batch\":\"A\",\"records\":[{\"seq\":1,\"value\":0}]}"
+    },
+    {
+      "id": "11-gap",
+      "receiver_version": "1.1",
+      "requirements": [
+        "R07"
+      ],
+      "initial_state": {},
+      "expected": {
+        "status": "accepted",
+        "reason": "accepted",
+        "state": {
+          "G": [
+            {
+              "seq": 1,
+              "value": 2
+            },
+            {
+              "seq": 3,
+              "value": 4
+            }
+          ]
+        }
+      },
+      "body_text": "{\"version\":\"1.1\",\"batch\":\"G\",\"records\":[{\"seq\":1,\"value\":2},{\"seq\":3,\"value\":4}]}"
+    },
+    {
+      "id": "11-nonone-start",
+      "receiver_version": "1.1",
+      "requirements": [
+        "R07"
+      ],
+      "initial_state": {},
+      "expected": {
+        "status": "accepted",
+        "reason": "accepted",
+        "state": {
+          "S": [
+            {
+              "seq": 999,
+              "value": 8
+            }
+          ]
+        }
+      },
+      "body_text": "{\"version\":\"1.1\",\"batch\":\"S\",\"records\":[{\"seq\":999,\"value\":8}]}"
+    },
+    {
+      "id": "11-null",
+      "receiver_version": "1.1",
+      "requirements": [
+        "R07"
+      ],
+      "initial_state": {},
+      "expected": {
+        "status": "accepted",
+        "reason": "accepted",
+        "state": {
+          "N": [
+            {
+              "seq": 1,
+              "value": null
+            }
+          ]
+        }
+      },
+      "body_text": "{\"version\":\"1.1\",\"batch\":\"N\",\"records\":[{\"seq\":1,\"value\":null}]}"
+    },
+    {
+      "id": "11-duplicate-seq",
+      "receiver_version": "1.1",
+      "requirements": [
+        "R07"
+      ],
+      "initial_state": {},
+      "expected": {
+        "status": "rejected",
+        "reason": "order",
+        "state": {}
+      },
+      "body_text": "{\"version\":\"1.1\",\"batch\":\"D\",\"records\":[{\"seq\":1,\"value\":4},{\"seq\":1,\"value\":5}]}"
+    },
+    {
+      "id": "11-descending",
+      "receiver_version": "1.1",
+      "requirements": [
+        "R07"
+      ],
+      "initial_state": {},
+      "expected": {
+        "status": "rejected",
+        "reason": "order",
+        "state": {}
+      },
+      "body_text": "{\"version\":\"1.1\",\"batch\":\"D\",\"records\":[{\"seq\":2,\"value\":4},{\"seq\":1,\"value\":5}]}"
+    },
+    {
+      "id": "11-zero-seq",
+      "receiver_version": "1.1",
+      "requirements": [
+        "R07"
+      ],
+      "initial_state": {},
+      "expected": {
+        "status": "rejected",
+        "reason": "field",
+        "state": {}
+      },
+      "body_text": "{\"version\":\"1.1\",\"batch\":\"Z\",\"records\":[{\"seq\":0,\"value\":4}]}"
+    },
+    {
+      "id": "11-bool-seq",
+      "receiver_version": "1.1",
+      "requirements": [
+        "R07"
+      ],
+      "initial_state": {},
+      "expected": {
+        "status": "rejected",
+        "reason": "field",
+        "state": {}
+      },
+      "body_text": "{\"version\":\"1.1\",\"batch\":\"Z\",\"records\":[{\"seq\":true,\"value\":4}]}"
+    },
+    {
+      "id": "11-negative-value",
+      "receiver_version": "1.1",
+      "requirements": [
+        "R07"
+      ],
+      "initial_state": {},
+      "expected": {
+        "status": "rejected",
+        "reason": "field",
+        "state": {}
+      },
+      "body_text": "{\"version\":\"1.1\",\"batch\":\"Z\",\"records\":[{\"seq\":1,\"value\":-1}]}"
+    },
+    {
+      "id": "10-empty",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R01"
+      ],
+      "initial_state": {},
+      "expected": {
+        "status": "rejected",
+        "reason": "size",
+        "state": {}
+      },
+      "body_text": ""
+    },
+    {
+      "id": "10-invalid-utf8",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R01"
+      ],
+      "initial_state": {},
+      "expected": {
+        "status": "rejected",
+        "reason": "encoding",
+        "state": {}
+      },
+      "body_hex": "ff"
+    },
+    {
+      "id": "10-bom",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R01"
+      ],
+      "initial_state": {},
+      "expected": {
+        "status": "rejected",
+        "reason": "encoding",
+        "state": {}
+      },
+      "body_hex": "efbbbf7b7d"
+    },
+    {
+      "id": "10-trailing",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R01",
+        "R02"
+      ],
+      "initial_state": {},
+      "expected": {
+        "status": "rejected",
+        "reason": "json",
+        "state": {}
+      },
+      "body_text": "{} {}"
+    },
+    {
+      "id": "10-duplicate-top",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R02"
+      ],
+      "initial_state": {},
+      "expected": {
+        "status": "rejected",
+        "reason": "json",
+        "state": {}
+      },
+      "body_text": "{\"version\":\"1.0\",\"batch\":\"A\",\"batch\":\"B\",\"records\":[{\"seq\":1,\"value\":0}]}"
+    },
+    {
+      "id": "10-escaped-duplicate",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R02"
+      ],
+      "initial_state": {},
+      "expected": {
+        "status": "rejected",
+        "reason": "json",
+        "state": {}
+      },
+      "body_text": "{\"version\":\"1.0\",\"batch\":\"A\",\"records\":[{\"seq\":1,\"value\":0,\"va\\u006cue\":1}]}"
+    },
+    {
+      "id": "10-token-1.0",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R02"
+      ],
+      "initial_state": {},
+      "expected": {
+        "status": "rejected",
+        "reason": "json",
+        "state": {}
+      },
+      "body_text": "{\"version\":\"1.0\",\"batch\":\"A\",\"records\":[{\"seq\":1,\"value\":1.0}]}"
+    },
+    {
+      "id": "10-token-1e0",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R02"
+      ],
+      "initial_state": {},
+      "expected": {
+        "status": "rejected",
+        "reason": "json",
+        "state": {}
+      },
+      "body_text": "{\"version\":\"1.0\",\"batch\":\"A\",\"records\":[{\"seq\":1,\"value\":1e0}]}"
+    },
+    {
+      "id": "10-token-NaN",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R02"
+      ],
+      "initial_state": {},
+      "expected": {
+        "status": "rejected",
+        "reason": "json",
+        "state": {}
+      },
+      "body_text": "{\"version\":\"1.0\",\"batch\":\"A\",\"records\":[{\"seq\":1,\"value\":NaN}]}"
+    },
+    {
+      "id": "10-token-Infinity",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R02"
+      ],
+      "initial_state": {},
+      "expected": {
+        "status": "rejected",
+        "reason": "json",
+        "state": {}
+      },
+      "body_text": "{\"version\":\"1.0\",\"batch\":\"A\",\"records\":[{\"seq\":1,\"value\":Infinity}]}"
+    },
+    {
+      "id": "10-token--Infinity",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R02"
+      ],
+      "initial_state": {},
+      "expected": {
+        "status": "rejected",
+        "reason": "json",
+        "state": {}
+      },
+      "body_text": "{\"version\":\"1.0\",\"batch\":\"A\",\"records\":[{\"seq\":1,\"value\":-Infinity}]}"
+    },
+    {
+      "id": "10-negative-zero",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R02",
+        "R06"
+      ],
+      "initial_state": {},
+      "expected": {
+        "status": "accepted",
+        "reason": "accepted",
+        "state": {
+          "A": [
+            {
+              "seq": 1,
+              "value": 0
+            }
+          ]
+        }
+      },
+      "body_text": "{\"version\":\"1.0\",\"batch\":\"A\",\"records\":[{\"seq\":1,\"value\":-0}]}"
+    },
+    {
+      "id": "10-shape-array",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R03"
+      ],
+      "initial_state": {},
+      "expected": {
+        "status": "rejected",
+        "reason": "shape",
+        "state": {}
+      },
+      "body_text": "[]"
+    },
+    {
+      "id": "10-extra-top",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R03"
+      ],
+      "initial_state": {},
+      "expected": {
+        "status": "rejected",
+        "reason": "shape",
+        "state": {}
+      },
+      "body_text": "{\"version\":\"1.0\",\"batch\":\"A\",\"records\":[{\"seq\":1,\"value\":0}],\"extra\":0}"
+    },
+    {
+      "id": "10-missing-top",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R03"
+      ],
+      "initial_state": {},
+      "expected": {
+        "status": "rejected",
+        "reason": "shape",
+        "state": {}
+      },
+      "body_text": "{\"version\":\"1.0\",\"batch\":\"A\"}"
+    },
+    {
+      "id": "10-bad-batch-lower",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R04"
+      ],
+      "initial_state": {},
+      "expected": {
+        "status": "rejected",
+        "reason": "batch",
+        "state": {}
+      },
+      "body_text": "{\"version\":\"1.0\",\"batch\":\"a\",\"records\":[{\"seq\":1,\"value\":0}]}"
+    },
+    {
+      "id": "10-bad-batch-unicode",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R04"
+      ],
+      "initial_state": {},
+      "expected": {
+        "status": "rejected",
+        "reason": "batch",
+        "state": {}
+      },
+      "body_text": "{\"version\":\"1.0\",\"batch\":\"溪\",\"records\":[{\"seq\":1,\"value\":0}]}"
+    },
+    {
+      "id": "10-bad-batch-long",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R04"
+      ],
+      "initial_state": {},
+      "expected": {
+        "status": "rejected",
+        "reason": "batch",
+        "state": {}
+      },
+      "body_text": "{\"version\":\"1.0\",\"batch\":\"AAAAAAAAAAAAAAAAA\",\"records\":[{\"seq\":1,\"value\":0}]}"
+    },
+    {
+      "id": "10-no-records",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R05"
+      ],
+      "initial_state": {},
+      "expected": {
+        "status": "rejected",
+        "reason": "records",
+        "state": {}
+      },
+      "body_text": "{\"version\":\"1.0\",\"batch\":\"A\",\"records\":[]}"
+    },
+    {
+      "id": "10-five-records",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R05"
+      ],
+      "initial_state": {},
+      "expected": {
+        "status": "rejected",
+        "reason": "records",
+        "state": {}
+      },
+      "body_text": "{\"version\":\"1.0\",\"batch\":\"A\",\"records\":[{\"seq\":1,\"value\":0},{\"seq\":2,\"value\":0},{\"seq\":3,\"value\":0},{\"seq\":4,\"value\":0},{\"seq\":5,\"value\":0}]}"
+    },
+    {
+      "id": "10-records-object",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R05"
+      ],
+      "initial_state": {},
+      "expected": {
+        "status": "rejected",
+        "reason": "records",
+        "state": {}
+      },
+      "body_text": "{\"version\":\"1.0\",\"batch\":\"A\",\"records\":{}}"
+    },
+    {
+      "id": "10-record-extra",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R05"
+      ],
+      "initial_state": {},
+      "expected": {
+        "status": "rejected",
+        "reason": "field",
+        "state": {}
+      },
+      "body_text": "{\"version\":\"1.0\",\"batch\":\"A\",\"records\":[{\"seq\":1,\"value\":0,\"x\":1}]}"
+    },
+    {
+      "id": "10-record-missing",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R05"
+      ],
+      "initial_state": {},
+      "expected": {
+        "status": "rejected",
+        "reason": "field",
+        "state": {}
+      },
+      "body_text": "{\"version\":\"1.0\",\"batch\":\"A\",\"records\":[{\"seq\":1}]}"
+    },
+    {
+      "id": "10-object-order",
+      "receiver_version": "1.0",
+      "requirements": [
+        "R02",
+        "R04"
+      ],
+      "initial_state": {},
+      "expected": {
+        "status": "accepted",
+        "reason": "accepted",
+        "state": {
+          "A": [
+            {
+              "value": 0,
+              "seq": 1
+            }
+          ]
+        }
+      },
+      "body_text": " { \"records\" : [{\"value\":0,\"seq\":1}], \"batch\":\"\\u0041\", \"version\":\"1.0\" } "
+    },
+    {
+      "id": "11-seq-over-range",
+      "receiver_version": "1.1",
+      "requirements": [
+        "R07"
+      ],
+      "initial_state": {},
+      "expected": {
+        "status": "rejected",
+        "reason": "field",
+        "state": {}
+      },
+      "body_text": "{\"version\":\"1.1\",\"batch\":\"R\",\"records\":[{\"seq\":1000,\"value\":0}]}"
+    },
+    {
+      "id": "11-null-and-gap-no-fill",
+      "receiver_version": "1.1",
+      "requirements": [
+        "R07",
+        "R08"
+      ],
+      "initial_state": {},
+      "expected": {
+        "status": "accepted",
+        "reason": "accepted",
+        "state": {
+          "R": [
+            {
+              "seq": 2,
+              "value": null
+            },
+            {
+              "seq": 4,
+              "value": 0
+            }
+          ]
+        }
+      },
+      "body_text": "{\"version\":\"1.1\",\"batch\":\"R\",\"records\":[{\"seq\":2,\"value\":null},{\"seq\":4,\"value\":0}]}"
+    }
+  ]
+}

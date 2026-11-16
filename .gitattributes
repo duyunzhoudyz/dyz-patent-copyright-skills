@@ -1,0 +1,3 @@
+# Evidence mappings and fixtures bind exact bytes, including line endings.
+# Preserve source bytes across Git staging and checkout on every platform.
+* -text

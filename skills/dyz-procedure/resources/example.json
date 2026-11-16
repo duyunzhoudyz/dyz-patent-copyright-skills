@@ -1,0 +1,50 @@
+{
+  "adaptation": {
+    "jurisdiction": "TEST",
+    "right_type": "invention",
+    "domain": "synthetic-control",
+    "stage": "pre_disclosure"
+  },
+  "as_of": "2026-10-31T12:00:00+00:00",
+  "evidence": [
+    {
+      "id": "synthetic-filing",
+      "version": "1",
+      "source": "synthetic fixture, not an official record",
+      "locator": "synthetic-description:paragraph-1",
+      "kind": "synthetic"
+    }
+  ],
+  "applications": [
+    {
+      "id": "synthetic-application",
+      "version": "1",
+      "jurisdiction": "TEST",
+      "submitted": true,
+      "filing_at": "2026-04-01T09:00:00+08:00",
+      "priority_at": "2025-04-01T09:00:00+08:00",
+      "evidence_ids": ["synthetic-filing"]
+    }
+  ],
+  "contents": [
+    {
+      "id": "feature-a",
+      "kind": "feature",
+      "mappings": [
+        {
+          "application_id": "synthetic-application",
+          "support": "confirmed",
+          "locator": "synthetic-description:paragraph-1",
+          "priority_supported": false,
+          "evidence_ids": ["synthetic-filing"]
+        }
+      ]
+    },
+    {
+      "id": "combination-ab",
+      "kind": "combination",
+      "mappings": []
+    }
+  ],
+  "target_regions": ["TEST", "OTHER"]
+}

@@ -1,0 +1,118 @@
+{
+  "date": "2026-11-03",
+  "kind": "current_original_verification_actual_file_and_existing_target_bindings",
+  "material_revision": "LOCAL_INTEROP1_RS3",
+  "document": {
+    "input": "skills/dyz-standards/resources/river-local-interop/document-input.json",
+    "input_file_sha256": "9083732e026f846d82137f670f7f5f6ea7ceb4e69468de538a0272197359eba0",
+    "docx_sha256": "345e6418bee89f6b41b19091c73cff194b1e31f359876bd3bd394db1e38efd36",
+    "pdf_sha256": "a1fb5cafcf0671fe398a021deed288c838cee4a9f29b8162d14c5630a1d508d3",
+    "output_hint": "outputs/maturity-i04-river-interop/current-document-r3",
+    "pages": 2,
+    "unique_bookmarks": 19,
+    "literal_segments_checked": 58,
+    "targets": [
+      {
+        "bookmark": "InteropMethods",
+        "text_sha256": "8a38964f7187644d008d6a3bf9b83b9e3dac05d33b0c76b0b359ef8001452ab9",
+        "locator": "body/tbl[1]/tr[1]/tc[1]/p[1]/bookmarkStart[1]",
+        "end_locator": "body/tbl[1]/tr[4]/tc[3]/p[1]/bookmarkEnd[1]"
+      },
+      {
+        "bookmark": "InteropResults",
+        "text_sha256": "d097df16bb0251a0dd9060774b952a4b2a8fdfb3d89e9ee76dc8354b8f66e031",
+        "locator": "body/tbl[2]/tr[1]/tc[1]/p[1]/bookmarkStart[1]",
+        "end_locator": "body/tbl[2]/tr[6]/tc[3]/p[1]/bookmarkEnd[1]"
+      },
+      {
+        "bookmark": "InteropActual",
+        "text_sha256": "2905c21790dc6613f530c7cd58d210ebbe82c1c7acf3f6e87266bfc85ac25d49",
+        "locator": "body/p[7]/bookmarkStart[1]",
+        "end_locator": "body/p[7]/bookmarkEnd[1]"
+      },
+      {
+        "bookmark": "InteropFresh",
+        "text_sha256": "f65b8c202182027e5e6678ec53c9b6c211d06c4c0b1cfc1e9d7451e3431f0dfa",
+        "locator": "body/p[8]/bookmarkStart[1]",
+        "end_locator": "body/p[8]/bookmarkEnd[1]"
+      },
+      {
+        "bookmark": "InteropControls",
+        "text_sha256": "5f8d9ee9f8375fbde6c34b0cc4e83de950d6e1c72e4a2950997a0818a9aa2fd3",
+        "locator": "body/p[10]/bookmarkStart[1]",
+        "end_locator": "body/p[10]/bookmarkEnd[1]"
+      },
+      {
+        "bookmark": "InteropImpact",
+        "text_sha256": "89f3a8d431aabf5f6d0ecf2429be6813612a52e958194670b58b6a865bdef991",
+        "locator": "body/tbl[3]/tr[1]/tc[1]/p[1]/bookmarkStart[1]",
+        "end_locator": "body/tbl[3]/tr[4]/tc[3]/p[1]/bookmarkEnd[1]"
+      },
+      {
+        "bookmark": "InteropLimits",
+        "text_sha256": "2dd2bc7dd3cf737bbe6bdc5461e0e29191bdddb6339e0cc8cd24dcfb955cc82b",
+        "locator": "body/p[13]/bookmarkStart[1]",
+        "end_locator": "body/p[13]/bookmarkEnd[1]"
+      }
+    ],
+    "word_readback_state": "complete_supported_subset"
+  },
+  "existing_files_observed_targets": [
+    {
+      "kind": "original_RS2_review",
+      "docx_sha256": "b15a63a5d2d39411169b41b4a6e1e2fe65909f57488b7797a790538bf68c9495",
+      "workspace_docx_hint": "outputs/maturity-i04-mixed-documents/v1.1-review-r2/body/document.docx",
+      "targets": [
+        {
+          "bookmark": "ReviewActual",
+          "text_sha256": "2784f1f735098e44e1c9e7f87fc82c4301c350682dcecf1e24c217ed33917430",
+          "locator": "body/p[8]/bookmarkStart[1]",
+          "end_locator": "body/p[8]/bookmarkEnd[1]"
+        },
+        {
+          "bookmark": "ReviewMore",
+          "text_sha256": "2e3e3e28aacafb506042a45a83fc77d1f17b99661bedfdb7b43728c91679c9b8",
+          "locator": "body/p[9]/bookmarkStart[1]",
+          "end_locator": "body/p[9]/bookmarkEnd[1]"
+        },
+        {
+          "bookmark": "ReviewOpinions",
+          "text_sha256": "f0eeabd8b84b10ac0c9ef76ee19d656987c0e79019009f38a520d89ffcfca896",
+          "locator": "body/tbl[3]/tr[1]/tc[1]/p[1]/bookmarkStart[1]",
+          "end_locator": "body/tbl[3]/tr[6]/tc[3]/p[1]/bookmarkEnd[1]"
+        }
+      ]
+    },
+    {
+      "kind": "prior_V11_supplement",
+      "docx_sha256": "6360dd437071a13836f99abd07532ce25eaf6cdde3bca2575888d45254cc5d7b",
+      "workspace_docx_hint": "outputs/maturity-i04-river-v11-coverage/current-package/body/document.docx",
+      "targets": [
+        {
+          "bookmark": "V11Method",
+          "text_sha256": "8a2de7173b96deb913364c13360f97c59851af18d2d9b47ec03f4400556385a1",
+          "locator": "body/p[5]/bookmarkStart[1]",
+          "end_locator": "body/p[5]/bookmarkEnd[1]"
+        },
+        {
+          "bookmark": "V11Remaining",
+          "text_sha256": "75ea50f92be30ec64052584a887754a835b475fb705f6caa83d36ee2e6486046",
+          "locator": "body/p[14]/bookmarkStart[1]",
+          "end_locator": "body/p[14]/bookmarkEnd[1]"
+        }
+      ]
+    }
+  ],
+  "execution_record": "skills/dyz-standards/resources/river-local-interop/execution.json",
+  "execution_record_sha256": "0f00311a738fb6b911eca91baeb52713a99d43eb73df22e0a87a6426a1b24084",
+  "scope": "Current supplement7 and existing5 actual literal targets; old approvals and review dates are not upgraded. Workspace hints not required for package execution.",
+  "earlier_document_attempts_preserved": true,
+  "only_editorial_document_blocks_changed": [
+    "InteropActual",
+    "InteropControls",
+    "InteropFresh"
+  ],
+  "protocol_old_model_corpora_and_current_RS2_technical_text_unchanged": true,
+  "professional_or_organization_review": "not_performed",
+  "two_independent_products": "not_verified"
+}

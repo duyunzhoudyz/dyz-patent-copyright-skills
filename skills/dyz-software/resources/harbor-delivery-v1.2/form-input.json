@@ -1,0 +1,157 @@
+{
+  "sensitivity": "synthetic",
+  "document_id": "Harbor_R11_fields",
+  "version": "1.2_fields_20261103.r3",
+  "business": "software",
+  "sources": [
+    {
+      "id": "Form",
+      "path": "skills/dyz-software/resources/harbor-delivery-v1.2/form-candidate.md",
+      "sha256": "19f19e6b66ef43d435da034dc4957542a123cd3cd38fb28cf2cd9b665ee71136"
+    }
+  ],
+  "dependencies": [
+    {
+      "path": "skills/dyz-software/resources/harbor-delivery-v1.2/facts.json",
+      "sha256": "437854d2a0a2e35a2963d1e93dab73e3470c4b44e3c7e3928f77d2699f85e1f9"
+    },
+    {
+      "path": "skills/dyz-software/resources/harbor-delivery-v1.2/source-lines.json",
+      "sha256": "6df7cc24b38ed181a5f754b122e962d9e00778dc7e1f17322d4f31b5bbc0dec1"
+    },
+    {
+      "path": "skills/dyz-software/resources/harbor-delivery-v1.2/manual.md",
+      "sha256": "0e8131838fbb3a4c0a7a7d1b8e7e4cbe7899f06dda4f250f1596e8531e35af3a"
+    },
+    {
+      "path": "references/jurisdictions/cn-software-guide-20261103.md",
+      "sha256": "7dd95a49dbd872f4a83c837cbfbfbdd05d8c66271af3b4fe7e525accc845813d"
+    },
+    {
+      "path": "skills/dyz-software/resources/harbor-demo/v1.2/api.py",
+      "sha256": "b406d4feb39224557dd73d0aad3565e2b11cdb84729668bb45470a15c31398d5"
+    },
+    {
+      "path": "skills/dyz-software/resources/harbor-demo/v1.2/cli.py",
+      "sha256": "17d16810181a82a31a99d60da863d91e6f64ca8467527049ae5491ade9614cc9"
+    },
+    {
+      "path": "skills/dyz-software/resources/harbor-demo/v1.2/core.py",
+      "sha256": "a2840b6097524f5b5c95ba60e3313004d28cbf86963a1933bdcedd3486ce49c5"
+    },
+    {
+      "path": "skills/dyz-software/resources/harbor-demo/v1.2/gui.py",
+      "sha256": "78088ab67941836bcfc0c5258b8acf8dee64ff3643a1ddd65afa82ec94d74494"
+    },
+    {
+      "path": "skills/dyz-software/resources/harbor-demo/v1.2/index.html",
+      "sha256": "f406ae71dd05f63eecc5bcf27e7857c79961085d575489c9aecf4118bcb1708b"
+    }
+  ],
+  "blocks": [
+    {
+      "source_id": "Form",
+      "start_line": 1,
+      "end_line": 1,
+      "kind": "heading1",
+      "audience": "body",
+      "id": "R11F_001"
+    },
+    {
+      "source_id": "Form",
+      "start_line": 3,
+      "end_line": 3,
+      "kind": "paragraph",
+      "audience": "body",
+      "id": "R11F_003"
+    },
+    {
+      "source_id": "Form",
+      "start_line": 5,
+      "end_line": 5,
+      "kind": "heading2",
+      "audience": "body",
+      "id": "R11F_005"
+    },
+    {
+      "source_id": "Form",
+      "start_line": 7,
+      "end_line": 28,
+      "kind": "table",
+      "audience": "body",
+      "id": "R11F_007"
+    },
+    {
+      "source_id": "Form",
+      "start_line": 30,
+      "end_line": 30,
+      "kind": "heading2",
+      "audience": "body",
+      "id": "R11F_028"
+    },
+    {
+      "source_id": "Form",
+      "start_line": 32,
+      "end_line": 38,
+      "kind": "table",
+      "audience": "body",
+      "id": "R11F_030"
+    },
+    {
+      "source_id": "Form",
+      "start_line": 40,
+      "end_line": 40,
+      "kind": "paragraph",
+      "audience": "body",
+      "id": "R11F_038"
+    },
+    {
+      "source_id": "Form",
+      "start_line": 42,
+      "end_line": 42,
+      "kind": "paragraph",
+      "audience": "body",
+      "id": "R11F_040"
+    },
+    {
+      "source_id": "Form",
+      "start_line": 44,
+      "end_line": 44,
+      "kind": "heading2",
+      "audience": "internal",
+      "id": "R11F_042"
+    },
+    {
+      "source_id": "Form",
+      "start_line": 46,
+      "end_line": 46,
+      "kind": "paragraph",
+      "audience": "internal",
+      "id": "R11F_044"
+    },
+    {
+      "source_id": "Form",
+      "start_line": 48,
+      "end_line": 48,
+      "kind": "paragraph",
+      "audience": "internal",
+      "id": "R11F_046"
+    },
+    {
+      "source_id": "Form",
+      "start_line": 50,
+      "end_line": 50,
+      "kind": "paragraph",
+      "audience": "internal",
+      "id": "R11F_048"
+    },
+    {
+      "source_id": "Form",
+      "start_line": 52,
+      "end_line": 52,
+      "kind": "paragraph",
+      "audience": "internal",
+      "id": "R11F_050"
+    }
+  ]
+}

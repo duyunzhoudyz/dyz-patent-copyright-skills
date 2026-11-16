@@ -1,0 +1,173 @@
+{
+  "date": "2026-11-03",
+  "kind": "author_source_integration_and_preserved_design_map",
+  "version": "GW-1.2_RS1",
+  "previous": {
+    "draft": "skills/dyz-patent/resources/cn-gateway-delivery/draft-v1.1.md",
+    "draft_sha256": "1cb4ac9cb23c2d526063d3c3ef725f0db4a70dce8ce26f4686f82af697b8867a",
+    "review": "skills/dyz-patent/resources/cn-gateway-delivery/review-v1.1.md",
+    "review_sha256": "963b0187ea1ebd498f1ab2a576c776bcc8be120f8831c02f1b0743cd19e00a26"
+  },
+  "current": {
+    "draft": "skills/dyz-patent/resources/cn-gateway-delivery/draft-v1.2.md",
+    "draft_sha256": "08c9f12b6e60c98fb40197c82fc26a6ed3453af8124c19fa980be7aeca61ddc8",
+    "review": "skills/dyz-patent/resources/cn-gateway-delivery/review-v1.2.md",
+    "review_sha256": "cb3ed4792ad2b70eb6c2e109989c18dfbe412035e9c7a49478526f7496579be7"
+  },
+  "original_design_support": {
+    "path": "skills/dyz-patent/resources/cn-gateway-example.md",
+    "sha256": "779af8d05685f6bf566201f272c7956fec9225fcb5aa7321ef71a7c91ba597a7",
+    "prior_support_map": "skills/dyz-patent/resources/cn-gateway-delivery/support.json",
+    "prior_support_map_sha256": "3acb03157e04919e86ea93c9e18aef89889a44a0178c3a4403181334e5b34221",
+    "preserved_same_utf8_blocks": [
+      "PatClaimsHead",
+      "PatClaim01",
+      "PatClaim02",
+      "PatClaim03",
+      "PatClaim04",
+      "PatClaim05",
+      "PatClaim06",
+      "PatClaim07",
+      "PatP0003",
+      "PatP0004",
+      "PatP0005",
+      "PatP0006",
+      "PatP0007",
+      "PatP0008",
+      "PatP0009",
+      "PatP0010",
+      "PatP0011",
+      "PatP0012",
+      "PatP0013",
+      "PatP0014",
+      "PatP0015",
+      "PatP0016",
+      "PatP0017",
+      "PatP0018",
+      "PatP0019",
+      "PatP0020",
+      "PatP0021",
+      "PatP0022",
+      "PatP0023",
+      "PatP0024",
+      "PatP0025",
+      "PatP0026",
+      "PatP0027",
+      "PatAbstract"
+    ],
+    "all7_claims_same_text_and_parentage": true,
+    "scope": "Exact unchanged words and author correspondence, not automated entailment or professional support acceptance."
+  },
+  "new_original_research_input": {
+    "path": "skills/dyz-patent/resources/cn-epo-fulltext-study.md",
+    "sha256": "aca2b40319a28b213590096f5dae4e248363398e55e8d0e256daaf8f530480fb"
+  },
+  "licensed_metadata_context_not_an_export_input": {
+    "path": "skills/dyz-patent/resources/cn-epo-fulltext-record.json",
+    "sha256": "543d571ea1fcd430c234e3cd24422fc7d10fc1190ae9c0fc3689e5216d295781",
+    "license": "CC-BY-4.0 remains on selected fields; not reclassified as original-only export material."
+  },
+  "draft_changes": {
+    "existing": [
+      "PatEdition"
+    ],
+    "added": [
+      "PatP0002b",
+      "PatP0002c"
+    ],
+    "removed": []
+  },
+  "review_changes": {
+    "existing": [
+      "PatReviewTitle",
+      "PatReviewStatus",
+      "PatRoute",
+      "PatSource",
+      "PatComparison",
+      "PatModification",
+      "PatFileChecks",
+      "PatHandoff"
+    ],
+    "added": [
+      "PatEpoRelationsHead",
+      "PatEpoRequest",
+      "PatEpoReplay",
+      "PatEpoSourceIssues",
+      "PatEpoDateScope"
+    ],
+    "removed": []
+  },
+  "figures": [
+    {
+      "path": "skills/dyz-patent/resources/cn-gateway-flow.svg",
+      "sha256": "cfcffd687f66fa47eb3e11a167952456d63d7a501db2db5a4954f0a962f3a165",
+      "change": "none"
+    },
+    {
+      "path": "skills/dyz-patent/resources/cn-gateway-flow.png",
+      "sha256": "88620c8e3364807f7c502e7a461f6abe4e4deddb92d5467d3f05ef84957b152b",
+      "change": "none"
+    }
+  ],
+  "task_disposition": [
+    {
+      "id": "R-EPO-01",
+      "developer_result": "Actors, deleted objects, atomic boundaries and source issue separately explained.",
+      "current_targets": [
+        "review:PatEpoRequest",
+        "review:PatEpoSourceIssues",
+        "draft:PatP0002b"
+      ],
+      "professional_state": "pending"
+    },
+    {
+      "id": "R-EPO-02",
+      "developer_result": "Replay visibility/precommit timestamps separated from local reclaim/U; individual disclosures and combined reasoning not merged.",
+      "current_targets": [
+        "review:PatEpoReplay",
+        "review:PatEpoSourceIssues",
+        "draft:PatP0002c"
+      ],
+      "professional_state": "pending"
+    },
+    {
+      "id": "R-EPO-03",
+      "developer_result": "New1.2 sources and inputs prepared; DOCX/PDF actual results bind separately after export.",
+      "current_targets": [
+        "review:PatSource",
+        "review:PatComparison",
+        "review:PatModification",
+        "draft:PatP0002b",
+        "draft:PatP0002c"
+      ],
+      "file_results": "file-bindings-v1.2.json to be generated after actual reading",
+      "professional_state": "pending"
+    },
+    {
+      "id": "R-EPO-04",
+      "developer_result": "Original unknown paragraph and all technical claim/implementation/abstract blocks preserved; no external facts imported into design.",
+      "current_targets": [
+        "review:PatUnknown",
+        "review:PatSupport",
+        "draft:PatClaim01",
+        "draft:PatClaim03"
+      ],
+      "professional_state": "pending"
+    }
+  ],
+  "review_reset": {
+    "old_files_and_reviews": "preserved_historical_not_reused_as_current_signoff",
+    "current": "author_engineering_review_required_after_generation",
+    "professional": "not_performed"
+  },
+  "materials": "Own paraphrase/analysis/locators only. No raw PDF/XML/images, full paragraphs or selected open metadata fields copied into this source-update/export readset.",
+  "retained_unknowns": [
+    "q high-watermark persistence layout",
+    "z exhaustion action",
+    "receiver key/result cleanup",
+    "priority as-filed original content",
+    "worldwide exhaustive family",
+    "current official legal status",
+    "professional novelty/inventive step/FTO and real proof"
+  ]
+}

@@ -1,0 +1,323 @@
+{
+  "sensitivity": "research_example",
+  "document_id": "GatewayResearchReview",
+  "version": "1.2_RS1",
+  "business": "patent",
+  "sources": [
+    {
+      "id": "Current",
+      "path": "skills/dyz-patent/resources/cn-gateway-delivery/review-v1.2.md",
+      "sha256": "cb3ed4792ad2b70eb6c2e109989c18dfbe412035e9c7a49478526f7496579be7"
+    }
+  ],
+  "dependencies": [
+    {
+      "path": "skills/dyz-patent/resources/cn-gateway-example.md",
+      "sha256": "779af8d05685f6bf566201f272c7956fec9225fcb5aa7321ef71a7c91ba597a7"
+    },
+    {
+      "path": "references/jurisdictions/patent-official-evidence-20261103.md",
+      "sha256": "b15a2076a023424118c387b8959459fd198c8433848941318861c957efd32b8b"
+    },
+    {
+      "path": "skills/dyz-patent/resources/cn-gateway-search-record.json",
+      "sha256": "20fd02571816ec4f3d7733154eddf90d16d9871e87ee7c26e4ec93b9e49176b7"
+    },
+    {
+      "path": "skills/dyz-patent/resources/cn-gateway-delivery/support.json",
+      "sha256": "3acb03157e04919e86ea93c9e18aef89889a44a0178c3a4403181334e5b34221"
+    },
+    {
+      "path": "skills/dyz-patent/resources/cn-gateway-delivery/change-impact.json",
+      "sha256": "91ffdc4a35a6ea407c6ffc2f2cd9b0bdfc90450ae36dff86f0c4123dd0bb6869"
+    },
+    {
+      "path": "skills/dyz-patent/resources/cn-gateway-delivery/draft-v1.2.md",
+      "sha256": "08c9f12b6e60c98fb40197c82fc26a6ed3453af8124c19fa980be7aeca61ddc8"
+    },
+    {
+      "path": "skills/dyz-patent/resources/cn-epo-fulltext-study.md",
+      "sha256": "aca2b40319a28b213590096f5dae4e248363398e55e8d0e256daaf8f530480fb"
+    },
+    {
+      "path": "skills/dyz-patent/resources/cn-gateway-delivery/source-update-v1.2.json",
+      "sha256": "5e900a72bbf9637f9062d084c4522ca4a5d644543a8721dae0f467ea1ccc2479"
+    }
+  ],
+  "blocks": [
+    {
+      "id": "PatReviewTitle",
+      "kind": "heading1",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 2,
+      "end_line": 2
+    },
+    {
+      "id": "PatReviewStatus",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 5,
+      "end_line": 5
+    },
+    {
+      "id": "PatDisclosureHead",
+      "kind": "heading2",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 8,
+      "end_line": 8
+    },
+    {
+      "id": "PatDisclosure",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 11,
+      "end_line": 11
+    },
+    {
+      "id": "PatProcess",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 14,
+      "end_line": 14
+    },
+    {
+      "id": "PatRouteHead",
+      "kind": "heading2",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 17,
+      "end_line": 17
+    },
+    {
+      "id": "PatRoute",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 20,
+      "end_line": 20
+    },
+    {
+      "id": "PatAlternatives",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 23,
+      "end_line": 23
+    },
+    {
+      "id": "PatSourceHead",
+      "kind": "heading2",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 26,
+      "end_line": 26
+    },
+    {
+      "id": "PatSource",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 29,
+      "end_line": 29
+    },
+    {
+      "id": "PatComparison",
+      "kind": "table",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 32,
+      "end_line": 38
+    },
+    {
+      "id": "PatEpoRelationsHead",
+      "kind": "heading2",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 41,
+      "end_line": 41
+    },
+    {
+      "id": "PatEpoRequest",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 44,
+      "end_line": 44
+    },
+    {
+      "id": "PatEpoReplay",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 47,
+      "end_line": 47
+    },
+    {
+      "id": "PatEpoSourceIssues",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 50,
+      "end_line": 50
+    },
+    {
+      "id": "PatEpoDateScope",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 53,
+      "end_line": 53
+    },
+    {
+      "id": "PatSupportHead",
+      "kind": "heading2",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 56,
+      "end_line": 56
+    },
+    {
+      "id": "PatSupport",
+      "kind": "table",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 59,
+      "end_line": 64
+    },
+    {
+      "id": "PatUnknownHead",
+      "kind": "heading2",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 67,
+      "end_line": 67
+    },
+    {
+      "id": "PatUnknown",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 70,
+      "end_line": 70
+    },
+    {
+      "id": "PatModificationHead",
+      "kind": "heading2",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 73,
+      "end_line": 73
+    },
+    {
+      "id": "PatModification",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 76,
+      "end_line": 76
+    },
+    {
+      "id": "PatFileChecks",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 79,
+      "end_line": 79
+    },
+    {
+      "id": "PatHandoffHead",
+      "kind": "heading2",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 82,
+      "end_line": 82
+    },
+    {
+      "id": "PatHandoff",
+      "kind": "paragraph",
+      "audience": "body",
+      "source_id": "Current",
+      "start_line": 85,
+      "end_line": 85
+    }
+  ],
+  "research_materials": [
+    {
+      "path": "skills/dyz-patent/resources/cn-gateway-delivery/review-v1.2.md",
+      "sha256": "cb3ed4792ad2b70eb6c2e109989c18dfbe412035e9c7a49478526f7496579be7",
+      "content_kind": "original_mixed_research",
+      "third_party_text": "not_included",
+      "processing_basis": "Original project synthetic design and own public-source analysis/locators, authorized internal local generation. No private case, original patent text/image or raw CC-BY metadata field payload in this readset.",
+      "export_basis": "Original project material under root LICENSE/commercial terms, local internal example. No external filing/publication/disclosure or permission to redistribute third-party fulltext granted."
+    },
+    {
+      "path": "skills/dyz-patent/resources/cn-gateway-example.md",
+      "sha256": "779af8d05685f6bf566201f272c7956fec9225fcb5aa7321ef71a7c91ba597a7",
+      "content_kind": "original_synthetic",
+      "third_party_text": "not_included",
+      "processing_basis": "Original project synthetic design and own public-source analysis/locators, authorized internal local generation. No private case, original patent text/image or raw CC-BY metadata field payload in this readset.",
+      "export_basis": "Original project material under root LICENSE/commercial terms, local internal example. No external filing/publication/disclosure or permission to redistribute third-party fulltext granted."
+    },
+    {
+      "path": "references/jurisdictions/patent-official-evidence-20261103.md",
+      "sha256": "b15a2076a023424118c387b8959459fd198c8433848941318861c957efd32b8b",
+      "content_kind": "original_public_research",
+      "third_party_text": "not_included",
+      "processing_basis": "Original project synthetic design and own public-source analysis/locators, authorized internal local generation. No private case, original patent text/image or raw CC-BY metadata field payload in this readset.",
+      "export_basis": "Original project material under root LICENSE/commercial terms, local internal example. No external filing/publication/disclosure or permission to redistribute third-party fulltext granted."
+    },
+    {
+      "path": "skills/dyz-patent/resources/cn-gateway-search-record.json",
+      "sha256": "20fd02571816ec4f3d7733154eddf90d16d9871e87ee7c26e4ec93b9e49176b7",
+      "content_kind": "original_public_research",
+      "third_party_text": "not_included",
+      "processing_basis": "Original project synthetic design and own public-source analysis/locators, authorized internal local generation. No private case, original patent text/image or raw CC-BY metadata field payload in this readset.",
+      "export_basis": "Original project material under root LICENSE/commercial terms, local internal example. No external filing/publication/disclosure or permission to redistribute third-party fulltext granted."
+    },
+    {
+      "path": "skills/dyz-patent/resources/cn-gateway-delivery/support.json",
+      "sha256": "3acb03157e04919e86ea93c9e18aef89889a44a0178c3a4403181334e5b34221",
+      "content_kind": "original_mixed_research",
+      "third_party_text": "not_included",
+      "processing_basis": "Original project synthetic design and own public-source analysis/locators, authorized internal local generation. No private case, original patent text/image or raw CC-BY metadata field payload in this readset.",
+      "export_basis": "Original project material under root LICENSE/commercial terms, local internal example. No external filing/publication/disclosure or permission to redistribute third-party fulltext granted."
+    },
+    {
+      "path": "skills/dyz-patent/resources/cn-gateway-delivery/change-impact.json",
+      "sha256": "91ffdc4a35a6ea407c6ffc2f2cd9b0bdfc90450ae36dff86f0c4123dd0bb6869",
+      "content_kind": "original_mixed_research",
+      "third_party_text": "not_included",
+      "processing_basis": "Original project synthetic design and own public-source analysis/locators, authorized internal local generation. No private case, original patent text/image or raw CC-BY metadata field payload in this readset.",
+      "export_basis": "Original project material under root LICENSE/commercial terms, local internal example. No external filing/publication/disclosure or permission to redistribute third-party fulltext granted."
+    },
+    {
+      "path": "skills/dyz-patent/resources/cn-gateway-delivery/draft-v1.2.md",
+      "sha256": "08c9f12b6e60c98fb40197c82fc26a6ed3453af8124c19fa980be7aeca61ddc8",
+      "content_kind": "original_mixed_research",
+      "third_party_text": "not_included",
+      "processing_basis": "Original project synthetic design and own public-source analysis/locators, authorized internal local generation. No private case, original patent text/image or raw CC-BY metadata field payload in this readset.",
+      "export_basis": "Original project material under root LICENSE/commercial terms, local internal example. No external filing/publication/disclosure or permission to redistribute third-party fulltext granted."
+    },
+    {
+      "path": "skills/dyz-patent/resources/cn-epo-fulltext-study.md",
+      "sha256": "aca2b40319a28b213590096f5dae4e248363398e55e8d0e256daaf8f530480fb",
+      "content_kind": "original_public_research",
+      "third_party_text": "not_included",
+      "processing_basis": "Original project synthetic design and own public-source analysis/locators, authorized internal local generation. No private case, original patent text/image or raw CC-BY metadata field payload in this readset.",
+      "export_basis": "Original project material under root LICENSE/commercial terms, local internal example. No external filing/publication/disclosure or permission to redistribute third-party fulltext granted."
+    },
+    {
+      "path": "skills/dyz-patent/resources/cn-gateway-delivery/source-update-v1.2.json",
+      "sha256": "5e900a72bbf9637f9062d084c4522ca4a5d644543a8721dae0f467ea1ccc2479",
+      "content_kind": "original_mixed_research",
+      "third_party_text": "not_included",
+      "processing_basis": "Original project synthetic design and own public-source analysis/locators, authorized internal local generation. No private case, original patent text/image or raw CC-BY metadata field payload in this readset.",
+      "export_basis": "Original project material under root LICENSE/commercial terms, local internal example. No external filing/publication/disclosure or permission to redistribute third-party fulltext granted."
+    }
+  ]
+}

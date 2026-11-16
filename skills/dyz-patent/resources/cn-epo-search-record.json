@@ -1,0 +1,653 @@
+{
+  "date": "2026-11-03",
+  "kind": "actual_epo_second_source_bounded_abstract_research_not_synthetic_cli_input",
+  "attribution": {
+    "source": "European Patent Office, Linked open EP data",
+    "source_url": "https://www.epo.org/en/searching-for-patents/data/linked-open-data",
+    "data_license": "CC-BY-4.0",
+    "license_url": "https://creativecommons.org/licenses/by/4.0/",
+    "changes": "Selected original typed fields and English abstracts, added own query context/comparison and separate ISO date formatting; source spellings preserved.",
+    "original_queries_and_analysis": "Project original under root license; EPO data not relicensed NC.",
+    "endorsement": "not_claimed"
+  },
+  "source_bindings": [
+    {
+      "path": "skills/dyz-patent/resources/cn-gateway-example.md",
+      "sha256": "779af8d05685f6bf566201f272c7956fec9225fcb5aa7321ef71a7c91ba597a7"
+    },
+    {
+      "path": "skills/dyz-patent/resources/cn-gateway-search-record.json",
+      "sha256": "20fd02571816ec4f3d7733154eddf90d16d9871e87ee7c26e4ec93b9e49176b7"
+    },
+    {
+      "path": "skills/dyz-patent/resources/cn-gateway-delivery/change-impact.json",
+      "sha256": "91ffdc4a35a6ea407c6ffc2f2cd9b0bdfc90450ae36dff86f0c4123dd0bb6869"
+    }
+  ],
+  "current_interface": {
+    "about": "https://data.epo.org/linked-data/about",
+    "gui_version": "2.0.0",
+    "data_conversion_version": "2.0.0",
+    "endpoint": "https://data.epo.org/linked-data/query",
+    "canonical_rdf_uris": "HTTP retained; HTTPS retrieval"
+  },
+  "queries": [
+    {
+      "id": "EPO-Q1",
+      "expression": "(message AND acknowledgment AND persistent)",
+      "sparql": "PREFIX patent: <http://data.epo.org/linked-data/def/patent/>\nPREFIX dcterms: <http://purl.org/dc/terms/>\nPREFIX text: <http://jena.apache.org/text#>\nSELECT DISTINCT ?publication ?title ?abstract ?date ?application ?filingDate WHERE {\n  ?publication text:query (dcterms:abstract \"(message AND acknowledgment AND persistent)\") ;\n     a patent:Publication ; dcterms:abstract ?abstract .\n  FILTER(langMatches(lang(?abstract), \"en\"))\n  OPTIONAL { ?publication patent:titleOfInvention ?title . FILTER(langMatches(lang(?title), \"en\")) }\n  OPTIONAL { ?publication patent:publicationDate ?date }\n  OPTIONAL { ?publication patent:application ?application .\n             OPTIONAL { ?application patent:filingDate ?filingDate } }\n} LIMIT 10\n",
+      "frozen_query_file_sha256": "809d5b548e107ca4298b16fd7f498cb36c9c8bddbc819713510430c1931d1e88",
+      "query_payload_utf8_sha256": "3a9c2b4d2009a76dd23ec0965458ee729cf92c955795d671a4b4f52e306a98e2",
+      "hash_units": "Frozen .rq file uses original Windows CRLF bytes; urllib received read_text-normalized LF query. Payload hash is reconstructed from unchanged file/client code, not a retained raw HTTP transcript.",
+      "endpoint": "https://data.epo.org/linked-data/query",
+      "requested_at_client_utc": "2026-11-02T22:23:34.316948+00:00",
+      "returned_at_client_utc": "2026-11-02T22:23:46.771934+00:00",
+      "server_http_date": "Mon, 02 Nov 2026 22:23:46 GMT",
+      "response_sha256": "63185735db411ae65985f4aed4a6059a8d93417a04e48635d5e02602fc5ebced",
+      "content_type": "application/sparql-results+json; charset=utf-8",
+      "response_bytes": 6368,
+      "http_status": 200,
+      "limit": 10,
+      "attempts": 1,
+      "returned_bindings": [
+        {
+          "publication": {
+            "type": "uri",
+            "value": "http://data.epo.org/linked-data/data/publication/EP/4730682/A2/-"
+          },
+          "title": {
+            "type": "literal",
+            "xml:lang": "en",
+            "value": "ACKNOWLEDGMENT FEEDBACK FOR MULTIPLE ACTIVE DOWNLINK SEMI-PERSISTENT SCHEDULING CONFIGURATIONS"
+          },
+          "abstract": {
+            "type": "literal",
+            "xml:lang": "en",
+            "value": "Methods, systems, and devices for wireless communications are described. A base station may configure uplink resources within a slot to enable a user equipment (UE) to transmit an acknowledgment (ACK) feedback message for multiple downlink semi-persistent scheduling (SPS) configurations. For example, the base station may transmit an additional configuration to the UE that indicates uplink resources that the UE can use to transmit acknowledgment feedbacks for multiple downlink messages received according to the SPS configurations, where the UE determines which uplink resource to use based on a number of acknowledgment information bits to be transmitted for the acknowledgment feedback message. For example, if the number of acknowledgment information bits is below a threshold value, the UE may use a first uplink resource configured by the base station. Alternatively, if the number of acknowledgment information bits is above the threshold value, the UE may use a second uplink resource.\n"
+          },
+          "date": {
+            "type": "literal",
+            "datatype": "http://www.w3.org/2001/XMLSchema#date",
+            "value": "2026-04-22"
+          },
+          "application": {
+            "type": "uri",
+            "value": "http://data.epo.org/linked-data/id/application/EP/26162219"
+          },
+          "filingDate": {
+            "type": "literal",
+            "datatype": "http://www.w3.org/2001/XMLSchema#date",
+            "value": "2020-05-22"
+          }
+        },
+        {
+          "publication": {
+            "type": "uri",
+            "value": "http://data.epo.org/linked-data/data/publication/EP/4730682/A3/-"
+          },
+          "title": {
+            "type": "literal",
+            "xml:lang": "en",
+            "value": "ACKNOWLEDGMENT FEEDBACK FOR MULTIPLE ACTIVE DOWNLINK SEMI-PERSISTENT SCHEDULING CONFIGURATIONS"
+          },
+          "abstract": {
+            "type": "literal",
+            "xml:lang": "en",
+            "value": "Methods, systems, and devices for wireless communications are described. A base station may configure uplink resources within a slot to enable a user equipment (UE) to transmit an acknowledgment (ACK) feedback message for multiple downlink semi-persistent scheduling (SPS) configurations. For example, the base station may transmit an additional configuration to the UE that indicates uplink resources that the UE can use to transmit acknowledgment feedbacks for multiple downlink messages received according to the SPS configurations, where the UE determines which uplink resource to use based on a number of acknowledgment information bits to be transmitted for the acknowledgment feedback message. For example, if the number of acknowledgment information bits is below a threshold value, the UE may use a first uplink resource configured by the base station. Alternatively, if the number of acknowledgment information bits is above the threshold value, the UE may use a second uplink resource.\n"
+          },
+          "date": {
+            "type": "literal",
+            "datatype": "http://www.w3.org/2001/XMLSchema#date",
+            "value": "2026-07-15"
+          },
+          "application": {
+            "type": "uri",
+            "value": "http://data.epo.org/linked-data/id/application/EP/26162219"
+          },
+          "filingDate": {
+            "type": "literal",
+            "datatype": "http://www.w3.org/2001/XMLSchema#date",
+            "value": "2020-05-22"
+          }
+        },
+        {
+          "publication": {
+            "type": "uri",
+            "value": "http://data.epo.org/linked-data/data/publication/EP/2040504/A3/-"
+          },
+          "title": {
+            "type": "literal",
+            "xml:lang": "en",
+            "value": "A method of allocating resource-area in wireless access system"
+          },
+          "abstract": {
+            "type": "literal",
+            "xml:lang": "en",
+            "value": "A method of allocating a radio resource in a wireless access system is disclosed. The method includes receiving a control message associated with radio resource allocation for transmitting uplink data to the base station, wherein the control message comprises a first persistent uplink allocation information element comprising first resource allocation information associated with a first resource allocation region for transmitting the uplink data of a mobile station and transmitting an acknowledgment (ACK) message from the mobile station to the base station in response to successfully receiving the first persistent uplink allocation information element.\n"
+          },
+          "date": {
+            "type": "literal",
+            "datatype": "http://www.w3.org/2001/XMLSchema#date",
+            "value": "2011-09-14"
+          },
+          "application": {
+            "type": "uri",
+            "value": "http://data.epo.org/linked-data/id/application/EP/08164563"
+          },
+          "filingDate": {
+            "type": "literal",
+            "datatype": "http://www.w3.org/2001/XMLSchema#date",
+            "value": "2008-09-18"
+          }
+        },
+        {
+          "publication": {
+            "type": "uri",
+            "value": "http://data.epo.org/linked-data/data/publication/EP/2040504/A2/-"
+          },
+          "title": {
+            "type": "literal",
+            "xml:lang": "en",
+            "value": "A method of allocating resource-area in wireless access system"
+          },
+          "abstract": {
+            "type": "literal",
+            "xml:lang": "en",
+            "value": "A method of allocating a radio resource in a wireless access system is disclosed. The method includes receiving a control message associated with radio resource allocation for transmitting uplink data to the base station, wherein the control message comprises a first persistent uplink allocation information element comprising first resource allocation information associated with a first resource allocation region for transmitting the uplink data of a mobile station and transmitting an acknowledgment (ACK) message from the mobile station to the base station in response to successfully receiving the first persistent uplink allocation information element.\n"
+          },
+          "date": {
+            "type": "literal",
+            "datatype": "http://www.w3.org/2001/XMLSchema#date",
+            "value": "2009-03-25"
+          },
+          "application": {
+            "type": "uri",
+            "value": "http://data.epo.org/linked-data/id/application/EP/08164563"
+          },
+          "filingDate": {
+            "type": "literal",
+            "datatype": "http://www.w3.org/2001/XMLSchema#date",
+            "value": "2008-09-18"
+          }
+        }
+      ],
+      "ordering": "server_order_not_verified_as_relevance",
+      "pagination": "not_followed",
+      "dataset_load_time": "not_observed"
+    },
+    {
+      "id": "EPO-Q2",
+      "expression": "(queue AND transaction)",
+      "sparql": "PREFIX patent: <http://data.epo.org/linked-data/def/patent/>\nPREFIX dcterms: <http://purl.org/dc/terms/>\nPREFIX text: <http://jena.apache.org/text#>\nSELECT DISTINCT ?publication ?title ?abstract ?date ?application ?filingDate WHERE {\n  ?publication text:query (dcterms:abstract \"(queue AND transaction)\") ;\n     a patent:Publication ; dcterms:abstract ?abstract .\n  FILTER(langMatches(lang(?abstract), \"en\"))\n  OPTIONAL { ?publication patent:titleOfInvention ?title . FILTER(langMatches(lang(?title), \"en\")) }\n  OPTIONAL { ?publication patent:publicationDate ?date }\n  OPTIONAL { ?publication patent:application ?application .\n             OPTIONAL { ?application patent:filingDate ?filingDate } }\n} LIMIT 10\n",
+      "frozen_query_file_sha256": "16c7be36faab2681d0578717edef8a83400a338013ecca1a29b6a7456bc5b176",
+      "query_payload_utf8_sha256": "e668ce3e7de4cfed65f22cd12910aa00c0217e67a547d4113d8613380d83886c",
+      "hash_units": "Frozen .rq file uses original Windows CRLF bytes; urllib received read_text-normalized LF query. Payload hash is reconstructed from unchanged file/client code, not a retained raw HTTP transcript.",
+      "endpoint": "https://data.epo.org/linked-data/query",
+      "requested_at_client_utc": "2026-11-02T22:23:46.772457+00:00",
+      "returned_at_client_utc": "2026-11-02T22:23:59.585381+00:00",
+      "server_http_date": "Mon, 02 Nov 2026 22:23:59 GMT",
+      "response_sha256": "1a0932d08e92c39c943b71a96669348ebf091e7143972cca8d2b09cb8d084a8e",
+      "content_type": "application/sparql-results+json; charset=utf-8",
+      "response_bytes": 15487,
+      "http_status": 200,
+      "limit": 10,
+      "attempts": 1,
+      "returned_bindings": [
+        {
+          "publication": {
+            "type": "uri",
+            "value": "http://data.epo.org/linked-data/data/publication/EP/3327589/A1/-"
+          },
+          "title": {
+            "type": "literal",
+            "xml:lang": "en",
+            "value": "DELAYED SNAPSHOT ISOLATION FOR READ SERVICE AT A DATABASE"
+          },
+          "abstract": {
+            "type": "literal",
+            "xml:lang": "en",
+            "value": "A computer implemented method is provided comprising receiving a group of transaction logs from a first database, allocating transaction logs from the group of transaction logs to a first queue and to a second queue, generating an end-of-group transaction log indicative of an end of the group of transaction logs, allocating the end-of-group log to the first queue and the second queue; replaying transaction logs from the first queue including the end-of-group transaction log allocated to the first queue, replaying transaction logs from the second queue including the end-of-group transaction log allocated to the second queue; and changing visibility of one or more transactions in response to replaying the end-of-group transaction log allocated to the first queue and the end-of-group transaction log allocated to the second queue. Related apparatus, systems, techniques and articles are also described.\n"
+          },
+          "date": {
+            "type": "literal",
+            "datatype": "http://www.w3.org/2001/XMLSchema#date",
+            "value": "2018-05-30"
+          },
+          "application": {
+            "type": "uri",
+            "value": "http://data.epo.org/linked-data/id/application/EP/17001923"
+          },
+          "filingDate": {
+            "type": "literal",
+            "datatype": "http://www.w3.org/2001/XMLSchema#date",
+            "value": "2017-11-23"
+          }
+        },
+        {
+          "publication": {
+            "type": "uri",
+            "value": "http://data.epo.org/linked-data/data/publication/EP/1197856/A3/-"
+          },
+          "title": {
+            "type": "literal",
+            "xml:lang": "en",
+            "value": "Guaranteed end-to-end transaction execution in a client/server environment"
+          },
+          "abstract": {
+            "type": "literal",
+            "xml:lang": "en",
+            "value": "Disclosed is a client/server-based transaction system which comprises a client workstation (300) and a transaction server (310). The client workstation (300) has an application program (320) not having any transaction management resources. The client comprises a transaction interface (325). The transaction server provides an input queue (330), an output queue (340) and a control queue (350). The control queue (350) resides on the transaction server. Start of a transaction (355), depicted as the dotted line, activates the transaction interface which initiates a data flow to the control queue and stores a unique session information. The data flow to the input queue stores a request to the transaction server. The completion of the transaction is signalled by a response in the output queue. The client retrieves this response, and deletes the control queue information in a same Unit of Work. In case the application program crashes before the transaction is completed, the session information in the control queue is used for recovery processing.\n"
+          },
+          "date": {
+            "type": "literal",
+            "datatype": "http://www.w3.org/2001/XMLSchema#date",
+            "value": "2006-02-15"
+          },
+          "application": {
+            "type": "uri",
+            "value": "http://data.epo.org/linked-data/id/application/EP/01119968"
+          },
+          "filingDate": {
+            "type": "literal",
+            "datatype": "http://www.w3.org/2001/XMLSchema#date",
+            "value": "2001-08-18"
+          }
+        },
+        {
+          "publication": {
+            "type": "uri",
+            "value": "http://data.epo.org/linked-data/data/publication/EP/1197856/A2/-"
+          },
+          "title": {
+            "type": "literal",
+            "xml:lang": "en",
+            "value": "Guaranteed end-to-end transaction execution in a client/server environment"
+          },
+          "abstract": {
+            "type": "literal",
+            "xml:lang": "en",
+            "value": "Disclosed is a client/server-based transaction system which comprises a client workstation (300) and a transaction server (310). The client workstation (300) has an application program (320) not having any transaction management resources. The client comprises a transaction interface (325). The transaction server provides an input queue (330), an output queue (340) and a control queue (350). The control queue (350) resides on the transaction server. Start of a transaction (355), depicted as the dotted line, activates the transaction interface which initiates a data flow to the control queue and stores a unique session information. The data flow to the input queue stores a request to the transaction server. The completion of the transaction is signalled by a response in the output queue. The client retrieves this response, and deletes the control queue information in a same Unit of Work. In case the application program crashes before the transaction is completed, the session information in the control queue is used for recovery processing."
+          },
+          "date": {
+            "type": "literal",
+            "datatype": "http://www.w3.org/2001/XMLSchema#date",
+            "value": "2002-04-17"
+          },
+          "application": {
+            "type": "uri",
+            "value": "http://data.epo.org/linked-data/id/application/EP/01119968"
+          },
+          "filingDate": {
+            "type": "literal",
+            "datatype": "http://www.w3.org/2001/XMLSchema#date",
+            "value": "2001-08-18"
+          }
+        },
+        {
+          "publication": {
+            "type": "uri",
+            "value": "http://data.epo.org/linked-data/data/publication/EP/2105889/A2/-"
+          },
+          "title": {
+            "type": "literal",
+            "xml:lang": "en",
+            "value": "Systems and methods for transaction queue analysis"
+          },
+          "abstract": {
+            "type": "literal",
+            "xml:lang": "en",
+            "value": "A method and system for determining a wait time for a transaction queue is disclosed. In the method, video data related to a first transaction queue is received. The video data is processed to determine a number of items presented by a first entity for a transaction in the first transaction queue. A total transaction time is estimated for the first entity based on the number of items presented by the first entity and a transaction time for each of the number of items. A wait time for the first transaction queue is determined based on the estimated total transaction time for the first entity. If the wait time for the first transaction queue is greater than a first threshold, then the availability of a second transaction queue is indicated to a second entity.\n"
+          },
+          "date": {
+            "type": "literal",
+            "datatype": "http://www.w3.org/2001/XMLSchema#date",
+            "value": "2009-09-30"
+          },
+          "application": {
+            "type": "uri",
+            "value": "http://data.epo.org/linked-data/id/application/EP/08251577"
+          },
+          "filingDate": {
+            "type": "literal",
+            "datatype": "http://www.w3.org/2001/XMLSchema#date",
+            "value": "2008-04-30"
+          }
+        },
+        {
+          "publication": {
+            "type": "uri",
+            "value": "http://data.epo.org/linked-data/data/publication/EP/2105889/A3/-"
+          },
+          "title": {
+            "type": "literal",
+            "xml:lang": "en",
+            "value": "Systems and methods for transaction queue analysis"
+          },
+          "abstract": {
+            "type": "literal",
+            "xml:lang": "en",
+            "value": "A method and system for determining a wait time for a transaction queue is disclosed. In the method, video data related to a first transaction queue is received. The video data is processed to determine a number of items presented by a first entity for a transaction in the first transaction queue. A total transaction time is estimated for the first entity based on the number of items presented by the first entity and a transaction time for each of the number of items. A wait time for the first transaction queue is determined based on the estimated total transaction time for the first entity. If the wait time for the first transaction queue is greater than a first threshold, then the availability of a second transaction queue is indicated to a second entity.\n"
+          },
+          "date": {
+            "type": "literal",
+            "datatype": "http://www.w3.org/2001/XMLSchema#date",
+            "value": "2012-07-11"
+          },
+          "application": {
+            "type": "uri",
+            "value": "http://data.epo.org/linked-data/id/application/EP/08251577"
+          },
+          "filingDate": {
+            "type": "literal",
+            "datatype": "http://www.w3.org/2001/XMLSchema#date",
+            "value": "2008-04-30"
+          }
+        },
+        {
+          "publication": {
+            "type": "uri",
+            "value": "http://data.epo.org/linked-data/data/publication/EP/4354296/A1/-"
+          },
+          "title": {
+            "type": "literal",
+            "xml:lang": "en",
+            "value": "TRANSACTION MANAGER"
+          },
+          "abstract": {
+            "type": "literal",
+            "xml:lang": "en",
+            "value": "A method performed by a transaction manager for processing a plurality of transactions among a plurality of network entities, the method comprising: for each transaction: receiving, from a first network entity, a first transaction request to perform a transaction with a second network entity; selecting a transaction request queue from a plurality of configured transaction request queues; adding the first transaction request to the back of the selected transaction request queue; when the first transaction request reaches the front of the selected transaction request queue, processing the first transaction request by a transaction request handler associated with the selected transaction request queue and sending a second transaction request to the second network entity; receiving a first transaction response from the second network entity, in response to the second transaction request; selecting a transaction response queue from a plurality of configured transaction response queues; adding the first transaction response to the back of the selected transaction response queue; and when the first transaction response reaches the front of the selected transaction response queue, processing the first transaction response by a transaction response handler associated with the selected transaction response queue and sending a second transaction response to the first network entity.\n"
+          },
+          "date": {
+            "type": "literal",
+            "datatype": "http://www.w3.org/2001/XMLSchema#date",
+            "value": "2024-04-17"
+          },
+          "application": {
+            "type": "uri",
+            "value": "http://data.epo.org/linked-data/id/application/EP/22200641"
+          },
+          "filingDate": {
+            "type": "literal",
+            "datatype": "http://www.w3.org/2001/XMLSchema#date",
+            "value": "2022-10-10"
+          }
+        },
+        {
+          "publication": {
+            "type": "uri",
+            "value": "http://data.epo.org/linked-data/data/publication/EP/2270665/A3/-"
+          },
+          "title": {
+            "type": "literal",
+            "xml:lang": "en",
+            "value": "Systems and methods for web logging of trace data in a multi-core system"
+          },
+          "abstract": {
+            "type": "literal",
+            "xml:lang": "en",
+            "value": "A method and system for generating a web log that includes transaction entries from transaction queues of one or more cores of a multi-core system. A transaction queue is maintained for each core so that either a packet engine or web logging client executing on the core can write transaction entries to the transaction queue. In some embodiments, a timestamp value obtained from a synchronized timcstamp variable can be assigned to the transaction entries. When a new transaction entry is added to the transaction queue, the earliest transaction entry is removed from the transaction queue and added to a heap. Periodically the earliest entry in the heap is removed from the heap and written to a web log. When an entry is removed from the heap, the earliest entry in a transaction queue corresponding to the removed entry is removed from the transaction queue and added to the heap.\n"
+          },
+          "date": {
+            "type": "literal",
+            "datatype": "http://www.w3.org/2001/XMLSchema#date",
+            "value": "2014-08-06"
+          },
+          "application": {
+            "type": "uri",
+            "value": "http://data.epo.org/linked-data/id/application/EP/10166760"
+          },
+          "filingDate": {
+            "type": "literal",
+            "datatype": "http://www.w3.org/2001/XMLSchema#date",
+            "value": "2010-06-22"
+          }
+        },
+        {
+          "publication": {
+            "type": "uri",
+            "value": "http://data.epo.org/linked-data/data/publication/EP/2270665/A2/-"
+          },
+          "title": {
+            "type": "literal",
+            "xml:lang": "en",
+            "value": "Systems and methods for web logging of trace data in a multi-core system"
+          },
+          "abstract": {
+            "type": "literal",
+            "xml:lang": "en",
+            "value": "A method and system for generating a web log that includes transaction entries from transaction queues of one or more cores of a multi-core system. A transaction queue is maintained for each core so that either a packet engine or web logging client executing on the core can write transaction entries to the transaction queue. In some embodiments, a timestamp value obtained from a synchronized timcstamp variable can be assigned to the transaction entries. When a new transaction entry is added to the transaction queue, the earliest transaction entry is removed from the transaction queue and added to a heap. Periodically the earliest entry in the heap is removed from the heap and written to a web log. When an entry is removed from the heap, the earliest entry in a transaction queue corresponding to the removed entry is removed from the transaction queue and added to the heap.\n"
+          },
+          "date": {
+            "type": "literal",
+            "datatype": "http://www.w3.org/2001/XMLSchema#date",
+            "value": "2011-01-05"
+          },
+          "application": {
+            "type": "uri",
+            "value": "http://data.epo.org/linked-data/id/application/EP/10166760"
+          },
+          "filingDate": {
+            "type": "literal",
+            "datatype": "http://www.w3.org/2001/XMLSchema#date",
+            "value": "2010-06-22"
+          }
+        },
+        {
+          "publication": {
+            "type": "uri",
+            "value": "http://data.epo.org/linked-data/data/publication/EP/1624379/A3/-"
+          },
+          "title": {
+            "type": "literal",
+            "xml:lang": "en",
+            "value": "Tansaction system with dynamic priority scheme."
+          },
+          "abstract": {
+            "type": "literal",
+            "xml:lang": "en",
+            "value": "A transaction queue for an agent operative according to a dynamic priority scheme, the transaction queue operating initially according to a default priority scheme and then engaging a second priority scheme to invalidate selected stored transactions when the transaction queue becomes congested.\n"
+          },
+          "date": {
+            "type": "literal",
+            "datatype": "http://www.w3.org/2001/XMLSchema#date",
+            "value": "2006-04-26"
+          },
+          "application": {
+            "type": "uri",
+            "value": "http://data.epo.org/linked-data/id/application/EP/05023715"
+          },
+          "filingDate": {
+            "type": "literal",
+            "datatype": "http://www.w3.org/2001/XMLSchema#date",
+            "value": "2000-11-28"
+          }
+        },
+        {
+          "publication": {
+            "type": "uri",
+            "value": "http://data.epo.org/linked-data/data/publication/EP/1624379/A2/-"
+          },
+          "title": {
+            "type": "literal",
+            "xml:lang": "en",
+            "value": "Dynamic priority external transaction system"
+          },
+          "abstract": {
+            "type": "literal",
+            "xml:lang": "en",
+            "value": "A transaction queue for an agent operative according to a dynamic priority scheme, the transaction queue operating initially according to a default priority scheme and then engaging a second priority scheme to invalidate selected stored transactions when the transaction queue becomes congested.\n"
+          },
+          "date": {
+            "type": "literal",
+            "datatype": "http://www.w3.org/2001/XMLSchema#date",
+            "value": "2006-02-08"
+          },
+          "application": {
+            "type": "uri",
+            "value": "http://data.epo.org/linked-data/id/application/EP/05023715"
+          },
+          "filingDate": {
+            "type": "literal",
+            "datatype": "http://www.w3.org/2001/XMLSchema#date",
+            "value": "2000-11-28"
+          }
+        }
+      ],
+      "ordering": "server_order_not_verified_as_relevance",
+      "pagination": "not_followed",
+      "dataset_load_time": "not_observed"
+    }
+  ],
+  "selected_followups": [
+    {
+      "id": "EPO-A1",
+      "source_url": "https://data.epo.org/linked-data/doc/application/EP/01119968.json",
+      "http_status": 200,
+      "requested_at_client_utc": "2026-11-02T22:26:13.208649+00:00",
+      "returned_at_client_utc": "2026-11-02T22:26:25.485999+00:00",
+      "server_http_date": "Mon, 02 Nov 2026 22:26:25 GMT",
+      "response_sha256": "8c3f9453069deaad765b5a27dc59566241de0a1f3b4062c75a2d712e5c8ad323",
+      "selected_original_fields": {
+        "_about": "http://data.epo.org/linked-data/id/application/EP/01119968",
+        "applicationAuthority": {
+          "_about": "http://data.epo.org/linked-data/id/st3/EP",
+          "label": "European Patent Office (EPO)"
+        },
+        "applicationKind": {
+          "_about": "http://data.epo.org/linked-data/def/patent/applicationKind_A",
+          "label": "patent application"
+        },
+        "applicationNumber": "01119968",
+        "applicationNumberEpodoc": "EP20010119968",
+        "filingDate": "Sat, 18 Aug 2001",
+        "family": {
+          "_about": "http://data.epo.org/linked-data/data/simple-family/26071405",
+          "representativeFamilyMember": "http://data.epo.org/linked-data/id/application/EP/01119968"
+        },
+        "publication": [
+          {
+            "_about": "http://data.epo.org/linked-data/data/publication/EP/1197856/A2/-",
+            "label": "EP 1197856 A2",
+            "publicationAuthority": {
+              "_about": "http://data.epo.org/linked-data/id/st3/EP",
+              "label": "European Patent Office (EPO)"
+            },
+            "publicationDate": "Wed, 17 Apr 2002",
+            "publicationKind": {
+              "_about": "http://data.epo.org/linked-data/def/patent/publicationKind_A2",
+              "label": "A2"
+            }
+          },
+          {
+            "_about": "http://data.epo.org/linked-data/data/publication/EP/1197856/A3/-",
+            "label": "EP 1197856 A3",
+            "publicationAuthority": {
+              "_about": "http://data.epo.org/linked-data/id/st3/EP",
+              "label": "European Patent Office (EPO)"
+            },
+            "publicationDate": "Wed, 15 Feb 2006",
+            "publicationKind": {
+              "_about": "http://data.epo.org/linked-data/def/patent/publicationKind_A3",
+              "label": "A3"
+            }
+          }
+        ]
+      },
+      "excluded_fields": "Public inventor/agent/applicant name/contact objects not copied into extract; not a source-absence assertion."
+    },
+    {
+      "id": "EPO-P1",
+      "source_url": "https://data.epo.org/linked-data/data/publication/EP/1197856/A2/-.json",
+      "http_status": 200,
+      "requested_at_client_utc": "2026-11-02T22:26:25.485999+00:00",
+      "returned_at_client_utc": "2026-11-02T22:26:38.033635+00:00",
+      "server_http_date": "Mon, 02 Nov 2026 22:26:37 GMT",
+      "response_sha256": "9efa276a485b66d1eb14d6c0ab1c740b2cbf8b5ed88935459f26b07cd1c1a197",
+      "selected_original_fields": {
+        "_about": "http://data.epo.org/linked-data/data/publication/EP/1197856/A2/-",
+        "label": "EP 1197856 A2",
+        "application": {
+          "_about": "http://data.epo.org/linked-data/id/application/EP/01119968",
+          "applicationAuthority": "http://data.epo.org/linked-data/id/st3/EP",
+          "applicationKind": {
+            "_about": "http://data.epo.org/linked-data/def/patent/applicationKind_A",
+            "label": "patent application"
+          },
+          "applicationNumber": "01119968",
+          "filingDate": "Sat, 18 Aug 2001"
+        },
+        "publicationAuthority": "http://data.epo.org/linked-data/id/st3/EP",
+        "publicationDate": "Wed, 17 Apr 2002",
+        "publicationKind": "http://data.epo.org/linked-data/def/patent/publicationKind_A2",
+        "publicationNumber": "1197856",
+        "priority": "http://data.epo.org/linked-data/id/application/EP/00120362",
+        "representation": [
+          "https://data.epo.org/linked-data/representation/publication/EP/1197856/NWA2.html",
+          "https://data.epo.org/linked-data/representation/publication/EP/1197856/NWA2.pdf",
+          "https://data.epo.org/linked-data/representation/publication/EP/1197856/NWA2.xml"
+        ],
+        "titleOfInvention": [
+          "Exécutions des transactions garanties dans un environnement client-serveur",
+          "Gewährleisteten transaktionsausführungen in einer Client-Server Umgebung",
+          "Guaranteed end-to-end transaction execution in a client/server environment"
+        ],
+        "abstract": "Disclosed is a client/server-based transaction system which comprises a client workstation (300) and a transaction server (310). The client workstation (300) has an application program (320) not having any transaction management resources. The client comprises a transaction interface (325). The transaction server provides an input queue (330), an output queue (340) and a control queue (350). The control queue (350) resides on the transaction server. Start of a transaction (355), depicted as the dotted line, activates the transaction interface which initiates a data flow to the control queue and stores a unique session information. The data flow to the input queue stores a request to the transaction server. The completion of the transaction is signalled by a response in the output queue. The client retrieves this response, and deletes the control queue information in a same Unit of Work. In case the application program crashes before the transaction is completed, the session information in the control queue is used for recovery processing.",
+        "language": "http://id.loc.gov/vocabulary/iso639-1/en"
+      },
+      "excluded_fields": "Public inventor/agent/applicant name/contact objects not copied into extract; not a source-absence assertion."
+    }
+  ],
+  "summary": {
+    "native_queries": 2,
+    "known_uri_requests": 2,
+    "query_rows": [
+      4,
+      10
+    ],
+    "distinct_publications": 14,
+    "distinct_applications": 8,
+    "pagination_not_followed": true,
+    "full_corpus_precision_recall": "not_measured"
+  },
+  "date_crosscheck": {
+    "synthetic_comparison_cutoff": "2025-02-10",
+    "cutoff_is_actual_case_fact": false,
+    "EP01119968_filing_iso": "2001-08-18",
+    "reported_publications": [
+      {
+        "uri": "http://data.epo.org/linked-data/data/publication/EP/1197856/A2/-",
+        "label": "EP 1197856 A2",
+        "date_original": "Wed, 17 Apr 2002",
+        "date_iso": "2002-04-17"
+      },
+      {
+        "uri": "http://data.epo.org/linked-data/data/publication/EP/1197856/A3/-",
+        "label": "EP 1197856 A3",
+        "date_original": "Wed, 15 Feb 2006",
+        "date_iso": "2006-02-15"
+      }
+    ],
+    "post_cutoff_returned_versions": [
+      "http://data.epo.org/linked-data/data/publication/EP/4730682/A2/-",
+      "http://data.epo.org/linked-data/data/publication/EP/4730682/A3/-"
+    ],
+    "date_normalization": "English source label parsed to ISO for display only; not legal date applicability."
+  },
+  "unknowns": {
+    "priority_reference": "http://data.epo.org/linked-data/id/application/EP/00120362",
+    "priority_date_and_content": "not_retrieved_not_absent",
+    "simple_family": "http://data.epo.org/linked-data/data/simple-family/26071405",
+    "full_family_members": "not_retrieved",
+    "official_register_and_current_legal_status": "not_checked",
+    "full_publication_text_claims_figures": "not_read",
+    "publication_representations": [
+      "https://data.epo.org/linked-data/representation/publication/EP/1197856/NWA2.html",
+      "https://data.epo.org/linked-data/representation/publication/EP/1197856/NWA2.pdf",
+      "https://data.epo.org/linked-data/representation/publication/EP/1197856/NWA2.xml"
+    ],
+    "entire_dataset_freshness": "not_observed"
+  },
+  "scope": "Actual indexed English abstracts/bibliographic data and two selected URI fields only. No novelty/FTO/current-status/complete-family/global/independent/professional approval. Original GW sources and document closure unmodified.",
+  "local_execution_evidence_hint": "evals/workflows/maturity-i04-epo-secondary-* and ignored originals are development evidence, not package runtime dependencies."
+}

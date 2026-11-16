@@ -1,0 +1,881 @@
+{
+  "data_class": "public_reference_research",
+  "target_case_class": "synthetic",
+  "checked_on": "2026-11-03",
+  "scope": "dated finite public discovery and local synthetic-case research appendix; not model stability/professional acceptance or an executable worldwide search adapter",
+  "protocol": {
+    "path": "evals/workflows/maturity-i04-patent-search-protocol.json",
+    "sha256": "9e26efde4e8f08083cbd639f49594fd753fd53963ace8f21e489cf7ef2e1a46b",
+    "development_evidence_reference_only": true,
+    "package_scope": "Development protocol file excluded from runtime package; actual query data, limits, metadata and source restrictions are contained in this record."
+  },
+  "synthetic_case": {
+    "path": "skills/dyz-patent/resources/cn-gateway-example.md",
+    "sha256": "779af8d05685f6bf566201f272c7956fec9225fcb5aa7321ef71a7c91ba597a7",
+    "state": "unchanged; S-24 no real case action authority retained",
+    "critical_date": "2025-02-10",
+    "outbound_scope": "generic already-public terms only, no case body"
+  },
+  "source_access": {
+    "search": "available web search tool, provider/index internals not identified",
+    "documents": "Google Patents /patent/ pages and publication PDFs reached via document links",
+    "native_google_patents_search": "not_executed; robots disallows search paths, /patent/ permitted",
+    "rights": "No API/account/fee/bulk download or republication license inferred. Save own metadata, short quoted locators and original analysis only; do not bundle full patent text/PDF/screenshots or browser profile.",
+    "policy_sources": [
+      "https://patents.google.com/robots.txt",
+      "https://policies.google.com/terms?hl=en",
+      "https://support.google.com/faqs/answer/7049475?hl=en"
+    ]
+  },
+  "query_execution": {
+    "queries_executed_once": 5,
+    "retained_cards": 50,
+    "cards_omitted_by_retention_limit": 8,
+    "provider_pagination": "not_exposed",
+    "provider_index_total": "unknown",
+    "native_google_patents_search": "not_executed_robots_constraint",
+    "raw_result_text": "not bundled or stored as project source",
+    "builtin_tool_usage_cost": "not_exposed; zero additional paid services/accounts, not asserted zero tool metering",
+    "raw_result_header_cards": 60,
+    "excluded_non_patent_header_cards": 2,
+    "metadata_correction": {
+      "first_extractor_issue": "Publication-ID de-duplication dropped Q4 US7809778B2/ja when /en also appeared. Current extraction retains both response items and marks language, not two different inventions.",
+      "no_source_requests_repeated": true,
+      "corrected_at": "2026-11-02T19:31:23.284Z"
+    },
+    "observations": "evals/workflows/maturity-i04-patent-search-observations-r3.json",
+    "result_time_basis": "Per-query acquired_at is the time the assistant collected completed tool returns; not provider execution, origin request, crawl or archive time."
+  },
+  "publication_resolutions": [
+    {
+      "input_id": "US8078820",
+      "input_url": "https://patents.google.com/patent/US8078820",
+      "publication_id": "US8078820B2",
+      "basis": "Current page explicitly reports Info > Publication number US8078820B2, matches separate B2 document page. Not automatic kind stripping or family merging.",
+      "verified_at": "2026-11-02T19:27:45.438065+00:00"
+    }
+  ],
+  "queries": [
+    {
+      "query_id": "Q1",
+      "purpose": "topic",
+      "query": "\"sequence number\" \"acknowledgement\" \"log\"",
+      "domains": [
+        "patents.google.com"
+      ],
+      "acquired_at": "2026-11-02T19:23:51.059Z",
+      "tool_return_state": "completed",
+      "raw_result_type": "string",
+      "result_text_characters": 39533,
+      "parsed_source_cards": 12,
+      "retained": [
+        {
+          "provider_card_order": 1,
+          "url": "https://patents.google.com/patent/US8090759B2/en",
+          "id": "US8090759B2",
+          "response_order": 1,
+          "language": "en",
+          "resolved_publication_id": "US8090759B2",
+          "identity_basis": "header identifier only; kind/family/language not silently merged"
+        },
+        {
+          "provider_card_order": 2,
+          "url": "https://patents.google.com/patent/US20100030818A1/en",
+          "id": "US20100030818A1",
+          "response_order": 2,
+          "language": "en",
+          "resolved_publication_id": "US20100030818A1",
+          "identity_basis": "header identifier only; kind/family/language not silently merged"
+        },
+        {
+          "provider_card_order": 3,
+          "url": "https://patents.google.com/patent/US8364743B2/en",
+          "id": "US8364743B2",
+          "response_order": 3,
+          "language": "en",
+          "resolved_publication_id": "US8364743B2",
+          "identity_basis": "header identifier only; kind/family/language not silently merged"
+        },
+        {
+          "provider_card_order": 4,
+          "url": "https://patents.google.com/patent/US10511656B1/en",
+          "id": "US10511656B1",
+          "response_order": 4,
+          "language": "en",
+          "resolved_publication_id": "US10511656B1",
+          "identity_basis": "header identifier only; kind/family/language not silently merged"
+        },
+        {
+          "provider_card_order": 5,
+          "url": "https://patents.google.com/patent/US20070124398A1/en",
+          "id": "US20070124398A1",
+          "response_order": 5,
+          "language": "en",
+          "resolved_publication_id": "US20070124398A1",
+          "identity_basis": "header identifier only; kind/family/language not silently merged"
+        },
+        {
+          "provider_card_order": 6,
+          "url": "https://patents.google.com/patent/US9984139B1/en",
+          "id": "US9984139B1",
+          "response_order": 6,
+          "language": "en",
+          "resolved_publication_id": "US9984139B1",
+          "identity_basis": "header identifier only; kind/family/language not silently merged"
+        },
+        {
+          "provider_card_order": 7,
+          "url": "https://patents.google.com/patent/US20070277056A1/en",
+          "id": "US20070277056A1",
+          "response_order": 7,
+          "language": "en",
+          "resolved_publication_id": "US20070277056A1",
+          "identity_basis": "header identifier only; kind/family/language not silently merged"
+        },
+        {
+          "provider_card_order": 8,
+          "url": "https://patents.google.com/patent/EP0818000A1/en",
+          "id": "EP0818000A1",
+          "response_order": 8,
+          "language": "en",
+          "resolved_publication_id": "EP0818000A1",
+          "identity_basis": "header identifier only; kind/family/language not silently merged"
+        },
+        {
+          "provider_card_order": 9,
+          "url": "https://patents.google.com/patent/US20190166198A1/en",
+          "id": "US20190166198A1",
+          "response_order": 9,
+          "language": "en",
+          "resolved_publication_id": "US20190166198A1",
+          "identity_basis": "header identifier only; kind/family/language not silently merged"
+        },
+        {
+          "provider_card_order": 10,
+          "url": "https://patents.google.com/patent/US11722587B2/en",
+          "id": "US11722587B2",
+          "response_order": 10,
+          "language": "en",
+          "resolved_publication_id": "US11722587B2",
+          "identity_basis": "header identifier only; kind/family/language not silently merged"
+        }
+      ],
+      "metadata_items_omitted_by_limit": 2,
+      "pagination": "not_exposed_by_tool",
+      "native_google_patents_query": "not_executed",
+      "coverage": "provider_returned_response_only_not_complete_database",
+      "parse_method": "each explicit result header retained independently, preserving URL/language; no publication-ID de-duplication",
+      "all_result_header_cards": 12,
+      "excluded_non_patent_header_cards": []
+    },
+    {
+      "query_id": "Q2",
+      "purpose": "topic",
+      "query": "\"message queues\" \"commit record\"",
+      "domains": [
+        "patents.google.com"
+      ],
+      "acquired_at": "2026-11-02T19:23:51.062Z",
+      "tool_return_state": "completed",
+      "raw_result_type": "string",
+      "result_text_characters": 38078,
+      "parsed_source_cards": 12,
+      "retained": [
+        {
+          "provider_card_order": 1,
+          "url": "https://patents.google.com/patent/US8078820",
+          "id": "US8078820",
+          "response_order": 1,
+          "language": "unspecified",
+          "resolved_publication_id": "US8078820B2",
+          "identity_basis": "explicit document Info > Publication number check"
+        },
+        {
+          "provider_card_order": 2,
+          "url": "https://patents.google.com/patent/CA2834146A1/en",
+          "id": "CA2834146A1",
+          "response_order": 2,
+          "language": "en",
+          "resolved_publication_id": "CA2834146A1",
+          "identity_basis": "header identifier only; kind/family/language not silently merged"
+        },
+        {
+          "provider_card_order": 3,
+          "url": "https://patents.google.com/patent/EP1913481A2/en",
+          "id": "EP1913481A2",
+          "response_order": 3,
+          "language": "en",
+          "resolved_publication_id": "EP1913481A2",
+          "identity_basis": "header identifier only; kind/family/language not silently merged"
+        },
+        {
+          "provider_card_order": 4,
+          "url": "https://patents.google.com/patent/CA2613496C/en",
+          "id": "CA2613496C",
+          "response_order": 4,
+          "language": "en",
+          "resolved_publication_id": "CA2613496C",
+          "identity_basis": "header identifier only; kind/family/language not silently merged"
+        },
+        {
+          "provider_card_order": 5,
+          "url": "https://patents.google.com/patent/JP6046760B2/en",
+          "id": "JP6046760B2",
+          "response_order": 5,
+          "language": "en",
+          "resolved_publication_id": "JP6046760B2",
+          "identity_basis": "header identifier only; kind/family/language not silently merged"
+        },
+        {
+          "provider_card_order": 6,
+          "url": "https://patents.google.com/patent/JP2012155740A/en",
+          "id": "JP2012155740A",
+          "response_order": 6,
+          "language": "en",
+          "resolved_publication_id": "JP2012155740A",
+          "identity_basis": "header identifier only; kind/family/language not silently merged"
+        },
+        {
+          "provider_card_order": 7,
+          "url": "https://patents.google.com/patent/WO2007002245A2",
+          "id": "WO2007002245A2",
+          "response_order": 7,
+          "language": "unspecified",
+          "resolved_publication_id": "WO2007002245A2",
+          "identity_basis": "header identifier only; kind/family/language not silently merged"
+        },
+        {
+          "provider_card_order": 8,
+          "url": "https://patents.google.com/patent/US20070073821A1/en",
+          "id": "US20070073821A1",
+          "response_order": 8,
+          "language": "en",
+          "resolved_publication_id": "US20070073821A1",
+          "identity_basis": "header identifier only; kind/family/language not silently merged"
+        },
+        {
+          "provider_card_order": 9,
+          "url": "https://patents.google.com/patent/JP2015127981A/en",
+          "id": "JP2015127981A",
+          "response_order": 9,
+          "language": "en",
+          "resolved_publication_id": "JP2015127981A",
+          "identity_basis": "header identifier only; kind/family/language not silently merged"
+        },
+        {
+          "provider_card_order": 10,
+          "url": "https://patents.google.com/patent/US7865684B2/ja",
+          "id": "US7865684B2",
+          "response_order": 10,
+          "language": "ja",
+          "resolved_publication_id": "US7865684B2",
+          "identity_basis": "header identifier only; kind/family/language not silently merged"
+        }
+      ],
+      "metadata_items_omitted_by_limit": 2,
+      "pagination": "not_exposed_by_tool",
+      "native_google_patents_query": "not_executed",
+      "coverage": "provider_returned_response_only_not_complete_database",
+      "parse_method": "each explicit result header retained independently, preserving URL/language; no publication-ID de-duplication",
+      "all_result_header_cards": 12,
+      "excluded_non_patent_header_cards": []
+    },
+    {
+      "query_id": "Q3",
+      "purpose": "topic",
+      "query": "消息 去重 确认 持久化",
+      "domains": [
+        "patents.google.com"
+      ],
+      "acquired_at": "2026-11-02T19:23:51.062Z",
+      "tool_return_state": "completed",
+      "raw_result_type": "string",
+      "result_text_characters": 16815,
+      "parsed_source_cards": 12,
+      "retained": [
+        {
+          "provider_card_order": 1,
+          "url": "https://patents.google.com/patent/CN117555705A/zh",
+          "id": "CN117555705A",
+          "response_order": 1,
+          "language": "zh",
+          "resolved_publication_id": "CN117555705A",
+          "identity_basis": "header identifier only; kind/family/language not silently merged"
+        },
+        {
+          "provider_card_order": 2,
+          "url": "https://patents.google.com/patent/CN121300919A/zh",
+          "id": "CN121300919A",
+          "response_order": 2,
+          "language": "zh",
+          "resolved_publication_id": "CN121300919A",
+          "identity_basis": "header identifier only; kind/family/language not silently merged"
+        },
+        {
+          "provider_card_order": 3,
+          "url": "https://patents.google.com/patent/CN118963927B/zh",
+          "id": "CN118963927B",
+          "response_order": 3,
+          "language": "zh",
+          "resolved_publication_id": "CN118963927B",
+          "identity_basis": "header identifier only; kind/family/language not silently merged"
+        },
+        {
+          "provider_card_order": 4,
+          "url": "https://patents.google.com/patent/CN118200278A/zh",
+          "id": "CN118200278A",
+          "response_order": 4,
+          "language": "zh",
+          "resolved_publication_id": "CN118200278A",
+          "identity_basis": "header identifier only; kind/family/language not silently merged"
+        },
+        {
+          "provider_card_order": 5,
+          "url": "https://patents.google.com/patent/CN110134628A/en",
+          "id": "CN110134628A",
+          "response_order": 5,
+          "language": "en",
+          "resolved_publication_id": "CN110134628A",
+          "identity_basis": "header identifier only; kind/family/language not silently merged"
+        },
+        {
+          "provider_card_order": 6,
+          "url": "https://patents.google.com/patent/CN112468386B/zh",
+          "id": "CN112468386B",
+          "response_order": 6,
+          "language": "zh",
+          "resolved_publication_id": "CN112468386B",
+          "identity_basis": "header identifier only; kind/family/language not silently merged"
+        },
+        {
+          "provider_card_order": 7,
+          "url": "https://patents.google.com/patent/WO2022089455A1/en",
+          "id": "WO2022089455A1",
+          "response_order": 7,
+          "language": "en",
+          "resolved_publication_id": "WO2022089455A1",
+          "identity_basis": "header identifier only; kind/family/language not silently merged"
+        },
+        {
+          "provider_card_order": 8,
+          "url": "https://patents.google.com/patent/CN110825505B/zh",
+          "id": "CN110825505B",
+          "response_order": 8,
+          "language": "zh",
+          "resolved_publication_id": "CN110825505B",
+          "identity_basis": "header identifier only; kind/family/language not silently merged"
+        },
+        {
+          "provider_card_order": 9,
+          "url": "https://patents.google.com/patent/CN110233791A/en",
+          "id": "CN110233791A",
+          "response_order": 9,
+          "language": "en",
+          "resolved_publication_id": "CN110233791A",
+          "identity_basis": "header identifier only; kind/family/language not silently merged"
+        },
+        {
+          "provider_card_order": 10,
+          "url": "https://patents.google.com/patent/CN106131134B/en",
+          "id": "CN106131134B",
+          "response_order": 10,
+          "language": "en",
+          "resolved_publication_id": "CN106131134B",
+          "identity_basis": "header identifier only; kind/family/language not silently merged"
+        }
+      ],
+      "metadata_items_omitted_by_limit": 2,
+      "pagination": "not_exposed_by_tool",
+      "native_google_patents_query": "not_executed",
+      "coverage": "provider_returned_response_only_not_complete_database",
+      "parse_method": "each explicit result header retained independently, preserving URL/language; no publication-ID de-duplication",
+      "all_result_header_cards": 12,
+      "excluded_non_patent_header_cards": []
+    },
+    {
+      "query_id": "Q4",
+      "purpose": "known_item_positive",
+      "query": "US20100030818A1",
+      "domains": [
+        "patents.google.com"
+      ],
+      "acquired_at": "2026-11-02T19:23:51.062Z",
+      "tool_return_state": "completed",
+      "raw_result_type": "string",
+      "result_text_characters": 27296,
+      "parsed_source_cards": 10,
+      "retained": [
+        {
+          "provider_card_order": 1,
+          "url": "https://patents.google.com/patent/US20100030818A1/en",
+          "id": "US20100030818A1",
+          "response_order": 1,
+          "language": "en",
+          "resolved_publication_id": "US20100030818A1",
+          "identity_basis": "header identifier only; kind/family/language not silently merged"
+        },
+        {
+          "provider_card_order": 2,
+          "url": "https://patents.google.com/patent/EP2715553A4/en",
+          "id": "EP2715553A4",
+          "response_order": 2,
+          "language": "en",
+          "resolved_publication_id": "EP2715553A4",
+          "identity_basis": "header identifier only; kind/family/language not silently merged"
+        },
+        {
+          "provider_card_order": 3,
+          "url": "https://patents.google.com/patent/US7895172B2/en",
+          "id": "US7895172B2",
+          "response_order": 3,
+          "language": "en",
+          "resolved_publication_id": "US7895172B2",
+          "identity_basis": "header identifier only; kind/family/language not silently merged"
+        },
+        {
+          "provider_card_order": 4,
+          "url": "https://patents.google.com/patent/CA3187034A1/en",
+          "id": "CA3187034A1",
+          "response_order": 4,
+          "language": "en",
+          "resolved_publication_id": "CA3187034A1",
+          "identity_basis": "header identifier only; kind/family/language not silently merged"
+        },
+        {
+          "provider_card_order": 5,
+          "url": "https://patents.google.com/patent/US11681731B2/en",
+          "id": "US11681731B2",
+          "response_order": 5,
+          "language": "en",
+          "resolved_publication_id": "US11681731B2",
+          "identity_basis": "header identifier only; kind/family/language not silently merged"
+        },
+        {
+          "provider_card_order": 6,
+          "url": "https://patents.google.com/patent/US20060085485A1/en",
+          "id": "US20060085485A1",
+          "response_order": 6,
+          "language": "en",
+          "resolved_publication_id": "US20060085485A1",
+          "identity_basis": "header identifier only; kind/family/language not silently merged"
+        },
+        {
+          "provider_card_order": 7,
+          "url": "https://patents.google.com/patent/CN104584015A/en",
+          "id": "CN104584015A",
+          "response_order": 7,
+          "language": "en",
+          "resolved_publication_id": "CN104584015A",
+          "identity_basis": "header identifier only; kind/family/language not silently merged"
+        },
+        {
+          "provider_card_order": 8,
+          "url": "https://patents.google.com/patent/CN113672640B/en",
+          "id": "CN113672640B",
+          "response_order": 8,
+          "language": "en",
+          "resolved_publication_id": "CN113672640B",
+          "identity_basis": "header identifier only; kind/family/language not silently merged"
+        },
+        {
+          "provider_card_order": 9,
+          "url": "https://patents.google.com/patent/US7809778B2/en",
+          "id": "US7809778B2",
+          "response_order": 9,
+          "language": "en",
+          "resolved_publication_id": "US7809778B2",
+          "identity_basis": "header identifier only; kind/family/language not silently merged"
+        },
+        {
+          "provider_card_order": 10,
+          "url": "https://patents.google.com/patent/US7809778B2/ja",
+          "id": "US7809778B2",
+          "response_order": 10,
+          "language": "ja",
+          "resolved_publication_id": "US7809778B2",
+          "identity_basis": "header identifier only; kind/family/language not silently merged"
+        }
+      ],
+      "metadata_items_omitted_by_limit": 0,
+      "pagination": "not_exposed_by_tool",
+      "native_google_patents_query": "not_executed",
+      "coverage": "provider_returned_response_only_not_complete_database",
+      "parse_method": "each explicit result header retained independently, preserving URL/language; no publication-ID de-duplication",
+      "all_result_header_cards": 12,
+      "excluded_non_patent_header_cards": [
+        {
+          "provider_card_order": 11,
+          "url": "https://patents.google.com/",
+          "id": null
+        },
+        {
+          "provider_card_order": 12,
+          "url": "https://patents.google.com/advanced",
+          "id": null
+        }
+      ]
+    },
+    {
+      "query_id": "Q5",
+      "purpose": "known_item_negative",
+      "query": "US20180086410A1",
+      "domains": [
+        "patents.google.com"
+      ],
+      "acquired_at": "2026-11-02T19:23:51.062Z",
+      "tool_return_state": "completed",
+      "raw_result_type": "string",
+      "result_text_characters": 26226,
+      "parsed_source_cards": 12,
+      "retained": [
+        {
+          "provider_card_order": 1,
+          "url": "https://patents.google.com/patent/US20180086410A1/en",
+          "id": "US20180086410A1",
+          "response_order": 1,
+          "language": "en",
+          "resolved_publication_id": "US20180086410A1",
+          "identity_basis": "header identifier only; kind/family/language not silently merged"
+        },
+        {
+          "provider_card_order": 2,
+          "url": "https://patents.google.com/patent/US10308308B2/en",
+          "id": "US10308308B2",
+          "response_order": 2,
+          "language": "en",
+          "resolved_publication_id": "US10308308B2",
+          "identity_basis": "header identifier only; kind/family/language not silently merged"
+        },
+        {
+          "provider_card_order": 3,
+          "url": "https://patents.google.com/patent/ES2861809T3/de",
+          "id": "ES2861809T3",
+          "response_order": 3,
+          "language": "de",
+          "resolved_publication_id": "ES2861809T3",
+          "identity_basis": "header identifier only; kind/family/language not silently merged"
+        },
+        {
+          "provider_card_order": 4,
+          "url": "https://patents.google.com/patent/US20180039810A1/en",
+          "id": "US20180039810A1",
+          "response_order": 4,
+          "language": "en",
+          "resolved_publication_id": "US20180039810A1",
+          "identity_basis": "header identifier only; kind/family/language not silently merged"
+        },
+        {
+          "provider_card_order": 5,
+          "url": "https://patents.google.com/patent/US11011478B2/en",
+          "id": "US11011478B2",
+          "response_order": 5,
+          "language": "en",
+          "resolved_publication_id": "US11011478B2",
+          "identity_basis": "header identifier only; kind/family/language not silently merged"
+        },
+        {
+          "provider_card_order": 6,
+          "url": "https://patents.google.com/patent/US20180108600A1/en",
+          "id": "US20180108600A1",
+          "response_order": 6,
+          "language": "en",
+          "resolved_publication_id": "US20180108600A1",
+          "identity_basis": "header identifier only; kind/family/language not silently merged"
+        },
+        {
+          "provider_card_order": 7,
+          "url": "https://patents.google.com/patent/US20180083021A1/en",
+          "id": "US20180083021A1",
+          "response_order": 7,
+          "language": "en",
+          "resolved_publication_id": "US20180083021A1",
+          "identity_basis": "header identifier only; kind/family/language not silently merged"
+        },
+        {
+          "provider_card_order": 8,
+          "url": "https://patents.google.com/patent/US20180040630A1/en",
+          "id": "US20180040630A1",
+          "response_order": 8,
+          "language": "en",
+          "resolved_publication_id": "US20180040630A1",
+          "identity_basis": "header identifier only; kind/family/language not silently merged"
+        },
+        {
+          "provider_card_order": 9,
+          "url": "https://patents.google.com/patent/US20180097082A1/en",
+          "id": "US20180097082A1",
+          "response_order": 9,
+          "language": "en",
+          "resolved_publication_id": "US20180097082A1",
+          "identity_basis": "header identifier only; kind/family/language not silently merged"
+        },
+        {
+          "provider_card_order": 10,
+          "url": "https://patents.google.com/patent/US20180005890A1/en",
+          "id": "US20180005890A1",
+          "response_order": 10,
+          "language": "en",
+          "resolved_publication_id": "US20180005890A1",
+          "identity_basis": "header identifier only; kind/family/language not silently merged"
+        }
+      ],
+      "metadata_items_omitted_by_limit": 2,
+      "pagination": "not_exposed_by_tool",
+      "native_google_patents_query": "not_executed",
+      "coverage": "provider_returned_response_only_not_complete_database",
+      "parse_method": "each explicit result header retained independently, preserving URL/language; no publication-ID de-duplication",
+      "all_result_header_cards": 12,
+      "excluded_non_patent_header_cards": []
+    }
+  ],
+  "seed_observation": {
+    "prelabelled_seed_observations": [
+      {
+        "id": "US20100030818A1",
+        "label": "relevant",
+        "retrieved_in_topic_response": true
+      },
+      {
+        "id": "US8078820B2",
+        "label": "relevant",
+        "retrieved_in_topic_response": true
+      },
+      {
+        "id": "US20180086410A1",
+        "label": "out_of_topic",
+        "retrieved_in_topic_response": false
+      }
+    ],
+    "positive_seed_ids_retrieved": 2,
+    "positive_seed_denominator": 2,
+    "negative_control_ids_retrieved_in_topic": 0,
+    "negative_control_denominator": 1,
+    "known_item_controls": [
+      {
+        "query_id": "Q4",
+        "expected_id": "US20100030818A1",
+        "observed_expected_id": true,
+        "other_retained_ids": [
+          "EP2715553A4",
+          "US7895172B2",
+          "CA3187034A1",
+          "US11681731B2",
+          "US20060085485A1",
+          "CN104584015A",
+          "CN113672640B",
+          "US7809778B2",
+          "US7809778B2"
+        ],
+        "multiple_language_items": "Do not treat repeated publication ID with different language URL as distinct inventions or silently discard the item."
+      },
+      {
+        "query_id": "Q5",
+        "expected_id": "US20180086410A1",
+        "observed_expected_id": true,
+        "other_retained_ids": [
+          "US10308308B2",
+          "ES2861809T3",
+          "US20180039810A1",
+          "US11011478B2",
+          "US20180108600A1",
+          "US20180083021A1",
+          "US20180040630A1",
+          "US20180097082A1",
+          "US20180005890A1"
+        ],
+        "multiple_language_items": "Do not treat repeated publication ID with different language URL as distinct inventions or silently discard the item."
+      }
+    ],
+    "topic_response_unique_publications": 30,
+    "all_hit_precision": "not_computed_unlabelled_hits",
+    "global_database_recall": "not_computed",
+    "label_independence": "author exploration influenced, no held-out/professional truth claim",
+    "window": "maximum ten explicit publication-header cards per tool response; no provider pagination",
+    "negative_control_query_scope": "Q5 intentionally asks for the negative control and is not counted as a technical false positive"
+  },
+  "documents": [
+    {
+      "id": "P1",
+      "publication_id": "US20100030818A1",
+      "label": "异步事务的单次应用",
+      "url": "https://patents.google.com/patent/US20100030818A1/en",
+      "reported_publication_date": "2010-02-04",
+      "reported_filing_date": "2008-07-31",
+      "reported_priority_date": "2008-07-31",
+      "priority_and_legal_status": "provider-reported metadata; official file/priority chain/current legal status not verified",
+      "html_full_text": "accessible; only listed relevant sections/claims reviewed, not every section or figure",
+      "read_locators": [
+        "Claims 1,2,4,7-9,11-15",
+        "Description: logging/retransmission and handle/log purge",
+        "Original PDF 1-based pp.1 and15: publication identity/date and claim-start text anchors"
+      ],
+      "author_summary": "序号及持久日志、确认后清理和超时重发是相关比较点；不能据此视为完整网关批次方案。",
+      "short_quote": {
+        "locator": "Claims 1/4",
+        "text": "sequence number"
+      },
+      "original_pdf": {
+        "url": "https://patentimages.storage.googleapis.com/9e/ba/39/17bdcacc6b5036/US20100030818A1.pdf",
+        "pages_available": 16,
+        "read_scope": "Parsed front matter and claim-start anchors, not all pages",
+        "visual_inspection": "not_performed; screenshot tool returned citation metadata only, no image observed"
+      },
+      "public_date_relation_to_synthetic_2025_02_10": "before",
+      "rights": "Link and limited original analysis/short citation only; no full text/PDF/image republication licence asserted. Third-party material not relicensed under project NC licence.",
+      "recorded_at": "2026-11-02T19:27:45.438065+00:00",
+      "read_on_local_date": "2026-11-03",
+      "origin_network_timestamp": "not_exposed",
+      "time_basis": "recorded_at is consolidation time, not first source acquisition, original public availability, archive or origin fetch timestamp"
+    },
+    {
+      "id": "P2",
+      "publication_id": "US8078820B2",
+      "label": "队列事务管理",
+      "url": "https://patents.google.com/patent/US8078820B2/en",
+      "reported_publication_date": "2011-12-13",
+      "reported_filing_date": "2010-12-06",
+      "reported_priority_date": "2005-06-27",
+      "priority_and_legal_status": "provider-reported metadata; official file/priority chain/current legal status not verified",
+      "html_full_text": "accessible; only listed relevant sections/claims reviewed, not every section or figure",
+      "read_locators": [
+        "Claims 1-9",
+        "Description 3.1-3.3: journal/queue commit and recovery",
+        "Original PDF 1-based pp.1 and26: patent identity/date and claim-start text anchors"
+      ],
+      "author_summary": "事务提交日志、持久化和故障恢复相关；应区分说明书实现、授权权项及更早公开版本。",
+      "short_quote": {
+        "locator": "Description 3.1-3.3",
+        "text": "journal commit record"
+      },
+      "original_pdf": {
+        "url": "https://patentimages.storage.googleapis.com/bf/a2/d3/4119673e87a9f8/US8078820.pdf",
+        "pages_available": 27,
+        "read_scope": "Parsed front matter and claim-start anchors, not all pages",
+        "visual_inspection": "not_performed; screenshot tool returned citation metadata only, no image observed"
+      },
+      "public_date_relation_to_synthetic_2025_02_10": "before",
+      "rights": "Link and limited original analysis/short citation only; no full text/PDF/image republication licence asserted. Third-party material not relicensed under project NC licence.",
+      "recorded_at": "2026-11-02T19:27:45.438065+00:00",
+      "read_on_local_date": "2026-11-03",
+      "origin_network_timestamp": "not_exposed",
+      "time_basis": "recorded_at is consolidation time, not first source acquisition, original public availability, archive or origin fetch timestamp"
+    },
+    {
+      "id": "P3",
+      "publication_id": "US8090759B2",
+      "label": "异步消息顺序与处理确认",
+      "url": "https://patents.google.com/patent/US8090759B2/en",
+      "reported_publication_date": "2012-01-03",
+      "reported_filing_date": "2006-11-21",
+      "reported_priority_date": "2005-11-25",
+      "priority_and_legal_status": "provider-reported metadata; official file/priority chain/current legal status not verified",
+      "html_full_text": "accessible; only listed relevant sections/claims reviewed, not every section or figure",
+      "read_locators": [
+        "Claims 1-4 and7",
+        "Description: message ordering, persistent logging and acknowledgment"
+      ],
+      "author_summary": "处理完成确认驱动后续实体选择，持久记录可在确认后清理；不是仅因同含确认就判同一技术关系。",
+      "short_quote": {
+        "locator": "Claim 3",
+        "text": "storage component is persistent"
+      },
+      "original_pdf": null,
+      "public_date_relation_to_synthetic_2025_02_10": "before",
+      "rights": "Link and limited original analysis/short citation only; no full text/PDF/image republication licence asserted. Third-party material not relicensed under project NC licence.",
+      "recorded_at": "2026-11-02T19:27:45.438065+00:00",
+      "read_on_local_date": "2026-11-03",
+      "origin_network_timestamp": "not_exposed",
+      "time_basis": "recorded_at is consolidation time, not first source acquisition, original public availability, archive or origin fetch timestamp"
+    },
+    {
+      "id": "P4",
+      "publication_id": "CN117555705A",
+      "label": "消费幂等与状态处理",
+      "url": "https://patents.google.com/patent/CN117555705A/zh",
+      "reported_publication_date": "2024-02-13",
+      "reported_filing_date": "2023-11-23",
+      "reported_priority_date": "2023-11-23",
+      "priority_and_legal_status": "provider-reported metadata; official file/priority chain/current legal status not verified",
+      "html_full_text": "accessible; only listed relevant sections/claims reviewed, not every section or figure",
+      "read_locators": [
+        "权利要求1—8",
+        "说明书：背景技术、发明内容"
+      ],
+      "author_summary": "去重与消费状态/延迟队列构成另一幂等路线；其非事务性表述不能被改写成本案事务确认流程。",
+      "short_quote": {
+        "locator": "权利要求1",
+        "text": "去重表"
+      },
+      "original_pdf": null,
+      "public_date_relation_to_synthetic_2025_02_10": "before",
+      "rights": "Link and limited original analysis/short citation only; no full text/PDF/image republication licence asserted. Third-party material not relicensed under project NC licence.",
+      "recorded_at": "2026-11-02T19:27:45.438065+00:00",
+      "read_on_local_date": "2026-11-03",
+      "origin_network_timestamp": "not_exposed",
+      "time_basis": "recorded_at is consolidation time, not first source acquisition, original public availability, archive or origin fetch timestamp"
+    },
+    {
+      "id": "P5",
+      "publication_id": "CN121300919A",
+      "label": "事务状态与消息体处理",
+      "url": "https://patents.google.com/patent/CN121300919A/zh",
+      "reported_publication_date": "2026-01-09",
+      "reported_filing_date": "2025-12-10",
+      "reported_priority_date": "2025-12-10",
+      "priority_and_legal_status": "provider-reported metadata; official file/priority chain/current legal status not verified",
+      "html_full_text": "accessible; only listed relevant sections/claims reviewed, not every section or figure",
+      "read_locators": [
+        "Info: Publication date",
+        "说明书发明内容：事务状态元数据/消息体分离和回查"
+      ],
+      "author_summary": "技术相关但当前公开日在合成关键日之后，仅列后期线索；不能作为已证实的关键日前公开依据。",
+      "short_quote": null,
+      "original_pdf": null,
+      "public_date_relation_to_synthetic_2025_02_10": "after",
+      "rights": "Link and limited original analysis/short citation only; no full text/PDF/image republication licence asserted. Third-party material not relicensed under project NC licence.",
+      "recorded_at": "2026-11-02T19:27:45.438065+00:00",
+      "read_on_local_date": "2026-11-03",
+      "origin_network_timestamp": "not_exposed",
+      "time_basis": "recorded_at is consolidation time, not first source acquisition, original public availability, archive or origin fetch timestamp"
+    },
+    {
+      "id": "N1",
+      "publication_id": "US20180086410A1",
+      "label": "自行车架与座管连接",
+      "url": "https://patents.google.com/patent/US20180086410A1/en",
+      "reported_publication_date": "2018-03-29",
+      "reported_filing_date": "2017-09-20",
+      "reported_priority_date": "2016-09-23",
+      "priority_and_legal_status": "provider-reported metadata; official file/priority chain/current legal status not verified",
+      "html_full_text": "accessible; only listed relevant sections/claims reviewed, not every section or figure",
+      "read_locators": [
+        "Claim 1",
+        "Description: frame/seat post/clamp/cushion"
+      ],
+      "author_summary": "用于本轮消息持久化主题的排除对照；非通用相关性或任何实体权利判断。",
+      "short_quote": {
+        "locator": "Claim 1",
+        "text": "bicycle frame"
+      },
+      "original_pdf": null,
+      "public_date_relation_to_synthetic_2025_02_10": "before",
+      "rights": "Link and limited original analysis/short citation only; no full text/PDF/image republication licence asserted. Third-party material not relicensed under project NC licence.",
+      "recorded_at": "2026-11-02T19:27:45.438065+00:00",
+      "read_on_local_date": "2026-11-03",
+      "origin_network_timestamp": "not_exposed",
+      "time_basis": "recorded_at is consolidation time, not first source acquisition, original public availability, archive or origin fetch timestamp"
+    }
+  ],
+  "execution_limits": [
+    "No browser/profile/credentials used in this slice",
+    "No API or bulk scraping; no circumvention of robots, login or access wall",
+    "Original third-party PDFs and full text not redistributed",
+    "Public references not relabelled synthetic to pass synthetic-only tools; no run against real references through those tools",
+    "No novelty, inventive-step, FTO or official legal-status conclusion",
+    "No independent writing acceptance, new model channel or professional review"
+  ],
+  "whole_goal": "active_not_complete",
+  "recorded_at": "2026-11-02T19:27:45.438065+00:00",
+  "read_on_local_date": "2026-11-03",
+  "access_freshness": "Page text was returned through the web tool, which may extract/cache source content. Exact origin HTTP request/response timestamps and live-origin freshness were not exposed."
+}

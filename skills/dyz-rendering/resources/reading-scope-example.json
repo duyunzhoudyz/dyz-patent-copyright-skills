@@ -1,0 +1,119 @@
+{
+  "sensitivity": "synthetic",
+  "document_id": "ReadingScopeDemo",
+  "version": "1",
+  "business": "patent",
+  "sources": [
+    {
+      "id": "Evidence",
+      "version": "demo-v1",
+      "path": "skills/dyz-rendering/resources/reading-scope-records.md",
+      "sha256": "4bd32e9d0c7ac904c1d15241b6b737acef03a485d9dda66b387633346fd719c8"
+    },
+    {
+      "id": "Draft",
+      "path": "skills/dyz-rendering/resources/reading-scope-statements.md",
+      "sha256": "b280bfb8219185709c6105ab106ff2c8f12b3b509aaed6f07bf1a6f609a9d677"
+    }
+  ],
+  "blocks": [
+    {
+      "id": "Title",
+      "kind": "heading1",
+      "audience": "body",
+      "source_id": "Draft",
+      "start_line": 1,
+      "end_line": 1
+    },
+    {
+      "id": "Scope1",
+      "kind": "reading_scope",
+      "audience": "body",
+      "source_id": "Evidence",
+      "start_line": 3,
+      "end_line": 3,
+      "generate": true
+    },
+    {
+      "id": "Scope2",
+      "kind": "reading_scope",
+      "audience": "body",
+      "source_id": "Evidence",
+      "start_line": 4,
+      "end_line": 4,
+      "generate": true
+    },
+    {
+      "id": "Scope3",
+      "kind": "reading_scope",
+      "audience": "body",
+      "source_id": "Evidence",
+      "start_line": 3,
+      "end_line": 4,
+      "generate": true
+    }
+  ],
+  "figures": [],
+  "reading_scope": {
+    "payload": {
+      "documents": [
+        {
+          "id": "Evidence",
+          "role": "source",
+          "version": "demo-v1",
+          "text": "# 合成读取记录：不是实际文献阅读回执\n\n{\"subject\":{\"document_id\":\"示例文献甲\",\"version\":\"v1\"},\"medium\":\"pdf\",\"unit\":\"physical_page\",\"operation\":\"visual_review\",\"origin\":\"reported\",\"event_id\":\"合成事件1\",\"state\":\"known\",\"total\":13,\"ranges\":[[1,1],[4,4],[6,13]]}\n{\"subject\":{\"document_id\":\"示例文献乙\",\"version\":\"v2\"},\"medium\":\"pdf\",\"unit\":\"physical_page\",\"operation\":\"visual_review\",\"origin\":\"reported\",\"event_id\":\"合成事件1\",\"state\":\"known\",\"total\":38,\"ranges\":[[1,1],[19,38]]}\n",
+          "sha256": "4bd32e9d0c7ac904c1d15241b6b737acef03a485d9dda66b387633346fd719c8"
+        }
+      ],
+      "readings": [
+        {
+          "id": "Read1",
+          "citation": {
+            "document_id": "Evidence",
+            "start": 21,
+            "end": 233,
+            "quote": "{\"subject\":{\"document_id\":\"示例文献甲\",\"version\":\"v1\"},\"medium\":\"pdf\",\"unit\":\"physical_page\",\"operation\":\"visual_review\",\"origin\":\"reported\",\"event_id\":\"合成事件1\",\"state\":\"known\",\"total\":13,\"ranges\":[[1,1],[4,4],[6,13]]}"
+          }
+        },
+        {
+          "id": "Read2",
+          "citation": {
+            "document_id": "Evidence",
+            "start": 234,
+            "end": 441,
+            "quote": "{\"subject\":{\"document_id\":\"示例文献乙\",\"version\":\"v2\"},\"medium\":\"pdf\",\"unit\":\"physical_page\",\"operation\":\"visual_review\",\"origin\":\"reported\",\"event_id\":\"合成事件1\",\"state\":\"known\",\"total\":38,\"ranges\":[[1,1],[19,38]]}"
+          }
+        }
+      ],
+      "statements": [
+        {
+          "id": "Single1",
+          "kind": "single",
+          "reading_ids": [
+            "Read1"
+          ]
+        },
+        {
+          "id": "Single2",
+          "kind": "single",
+          "reading_ids": [
+            "Read2"
+          ]
+        },
+        {
+          "id": "Total",
+          "kind": "aggregate",
+          "reading_ids": [
+            "Read1",
+            "Read2"
+          ]
+        }
+      ]
+    },
+    "blocks": {
+      "Scope1": "Single1",
+      "Scope2": "Single2",
+      "Scope3": "Total"
+    }
+  }
+}

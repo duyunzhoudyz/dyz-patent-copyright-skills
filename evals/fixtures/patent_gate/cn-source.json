@@ -1,0 +1,33 @@
+{
+  "sensitivity": "synthetic",
+  "documents": [
+    {
+      "id": "Originalcn",
+      "version": "1",
+      "role": "original",
+      "text": "以下全部为原创合成练习材料，不是真实申请：一种通风控制装置包括温度传感器、控制器和阀门。传感器每秒采样，控制器将采样值与低阈值L及高阈值H比较，L小于H。温度低于L时关闭阀门，高于H时打开阀门；中间区间与等号处的行为未给出。传感器故障时禁止新开阀命令，故障解除后须收到人工复位确认才能恢复正常判断；等待确认时的既有物理阀位未给出。L、H均未给具体数值，未提供实验或现有专利。",
+      "sha256": "b6af7e2145aa1113d2514e64715f620280b5446b738a02012ebe06bab940f803"
+    }
+  ],
+  "provenance": {
+    "origin": "original_synthetic_user_task_recovered_from_transcript_read",
+    "transcript_record_i": 790,
+    "historical_path": "outputs/patent-skill-validation-20261114/final-gate/cn-complete-draft-prompt.txt",
+    "task_text": "以下全部为原创合成练习材料，不是真实申请：一种通风控制装置包括温度传感器、控制器和阀门。传感器每秒采样，控制器将采样值与低阈值L及高阈值H比较，L小于H。温度低于L时关闭阀门，高于H时打开阀门；中间区间与等号处的行为未给出。传感器故障时禁止新开阀命令，故障解除后须收到人工复位确认才能恢复正常判断；等待确认时的既有物理阀位未给出。L、H均未给具体数值，未提供实验或现有专利。请交一条独立权项及两条有支持的从属项、技术领域/背景/发明内容/具体实施方式/摘要的完整连续工作稿，另列内部支持与未知问题。不要伪造公开号、实验或阈值，不必图示。",
+    "method": "exact_user_task_prefix_before_delivery_request",
+    "full_technical_material_preserved": true,
+    "rewritten": false,
+    "original_prompt_bytes": "not_recovered_from_read_snapshot",
+    "candidate": "cn-candidate.txt",
+    "candidate_sha256": "162acd11a12d2c2b56b629d851321432edaf3fc7f49748671ec88a780eb57478",
+    "candidate_recovery": "exact_write_to_file_content_at_transcript_record_i_811",
+    "candidate_origin": "local_assistant_authored_reference_not_requested_model_retest",
+    "claim_count": {"independent": 1, "dependent": 1, "requested_dependent": 2},
+    "quantity_result": "not_met_no_unsupported_second_dependent_created",
+    "historical_bad_output": "cn-historical-bad.md",
+    "historical_bad_recovery": "complete_read_snapshot_at_transcript_record_i_569_original_file_bytes_not_authenticated",
+    "natural_language_verified": false,
+    "source_authentication": "not_performed",
+    "professional_review": "not_performed"
+  }
+}

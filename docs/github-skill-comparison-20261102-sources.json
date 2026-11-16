@@ -1,0 +1,405 @@
+{
+  "research_date": "2026-11-02",
+  "timezone": "Asia/Seoul",
+  "method": "Public GitHub connector metadata and fixed-commit files, supplemented by public web search. Static inspection of entrypoints and representative file sections; no upstream scripts, installations or comparative model runs.",
+  "selection": "Representative relevance-based sample: 11 direct skills and 2 adjacent references. Not an exhaustive census or global ranking. Stars are repository-level counts observed this session, not skill usage, quality or professional validation.",
+  "local_baseline": {
+    "candidate_fingerprint": "17a13f501476f84425250251655234fcdafa68335d549002e9d8061fba25520c",
+    "authority": "implementation-progress.md, alignment-d12",
+    "seven_cases": "28/28 original checks satisfied; author scored; not whole-batch acceptance",
+    "runtime_support": "synthetic_helper_only"
+  },
+  "queries": [
+    "patent skill",
+    "site:github.com \"patent\" \"SKILL.md\"",
+    "软件著作权 skill",
+    "software copyright skill",
+    "site:github.com \"软著\" \"SKILL.md\"",
+    "国家标准 skill",
+    "standards drafting skill",
+    "site:github.com \"GB/T 1.1\" skill",
+    "site:github.com \"标准起草\" \"skill\"",
+    "site:github.com \"standard-drafting\" skill"
+  ],
+  "sources": [
+    {
+      "id": "P1",
+      "category": "patent",
+      "repository": "handsomestWei/patent-disclosure-skill",
+      "url": "https://github.com/handsomestWei/patent-disclosure-skill",
+      "stars": 12626,
+      "forks": 1361,
+      "pushed_at": "2026-11-01T15:03:20Z",
+      "default_branch": "main",
+      "commit": "0b95b547f78c2a0dd0e4e71eb43a88841c99c936",
+      "commit_url": "https://github.com/handsomestWei/patent-disclosure-skill/commit/0b95b547f78c2a0dd0e4e71eb43a88841c99c936",
+      "license_from_api": "MIT",
+      "license_note": "API license label only; asset-level reuse permission not audited",
+      "files": [
+        {
+          "path": "SKILL.md",
+          "git_blob_sha": "91bad738e3ab92ed03d5ebc968548ac389dd0c10",
+          "permalink": "https://github.com/handsomestWei/patent-disclosure-skill/blob/0b95b547f78c2a0dd0e4e71eb43a88841c99c936/SKILL.md",
+          "inspection": "entrypoint or representative static sections; fetched in this session"
+        },
+        {
+          "path": "skills/patent-disclosure/SKILL.md",
+          "git_blob_sha": "d1be3a7d0e9f12d94b2213ec7f3e90391fa65ced",
+          "permalink": "https://github.com/handsomestWei/patent-disclosure-skill/blob/0b95b547f78c2a0dd0e4e71eb43a88841c99c936/skills/patent-disclosure/SKILL.md",
+          "inspection": "entrypoint or representative static sections; fetched in this session"
+        },
+        {
+          "path": "skills/patent-search/SKILL.md",
+          "git_blob_sha": "ddf3324dbc0e39d399ec2fbd91707a8e7dc605c2",
+          "permalink": "https://github.com/handsomestWei/patent-disclosure-skill/blob/0b95b547f78c2a0dd0e4e71eb43a88841c99c936/skills/patent-search/SKILL.md",
+          "inspection": "entrypoint or representative static sections; fetched in this session"
+        }
+      ]
+    },
+    {
+      "id": "P2",
+      "category": "patent",
+      "repository": "7toCR/paper2patent",
+      "url": "https://github.com/7toCR/paper2patent",
+      "stars": 704,
+      "forks": 63,
+      "pushed_at": "2026-10-10T03:09:42Z",
+      "default_branch": "main",
+      "commit": "53d0a2d2cbd8db6de824dfed86aab1763caa7142",
+      "commit_url": "https://github.com/7toCR/paper2patent/commit/53d0a2d2cbd8db6de824dfed86aab1763caa7142",
+      "license_from_api": "MIT",
+      "license_note": "API license label only; asset-level reuse permission not audited",
+      "files": [
+        {
+          "path": "skills/paper2patent/SKILL.md",
+          "git_blob_sha": "670a6f0695d370736129f499148816487161dafa",
+          "permalink": "https://github.com/7toCR/paper2patent/blob/53d0a2d2cbd8db6de824dfed86aab1763caa7142/skills/paper2patent/SKILL.md",
+          "inspection": "entrypoint or representative static sections; fetched in this session"
+        },
+        {
+          "path": "skills/paper2patent/scripts/check_patent_draft.py",
+          "git_blob_sha": "4cf4595b7d8995f2699e27e327f12822e0b12b2c",
+          "permalink": "https://github.com/7toCR/paper2patent/blob/53d0a2d2cbd8db6de824dfed86aab1763caa7142/skills/paper2patent/scripts/check_patent_draft.py",
+          "inspection": "entrypoint or representative static sections; fetched in this session"
+        },
+        {
+          "path": "evals/README.md",
+          "git_blob_sha": "69bd2a4910381899b7caf2668c0f036ed149864a",
+          "permalink": "https://github.com/7toCR/paper2patent/blob/53d0a2d2cbd8db6de824dfed86aab1763caa7142/evals/README.md",
+          "inspection": "entrypoint or representative static sections; fetched in this session"
+        }
+      ]
+    },
+    {
+      "id": "P3",
+      "category": "patent",
+      "repository": "RobThePCGuy/Claude-Patent-Creator",
+      "url": "https://github.com/RobThePCGuy/Claude-Patent-Creator",
+      "stars": 207,
+      "forks": 34,
+      "pushed_at": "2026-10-26T04:41:24Z",
+      "default_branch": "main",
+      "commit": "f855527c61ee578b24f77cae99ef91eea80cafc6",
+      "commit_url": "https://github.com/RobThePCGuy/Claude-Patent-Creator/commit/f855527c61ee578b24f77cae99ef91eea80cafc6",
+      "license_from_api": "MIT",
+      "license_note": "API license label only; asset-level reuse permission not audited",
+      "files": [
+        {
+          "path": "skills/patent-application-creator/SKILL.md",
+          "git_blob_sha": "57faef25c1b453589a833eddd1162fe92f848f9f",
+          "permalink": "https://github.com/RobThePCGuy/Claude-Patent-Creator/blob/f855527c61ee578b24f77cae99ef91eea80cafc6/skills/patent-application-creator/SKILL.md",
+          "inspection": "entrypoint or representative static sections; fetched in this session"
+        }
+      ]
+    },
+    {
+      "id": "P4",
+      "category": "patent",
+      "repository": "handsomeZR-netizen/cn-patent-drafter",
+      "url": "https://github.com/handsomeZR-netizen/cn-patent-drafter",
+      "stars": 63,
+      "forks": 8,
+      "pushed_at": "2026-05-06T02:42:01Z",
+      "default_branch": "main",
+      "commit": "612b3fd5bfe947faa2c0b44b0aa7265e0960e01c",
+      "commit_url": "https://github.com/handsomeZR-netizen/cn-patent-drafter/commit/612b3fd5bfe947faa2c0b44b0aa7265e0960e01c",
+      "license_from_api": "MIT",
+      "license_note": "API license label only; asset-level reuse permission not audited",
+      "files": [
+        {
+          "path": "SKILL.md",
+          "git_blob_sha": "9b02d3956f77144d9a5dc02644e862d54eda967e",
+          "permalink": "https://github.com/handsomeZR-netizen/cn-patent-drafter/blob/612b3fd5bfe947faa2c0b44b0aa7265e0960e01c/SKILL.md",
+          "inspection": "entrypoint or representative static sections; fetched in this session"
+        }
+      ]
+    },
+    {
+      "id": "P5",
+      "category": "patent",
+      "repository": "Obviously-Not/patent-skills",
+      "url": "https://github.com/Obviously-Not/patent-skills",
+      "stars": 19,
+      "forks": 0,
+      "pushed_at": "2026-09-14T03:43:01Z",
+      "default_branch": "main",
+      "commit": "a2e9cd1f433398267b4daf6a03a4c23d5d7bbc52",
+      "commit_url": "https://github.com/Obviously-Not/patent-skills/commit/a2e9cd1f433398267b4daf6a03a4c23d5d7bbc52",
+      "license_from_api": "MIT",
+      "license_note": "API license label only; asset-level reuse permission not audited",
+      "files": [
+        {
+          "path": "code-patent-scanner/SKILL.md",
+          "git_blob_sha": "79e5a2338d3d6d1f692bbc6c4bdba30e88332f57",
+          "permalink": "https://github.com/Obviously-Not/patent-skills/blob/a2e9cd1f433398267b4daf6a03a4c23d5d7bbc52/code-patent-scanner/SKILL.md",
+          "inspection": "entrypoint or representative static sections; fetched in this session"
+        }
+      ]
+    },
+    {
+      "id": "S1",
+      "category": "software",
+      "repository": "Fokkyp/SoftwareCopyright-Skill",
+      "url": "https://github.com/Fokkyp/SoftwareCopyright-Skill",
+      "stars": 6166,
+      "forks": 854,
+      "pushed_at": "2026-10-23T11:39:27Z",
+      "default_branch": "main",
+      "commit": "1159f6d280783616e1247f768690eac97c1a3f6e",
+      "commit_url": "https://github.com/Fokkyp/SoftwareCopyright-Skill/commit/1159f6d280783616e1247f768690eac97c1a3f6e",
+      "license_from_api": "AGPL-3.0",
+      "license_note": "AGPLv3 LICENSE read; do not treat as MIT",
+      "files": [
+        {
+          "path": "software-copyright-materials/SKILL.md",
+          "git_blob_sha": "ab6c7750c08ed6b43b39c50ab4f620ed28ee7ffe",
+          "permalink": "https://github.com/Fokkyp/SoftwareCopyright-Skill/blob/1159f6d280783616e1247f768690eac97c1a3f6e/software-copyright-materials/SKILL.md",
+          "inspection": "entrypoint or representative static sections; fetched in this session"
+        },
+        {
+          "path": "software-copyright-materials/scripts/confirm_stage.py",
+          "git_blob_sha": "b4063d7851fa6f58aa6f090157d7f5032bfb2839",
+          "permalink": "https://github.com/Fokkyp/SoftwareCopyright-Skill/blob/1159f6d280783616e1247f768690eac97c1a3f6e/software-copyright-materials/scripts/confirm_stage.py",
+          "inspection": "entrypoint or representative static sections; fetched in this session"
+        },
+        {
+          "path": "LICENSE",
+          "git_blob_sha": "be3f7b28e564e7dd05eaf59d64adba1a4065ac0e",
+          "permalink": "https://github.com/Fokkyp/SoftwareCopyright-Skill/blob/1159f6d280783616e1247f768690eac97c1a3f6e/LICENSE",
+          "inspection": "entrypoint or representative static sections; fetched in this session"
+        }
+      ]
+    },
+    {
+      "id": "S2",
+      "category": "software",
+      "repository": "na57/chinese-copyright-application-skill",
+      "url": "https://github.com/na57/chinese-copyright-application-skill",
+      "stars": 194,
+      "forks": 48,
+      "pushed_at": "2026-07-21T00:42:31Z",
+      "default_branch": "main",
+      "commit": "ae8007f84cdd652762d346ffc1bb3a76c0965446",
+      "commit_url": "https://github.com/na57/chinese-copyright-application-skill/commit/ae8007f84cdd652762d346ffc1bb3a76c0965446",
+      "license_from_api": null,
+      "license_note": "No license detected by API and no root LICENSE in inspected listing",
+      "files": [
+        {
+          "path": "SKILL.md",
+          "git_blob_sha": "1c310f552dcbd2d3bfc79a0a3e0ea4b86e82cc43",
+          "permalink": "https://github.com/na57/chinese-copyright-application-skill/blob/ae8007f84cdd652762d346ffc1bb3a76c0965446/SKILL.md",
+          "inspection": "entrypoint or representative static sections; fetched in this session"
+        }
+      ]
+    },
+    {
+      "id": "S3",
+      "category": "software",
+      "repository": "IvanCodesDev/software-certificate-skill",
+      "url": "https://github.com/IvanCodesDev/software-certificate-skill",
+      "stars": 173,
+      "forks": 12,
+      "pushed_at": "2026-08-17T02:34:53Z",
+      "default_branch": "main",
+      "commit": "ee7d4636f35210767adc0b5689f8678c68e6f7e6",
+      "commit_url": "https://github.com/IvanCodesDev/software-certificate-skill/commit/ee7d4636f35210767adc0b5689f8678c68e6f7e6",
+      "license_from_api": "MIT",
+      "license_note": "API license label only; asset-level reuse permission not audited",
+      "files": [
+        {
+          "path": "SKILL.md",
+          "git_blob_sha": "444a7208578bbac45c2c02866013d4e3b35e7317",
+          "permalink": "https://github.com/IvanCodesDev/software-certificate-skill/blob/ee7d4636f35210767adc0b5689f8678c68e6f7e6/SKILL.md",
+          "inspection": "entrypoint or representative static sections; fetched in this session"
+        },
+        {
+          "path": "tests/test_source_split_e2e.py",
+          "git_blob_sha": "503cd4940cf0eaeef8be87fe5e8026c0dd87ef49",
+          "permalink": "https://github.com/IvanCodesDev/software-certificate-skill/blob/ee7d4636f35210767adc0b5689f8678c68e6f7e6/tests/test_source_split_e2e.py",
+          "inspection": "entrypoint or representative static sections; fetched in this session"
+        },
+        {
+          "path": "tests/test_browser_e2e.py",
+          "git_blob_sha": "6a727aed7ae5f2413a59818b11aeadb925a0deaf",
+          "permalink": "https://github.com/IvanCodesDev/software-certificate-skill/blob/ee7d4636f35210767adc0b5689f8678c68e6f7e6/tests/test_browser_e2e.py",
+          "inspection": "entrypoint or representative static sections; fetched in this session"
+        }
+      ]
+    },
+    {
+      "id": "S4",
+      "category": "software",
+      "repository": "suling-fun/software-copyright-materials-skill",
+      "url": "https://github.com/suling-fun/software-copyright-materials-skill",
+      "stars": 109,
+      "forks": 31,
+      "pushed_at": "2026-10-16T18:23:21Z",
+      "default_branch": "main",
+      "commit": "6c9e6e72d8afce7aaccc9831ccd645a6ae2ccb16",
+      "commit_url": "https://github.com/suling-fun/software-copyright-materials-skill/commit/6c9e6e72d8afce7aaccc9831ccd645a6ae2ccb16",
+      "license_from_api": "MIT",
+      "license_note": "MIT LICENSE read; README claims derivation from Fokkyp 1.3; upstream historical per-file provenance not audited",
+      "files": [
+        {
+          "path": "SKILL.md",
+          "git_blob_sha": "3797ea7e320c28f0909a7a9023d0a868276507f4",
+          "permalink": "https://github.com/suling-fun/software-copyright-materials-skill/blob/6c9e6e72d8afce7aaccc9831ccd645a6ae2ccb16/SKILL.md",
+          "inspection": "entrypoint or representative static sections; fetched in this session"
+        },
+        {
+          "path": "README.md",
+          "git_blob_sha": "df36c964699a5d3d00669165d13b0e84b9d441b9",
+          "permalink": "https://github.com/suling-fun/software-copyright-materials-skill/blob/6c9e6e72d8afce7aaccc9831ccd645a6ae2ccb16/README.md",
+          "inspection": "entrypoint or representative static sections; fetched in this session"
+        },
+        {
+          "path": "LICENSE",
+          "git_blob_sha": "6dd27dfbbc8cc2cd97d1c4f259d8079d55976456",
+          "permalink": "https://github.com/suling-fun/software-copyright-materials-skill/blob/6c9e6e72d8afce7aaccc9831ccd645a6ae2ccb16/LICENSE",
+          "inspection": "entrypoint or representative static sections; fetched in this session"
+        }
+      ]
+    },
+    {
+      "id": "T1",
+      "category": "standards",
+      "repository": "zhangzhangco/gbt-standard-docx-skill",
+      "url": "https://github.com/zhangzhangco/gbt-standard-docx-skill",
+      "stars": 16,
+      "forks": 3,
+      "pushed_at": "2026-05-24T04:53:02Z",
+      "default_branch": "main",
+      "commit": "a3af82bc790b0dcf9c2eb8c7123df46311da68da",
+      "commit_url": "https://github.com/zhangzhangco/gbt-standard-docx-skill/commit/a3af82bc790b0dcf9c2eb8c7123df46311da68da",
+      "license_from_api": null,
+      "license_note": "No license detected by API and no root LICENSE in inspected listing",
+      "files": [
+        {
+          "path": "SKILL.md",
+          "git_blob_sha": "4d995a4c3c56da283616702a47439e52ce7642b1",
+          "permalink": "https://github.com/zhangzhangco/gbt-standard-docx-skill/blob/a3af82bc790b0dcf9c2eb8c7123df46311da68da/SKILL.md",
+          "inspection": "entrypoint or representative static sections; fetched in this session"
+        },
+        {
+          "path": "scripts/review_gbt_docx.py",
+          "git_blob_sha": "0ecd833275783006dafce36905dc126cb33bf4ff",
+          "permalink": "https://github.com/zhangzhangco/gbt-standard-docx-skill/blob/a3af82bc790b0dcf9c2eb8c7123df46311da68da/scripts/review_gbt_docx.py",
+          "inspection": "entrypoint or representative static sections; fetched in this session"
+        },
+        {
+          "path": "scripts/check_normative_refs.py",
+          "git_blob_sha": "903ce18a6b117d02349e8371ccda175c67e3a91b",
+          "permalink": "https://github.com/zhangzhangco/gbt-standard-docx-skill/blob/a3af82bc790b0dcf9c2eb8c7123df46311da68da/scripts/check_normative_refs.py",
+          "inspection": "entrypoint or representative static sections; fetched in this session"
+        }
+      ]
+    },
+    {
+      "id": "T2",
+      "category": "standards",
+      "repository": "HuangZhe-CN/guobiao-writing",
+      "url": "https://github.com/HuangZhe-CN/guobiao-writing",
+      "stars": 0,
+      "forks": 0,
+      "pushed_at": "2026-05-19T17:35:55Z",
+      "default_branch": "main",
+      "commit": "930a79612c5342612889b2ac256a73bace871447",
+      "commit_url": "https://github.com/HuangZhe-CN/guobiao-writing/commit/930a79612c5342612889b2ac256a73bace871447",
+      "license_from_api": null,
+      "license_note": "README claims MIT; root listing only README.md and skill.md; no standalone LICENSE verified",
+      "files": [
+        {
+          "path": "skill.md",
+          "git_blob_sha": "c8843b8d95d3bbbcee271fceff70650f025ab4c4",
+          "permalink": "https://github.com/HuangZhe-CN/guobiao-writing/blob/930a79612c5342612889b2ac256a73bace871447/skill.md",
+          "inspection": "entrypoint or representative static sections; fetched in this session"
+        }
+      ]
+    },
+    {
+      "id": "A1",
+      "category": "adjacent_evidence_preparation",
+      "repository": "K-Dense-AI/scientific-agent-skills",
+      "url": "https://github.com/K-Dense-AI/scientific-agent-skills",
+      "stars": 55633,
+      "forks": 4898,
+      "pushed_at": "2026-10-26T09:36:15Z",
+      "default_branch": "main",
+      "commit": "5f2bc0341354fd5590aef76a533ada1e1e5b4e62",
+      "commit_url": "https://github.com/K-Dense-AI/scientific-agent-skills/commit/5f2bc0341354fd5590aef76a533ada1e1e5b4e62",
+      "license_from_api": "MIT",
+      "license_note": "API license label only; asset-level reuse permission not audited",
+      "files": [
+        {
+          "path": "skills/iso-standards-readiness/SKILL.md",
+          "git_blob_sha": "c9dffcff25a86111f243e2bcf6450e354748a540",
+          "permalink": "https://github.com/K-Dense-AI/scientific-agent-skills/blob/5f2bc0341354fd5590aef76a533ada1e1e5b4e62/skills/iso-standards-readiness/SKILL.md",
+          "inspection": "entrypoint or representative static sections; fetched in this session"
+        }
+      ]
+    },
+    {
+      "id": "A2",
+      "category": "adjacent_publishing_tool",
+      "repository": "metanorma/metanorma",
+      "url": "https://github.com/metanorma/metanorma",
+      "stars": 140,
+      "forks": 47,
+      "pushed_at": "2026-11-01T16:24:00Z",
+      "default_branch": "main",
+      "commit": "34e259b1f1c568f3b9e032d935e51c1fcf9d19c8",
+      "commit_url": "https://github.com/metanorma/metanorma/commit/34e259b1f1c568f3b9e032d935e51c1fcf9d19c8",
+      "license_from_api": "BSD-2-Clause",
+      "license_note": "API license label only; asset-level reuse permission not audited",
+      "files": [
+        {
+          "path": "README.adoc",
+          "git_blob_sha": "68f3caca6c8ffc402e99a1df0c0e129967979cd4",
+          "permalink": "https://github.com/metanorma/metanorma/blob/34e259b1f1c568f3b9e032d935e51c1fcf9d19c8/README.adoc",
+          "inspection": "entrypoint or representative static sections; fetched in this session"
+        }
+      ]
+    }
+  ],
+  "exclusions": [
+    {
+      "repository": "jaccen/AI-Copyright-Skill",
+      "reason": "AI patent drafting focus despite name; already analyzed in prior local reference study; not counted as a software copyright peer"
+    },
+    {
+      "repository": "Ring0321/software-copyright-platform-workflow-public",
+      "reason": "Supplementary zero-star workflow, includes machine-specific dependency path; not used as a leading independent comparator"
+    },
+    {
+      "repository": "ietf-tools/rfcxml-templates",
+      "reason": "Connector returned 404 for this candidate URL; excluded, not evidence of absence of RFC tooling"
+    }
+  ],
+  "limitations": [
+    "No upstream tests executed or CI success independently verified.",
+    "No same-input/model/budget comparative writing runs; no measured quality ranking.",
+    "No legal or standards-rule currency determination; upstream rules treated as claims requiring separate authoritative verification.",
+    "No source/template code incorporated; no restricted standard full text read; no .references snapshots updated.",
+    "No business skill, tool, rule JSON, license, bundle whitelist or Git mutation."
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "sensitivity": "synthetic",
+  "software_name": "港湾记录整理器",
+  "version": "1.2",
+  "source_files": [
+    {
+      "file": "api.py",
+      "sha256": "b406d4feb39224557dd73d0aad3565e2b11cdb84729668bb45470a15c31398d5",
+      "physical_lines": 57
+    },
+    {
+      "file": "cli.py",
+      "sha256": "17d16810181a82a31a99d60da863d91e6f64ca8467527049ae5491ade9614cc9",
+      "physical_lines": 47
+    },
+    {
+      "file": "core.py",
+      "sha256": "a2840b6097524f5b5c95ba60e3313004d28cbf86963a1933bdcedd3486ce49c5",
+      "physical_lines": 69
+    },
+    {
+      "file": "gui.py",
+      "sha256": "78088ab67941836bcfc0c5258b8acf8dee64ff3643a1ddd65afa82ec94d74494",
+      "physical_lines": 51
+    },
+    {
+      "file": "index.html",
+      "sha256": "f406ae71dd05f63eecc5bcf27e7857c79961085d575489c9aecf4118bcb1708b",
+      "physical_lines": 31
+    }
+  ],
+  "physical_lines": 255,
+  "source_count_scope": "Five explicit original demo files; physical lines include comments and blanks, not originality count.",
+  "applicant": null,
+  "development_completion_date": null,
+  "first_publication": null,
+  "rights_basis": "not_professionally_reviewed",
+  "registration": "not_performed",
+  "screenshots": [
+    {
+      "path": "gui-success.png",
+      "sha256": "64d6d9fe13f216ddffd251e32ea894a2fed6d6306faebf9351fac9e0ac2a7714"
+    },
+    {
+      "path": "gui-duplicate-id.png",
+      "sha256": "56610baba354fafd8e76103ebdd71851dc995f887e39a568ae8bc1c18c05eba3"
+    }
+  ]
+}

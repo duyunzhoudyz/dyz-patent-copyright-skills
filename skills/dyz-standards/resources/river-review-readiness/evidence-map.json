@@ -1,0 +1,719 @@
+{
+  "date": "2026-11-03",
+  "kind": "original_River_professional_review_preparation_evidence_index",
+  "status": "prepared_for_internal_review_not_professionally_reviewed",
+  "original_plan_reference": {
+    "iteration": 8,
+    "source_line": 232,
+    "step": 1,
+    "scope": "standard core review preparation only"
+  },
+  "original_requirement_R10": {
+    "id": "R10",
+    "subject": "有限状态前提",
+    "given": "本模型状态输入只含先前已接收的合成批次；状态不跨真实程序重启持久化。事务、并发、断电/磁盘故障和网络确认丢失均未实现。草案应明确状态保存与作用域为给定测试条件，并将真实实现的持久化/并发互操作验证列待验，不能凭内存模型声称生产级 exactly-once。"
+  },
+  "files": [
+    {
+      "path": "references/standards/cn-organization-evidence-20261101.md",
+      "sha256": "cb8aacf4ea8f19cece8e4991d2ad0ea248bf2206017e5152c5a607e4e7a224bf"
+    },
+    {
+      "path": "references/standards/river-source-evidence-20261103.md",
+      "sha256": "cd2bb37107acb23ebfeff65ca0410fccb4a3b7a0a6767eb9e6f06cf5e93e1f30"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-delivery-source/change-impact.json",
+      "sha256": "ae39543b894dc5ec0f32939553a6e1160586fc855a5fe42d92647f3d16798158"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-delivery-source/draft-v1.0-input.json",
+      "sha256": "712ea3dbf18711d69a6a23fd8c16c8d9e044e1bc81afc7b72eb6ea8430ae1cd7"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-delivery-source/draft-v1.0.md",
+      "sha256": "d3002dc1b91ebbfe95a509355300b2f60f615408ea39da26a40892a916df8a9f"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-delivery-source/draft-v1.1-input.json",
+      "sha256": "d6a916352aa751c03c7d0ca8db4f839a3e807486f1afe889e1ebbf3c566d7426"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-delivery-source/draft-v1.1.md",
+      "sha256": "6288da4f6d92b98959d75f4b05127753dd713f888a85360c1568fecf83521802"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-delivery-source/file-bindings.json",
+      "sha256": "372d671476722b54117aadbb02833203a96f03ca1dfcb8af6e2fe9c25cbd47f2"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-delivery-source/model-run.json",
+      "sha256": "d054543c34685a2113d3e5935a9f50846ce79d219ec43be49b85496c59ca6fde"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-delivery-source/review-v1.0-input.json",
+      "sha256": "a05a39bc92b2df4f612d4d24e112b60bfb6bf834f7404b81a94d3a5f75662b93"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-delivery-source/review-v1.0.md",
+      "sha256": "657b73c9799661bbadd8ee22534a1630f34205381ffad9f58af530c800c38e3c"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-delivery-source/review-v1.1-input.json",
+      "sha256": "6024c85146a61ef0dc9d2adf1ed9e39b1be0a9790ca383de88a93254ae550b8e"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-delivery-source/review-v1.1.md",
+      "sha256": "112bc7331788971f23bcf9cad57cbc9e508606280ba1fa594c40706a71a5d033"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-delivery/comment-bindings.json",
+      "sha256": "d802e51a31278cd95bad6af932403a2453fb683aeb760b5638ae43e6a6580ff6"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-delivery/comments-input.json",
+      "sha256": "d9197a555b72ddebc837310a975d37acc646bbe9ba76523b186491aa9ff0a7b8"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-delivery/explanation-input.json",
+      "sha256": "7c3dad77c9e44531c4332f2e4f0e2972755f0827352a914bb6f21dba4a4d39e8"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-delivery/standard-input.json",
+      "sha256": "aa4702033e6699afa64d1414e500a264d2307986363015676c42eae3080ed705"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-delivery/verification-input.json",
+      "sha256": "a1284b37c3c48f4705fc9472716f786c8e6c2d603a551af9d0de03d20dd1a084"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-demo/model.py",
+      "sha256": "4214ff76e9364e2fa66cf999d5a42ba5490a0197d76efbbfd8a54a1091ff5aa0"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-demo/requirements.json",
+      "sha256": "1abf48e50746bd600a7555ceb345ad8d8f8dbbe7a8f9d4ab653b73a31cf805f2"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-demo/source-boundary-vectors.json",
+      "sha256": "d2eea43511eb279d9c80b4e312cea2ebd3d41e56400a94f58fae3c1d2af2869b"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-demo/v11-boundary-vectors.json",
+      "sha256": "640aa3177d686fd707fb95bb395ad06ff72b6777403b1de537c42345d7ae19aa"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-demo/vectors.json",
+      "sha256": "22770d1dfd0602f56f14f653dfeb8e8631561ee9ab35da7ccad03f78eb7f3227"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-demo/verify-v11.py",
+      "sha256": "f2b5d73e3eb12615b5758c88a9fe2a8e13e983edf88a2e63763860a4f5ca1b7f"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-example.md",
+      "sha256": "145d38e9aac50a606d9631331b1e6eb9c25f468bfea0be915d0245469d241386"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-local-interop/document-input.json",
+      "sha256": "9083732e026f846d82137f670f7f5f6ea7ceb4e69468de538a0272197359eba0"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-local-interop/execution.json",
+      "sha256": "0f00311a738fb6b911eca91baeb52713a99d43eb73df22e0a87a6426a1b24084"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-local-interop/file-bindings.json",
+      "sha256": "19cd7065e8915aa057d9a1ad58a7852f0e7a6416eac7967ed33a0108d7c6d240"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-local-interop/peer_a.py",
+      "sha256": "bdc3cbfb2f7960001cbc1ddd904d95ca18417b67d8f3487775ee8e3ef576f1bf"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-local-interop/peer_b.py",
+      "sha256": "b94cce580d7aa7b72d6fb81e85a124891ba7262b7f89236489b420e00b64fdd6"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-local-interop/plan.json",
+      "sha256": "ae2730c5fd50ec47579b0d0b7b4739bebbd182d9a98f6912e30c2f956b5cf2ac"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-local-interop/run_interop.py",
+      "sha256": "3ba58be26ddc23bff5a0f7543f283f4682ee8365349a8a7f145d35eb880c927a"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-local-interop/verification.md",
+      "sha256": "56c2ca5dd79b983484280d7a02d0a6c217bc1d8c08d3d14e7ac77fed508078fb"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-review-readiness/review-pack.md",
+      "sha256": "9d180aec0c743046a0cdba27f427de0065a92c8e6b4751a57d237c660e15c083"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-source-profile.md",
+      "sha256": "123146b7204ef48d8977bf3e6d1496a28c0df44141019659feb5d94de2ff260b"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-v11-verification/document-input.json",
+      "sha256": "4d94fc817669d27ad832d00fcd04c7fb3240dbb76a8486906890cee628050f76"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-v11-verification/file-bindings.json",
+      "sha256": "8620defde132853e437ee647e9642fade214c2eea28eb8ec94e6a58c88e99b3d"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-v11-verification/model-run.json",
+      "sha256": "7ecd3479388f0862bd2a194bcf21487852dcca63cfd5d22ce2a944ab7699121d"
+    },
+    {
+      "path": "skills/dyz-standards/resources/river-v11-verification/verification.md",
+      "sha256": "652e5c6f003fa07b65f2c2929b0dfa2f91ae64b98d85f6e8ccce221118ead995"
+    }
+  ],
+  "native_documents": [
+    {
+      "id": "river-1.0-draft",
+      "document_id": "RiverDraft",
+      "version": "1.0_RS2",
+      "input": "skills/dyz-standards/resources/river-delivery-source/draft-v1.0-input.json",
+      "input_sha256": "712ea3dbf18711d69a6a23fd8c16c8d9e044e1bc81afc7b72eb6ea8430ae1cd7",
+      "source": "skills/dyz-standards/resources/river-delivery-source/draft-v1.0.md",
+      "source_sha256": "d3002dc1b91ebbfe95a509355300b2f60f615408ea39da26a40892a916df8a9f",
+      "observed_docx": "outputs/maturity-i04-mixed-documents/v1.0-draft-r2/body/document.docx",
+      "docx_sha256": "1369da0e0edae090c0652818238305268a907d1acb3b0567b3e7591b98c6d464",
+      "observed_pdf": "outputs/maturity-i04-mixed-documents/v1.0-draft-r2/body/document.pdf",
+      "pdf_sha256": "18de27709dbfe37e917623b131d1cb1ae77a640b34a8adeed92e0c3e12e265c8",
+      "original_export_manifest": "outputs/maturity-i04-mixed-documents/v1.0-draft-r2/manifest.json",
+      "original_export_manifest_sha256": "a40e6373a07e98b633f6ab94351b125ff1298589ed8f4d3d2a82fddd1e2fe3b1",
+      "literal_readback_state": "complete_supported_subset",
+      "unique_bookmarks": 28,
+      "new_visual_review": "not_performed_exact_existing_bytes_reused",
+      "scope": "Observed workspace paths and selected native copies are not a complete export package or installation dependency."
+    },
+    {
+      "id": "river-1.0-review",
+      "document_id": "RiverReview",
+      "version": "1.0_RS2",
+      "input": "skills/dyz-standards/resources/river-delivery-source/review-v1.0-input.json",
+      "input_sha256": "a05a39bc92b2df4f612d4d24e112b60bfb6bf834f7404b81a94d3a5f75662b93",
+      "source": "skills/dyz-standards/resources/river-delivery-source/review-v1.0.md",
+      "source_sha256": "657b73c9799661bbadd8ee22534a1630f34205381ffad9f58af530c800c38e3c",
+      "observed_docx": "outputs/maturity-i04-mixed-documents/v1.0-review-r2/body/document.docx",
+      "docx_sha256": "fd503b99b0800eb746fff4ef5f24875b28efab0abba7bce525196937fb32a0ce",
+      "observed_pdf": "outputs/maturity-i04-mixed-documents/v1.0-review-r2/body/document.pdf",
+      "pdf_sha256": "d01fad9388399aff138179f77c9ab8c4084dabaa8b4e0dd2d3f7b0891fe1a217",
+      "original_export_manifest": "outputs/maturity-i04-mixed-documents/v1.0-review-r2/manifest.json",
+      "original_export_manifest_sha256": "e734e514a376c959caa93269da0851e75db712ee322e9c02766a615663c445f0",
+      "literal_readback_state": "complete_supported_subset",
+      "unique_bookmarks": 17,
+      "new_visual_review": "not_performed_exact_existing_bytes_reused",
+      "scope": "Observed workspace paths and selected native copies are not a complete export package or installation dependency."
+    },
+    {
+      "id": "river-1.1-draft",
+      "document_id": "RiverDraft",
+      "version": "1.1_RS2",
+      "input": "skills/dyz-standards/resources/river-delivery-source/draft-v1.1-input.json",
+      "input_sha256": "d6a916352aa751c03c7d0ca8db4f839a3e807486f1afe889e1ebbf3c566d7426",
+      "source": "skills/dyz-standards/resources/river-delivery-source/draft-v1.1.md",
+      "source_sha256": "6288da4f6d92b98959d75f4b05127753dd713f888a85360c1568fecf83521802",
+      "observed_docx": "outputs/maturity-i04-mixed-documents/v1.1-draft-r2/body/document.docx",
+      "docx_sha256": "2e225447ed75c674188fead11e568a3e275fea4092848618ad2b7f576dd4de6b",
+      "observed_pdf": "outputs/maturity-i04-mixed-documents/v1.1-draft-r2/body/document.pdf",
+      "pdf_sha256": "b7be85835f0e4990dbe7503bae1ca4fd7021f02d4f30e2074218ed67cd05f477",
+      "original_export_manifest": "outputs/maturity-i04-mixed-documents/v1.1-draft-r2/manifest.json",
+      "original_export_manifest_sha256": "ea76ed1e7429d42c5c8c50ea327328510c5c1d6aefc6ebe2cabae0900dda75a6",
+      "literal_readback_state": "complete_supported_subset",
+      "unique_bookmarks": 28,
+      "new_visual_review": "not_performed_exact_existing_bytes_reused",
+      "scope": "Observed workspace paths and selected native copies are not a complete export package or installation dependency."
+    },
+    {
+      "id": "river-1.1-review",
+      "document_id": "RiverReview",
+      "version": "1.1_RS2",
+      "input": "skills/dyz-standards/resources/river-delivery-source/review-v1.1-input.json",
+      "input_sha256": "6024c85146a61ef0dc9d2adf1ed9e39b1be0a9790ca383de88a93254ae550b8e",
+      "source": "skills/dyz-standards/resources/river-delivery-source/review-v1.1.md",
+      "source_sha256": "112bc7331788971f23bcf9cad57cbc9e508606280ba1fa594c40706a71a5d033",
+      "observed_docx": "outputs/maturity-i04-mixed-documents/v1.1-review-r2/body/document.docx",
+      "docx_sha256": "b15a63a5d2d39411169b41b4a6e1e2fe65909f57488b7797a790538bf68c9495",
+      "observed_pdf": "outputs/maturity-i04-mixed-documents/v1.1-review-r2/body/document.pdf",
+      "pdf_sha256": "40bb1d448477540e1fc906db0567a8115ee85b4d5739201b7d66f9baed81e778",
+      "original_export_manifest": "outputs/maturity-i04-mixed-documents/v1.1-review-r2/manifest.json",
+      "original_export_manifest_sha256": "0d4bdc440f8bcd629ec9a7fe163b14d8a9f94ba1491775adf0ecbf33133ecf8f",
+      "literal_readback_state": "complete_supported_subset",
+      "unique_bookmarks": 17,
+      "new_visual_review": "not_performed_exact_existing_bytes_reused",
+      "scope": "Observed workspace paths and selected native copies are not a complete export package or installation dependency."
+    },
+    {
+      "id": "river-1.1-verification",
+      "document_id": "RiverV11Verification",
+      "version": "V11_VER1",
+      "input": "skills/dyz-standards/resources/river-v11-verification/document-input.json",
+      "input_sha256": "4d94fc817669d27ad832d00fcd04c7fb3240dbb76a8486906890cee628050f76",
+      "source": "skills/dyz-standards/resources/river-v11-verification/verification.md",
+      "source_sha256": "652e5c6f003fa07b65f2c2929b0dfa2f91ae64b98d85f6e8ccce221118ead995",
+      "observed_docx": "outputs/maturity-i04-river-v11-coverage/current-package/body/document.docx",
+      "docx_sha256": "6360dd437071a13836f99abd07532ce25eaf6cdde3bca2575888d45254cc5d7b",
+      "observed_pdf": "outputs/maturity-i04-river-v11-coverage/current-package/body/document.pdf",
+      "pdf_sha256": "c950586221a97d067346cfc587479f2ee63ff99f598cb730cc8be4e53f1a6254",
+      "original_export_manifest": "outputs/maturity-i04-river-v11-coverage/current-package/manifest.json",
+      "original_export_manifest_sha256": "3de6429c7d38d46dfe026a31f9e5bb3728231a0341044922db823e30c4ed8a35",
+      "literal_readback_state": "complete_supported_subset",
+      "unique_bookmarks": 19,
+      "new_visual_review": "not_performed_exact_existing_bytes_reused",
+      "scope": "Observed workspace paths and selected native copies are not a complete export package or installation dependency."
+    },
+    {
+      "id": "river-local-interop",
+      "document_id": "RiverLocalInteropVerification",
+      "version": "LOCAL_INTEROP1_RS3",
+      "input": "skills/dyz-standards/resources/river-local-interop/document-input.json",
+      "input_sha256": "9083732e026f846d82137f670f7f5f6ea7ceb4e69468de538a0272197359eba0",
+      "source": "skills/dyz-standards/resources/river-local-interop/verification.md",
+      "source_sha256": "56c2ca5dd79b983484280d7a02d0a6c217bc1d8c08d3d14e7ac77fed508078fb",
+      "observed_docx": "outputs/maturity-i04-river-interop/current-document-r3/body/document.docx",
+      "docx_sha256": "345e6418bee89f6b41b19091c73cff194b1e31f359876bd3bd394db1e38efd36",
+      "observed_pdf": "outputs/maturity-i04-river-interop/current-document-r3/body/document.pdf",
+      "pdf_sha256": "a1fb5cafcf0671fe398a021deed288c838cee4a9f29b8162d14c5630a1d508d3",
+      "original_export_manifest": "outputs/maturity-i04-river-interop/current-document-r3/manifest.json",
+      "original_export_manifest_sha256": "195c8c28b9d2bd180794036e56188fffe2ca07546a43cb3fc3ece9232be3bfb5",
+      "literal_readback_state": "complete_supported_subset",
+      "unique_bookmarks": 19,
+      "new_visual_review": "not_performed_exact_existing_bytes_reused",
+      "scope": "Observed workspace paths and selected native copies are not a complete export package or installation dependency."
+    }
+  ],
+  "questions": [
+    {
+      "id": "SQ01",
+      "title": "引用性质与应用限制 P1",
+      "state": "awaiting_professional_response",
+      "question_source": "skills/dyz-standards/resources/river-review-readiness/review-pack.md",
+      "native_targets": [
+        {
+          "document_id": "river-1.1-draft",
+          "bookmark": "RivReference",
+          "text_sha256": "655338a073e26601443ab5b35bf2e1f6269ed7c62ad6ed7483c1a3a87e68406f",
+          "locator": "body/p[6]/bookmarkStart[1]",
+          "end_locator": "body/p[6]/bookmarkEnd[1]"
+        },
+        {
+          "document_id": "river-1.1-draft",
+          "bookmark": "Riv02",
+          "text_sha256": "bf867660dff9ad18dbb7864a6090aa17a27ddfbb1886556da413d370348582a4",
+          "locator": "body/p[12]/bookmarkStart[1]",
+          "end_locator": "body/p[12]/bookmarkEnd[1]"
+        }
+      ]
+    },
+    {
+      "id": "SQ02",
+      "title": "勘误5318与斜线争点 P1",
+      "state": "awaiting_professional_response",
+      "question_source": "skills/dyz-standards/resources/river-review-readiness/review-pack.md",
+      "native_targets": [
+        {
+          "document_id": "river-1.1-draft",
+          "bookmark": "RivReference",
+          "text_sha256": "655338a073e26601443ab5b35bf2e1f6269ed7c62ad6ed7483c1a3a87e68406f",
+          "locator": "body/p[6]/bookmarkStart[1]",
+          "end_locator": "body/p[6]/bookmarkEnd[1]"
+        },
+        {
+          "document_id": "river-1.1-review",
+          "bookmark": "ReviewSources",
+          "text_sha256": "a908510f4bd97023645f812c611193ac9160d36ffba9e82a60db019951a8a85c",
+          "locator": "body/tbl[1]/tr[1]/tc[1]/p[1]/bookmarkStart[1]",
+          "end_locator": "body/tbl[1]/tr[6]/tc[3]/p[1]/bookmarkEnd[1]"
+        }
+      ]
+    },
+    {
+      "id": "SQ03",
+      "title": "状态作用域及产品适用性 P0",
+      "state": "awaiting_professional_response",
+      "question_source": "skills/dyz-standards/resources/river-review-readiness/review-pack.md",
+      "native_targets": [
+        {
+          "document_id": "river-1.1-draft",
+          "bookmark": "RivScope",
+          "text_sha256": "b22bd18143c16e5271dc37e1f7d790e9ba4c6d696b37e92c42068d33d6bb0d36",
+          "locator": "body/p[4]/bookmarkStart[1]",
+          "end_locator": "body/p[4]/bookmarkEnd[1]"
+        },
+        {
+          "document_id": "river-1.1-draft",
+          "bookmark": "Riv07",
+          "text_sha256": "a2c22b17689840386b49f15016a59bd6ac4a1b60223af094b0fccca5a4680f10",
+          "locator": "body/p[22]/bookmarkStart[1]",
+          "end_locator": "body/p[22]/bookmarkEnd[1]"
+        },
+        {
+          "document_id": "river-local-interop",
+          "bookmark": "InteropFresh",
+          "text_sha256": "f65b8c202182027e5e6678ec53c9b6c211d06c4c0b1cfc1e9d7451e3431f0dfa",
+          "locator": "body/p[8]/bookmarkStart[1]",
+          "end_locator": "body/p[8]/bookmarkEnd[1]"
+        }
+      ]
+    },
+    {
+      "id": "SQ04",
+      "title": "独立验证与预期可信度 P1",
+      "state": "awaiting_professional_response",
+      "question_source": "skills/dyz-standards/resources/river-review-readiness/review-pack.md",
+      "native_targets": [
+        {
+          "document_id": "river-local-interop",
+          "bookmark": "InteropMethods",
+          "text_sha256": "8a38964f7187644d008d6a3bf9b83b9e3dac05d33b0c76b0b359ef8001452ab9",
+          "locator": "body/tbl[1]/tr[1]/tc[1]/p[1]/bookmarkStart[1]",
+          "end_locator": "body/tbl[1]/tr[4]/tc[3]/p[1]/bookmarkEnd[1]"
+        },
+        {
+          "document_id": "river-local-interop",
+          "bookmark": "InteropResults",
+          "text_sha256": "d097df16bb0251a0dd9060774b952a4b2a8fdfb3d89e9ee76dc8354b8f66e031",
+          "locator": "body/tbl[2]/tr[1]/tc[1]/p[1]/bookmarkStart[1]",
+          "end_locator": "body/tbl[2]/tr[6]/tc[3]/p[1]/bookmarkEnd[1]"
+        },
+        {
+          "document_id": "river-local-interop",
+          "bookmark": "InteropFresh",
+          "text_sha256": "f65b8c202182027e5e6678ec53c9b6c211d06c4c0b1cfc1e9d7451e3431f0dfa",
+          "locator": "body/p[8]/bookmarkStart[1]",
+          "end_locator": "body/p[8]/bookmarkEnd[1]"
+        }
+      ]
+    },
+    {
+      "id": "SQ05",
+      "title": "字节解析与错误优先次序 P1",
+      "state": "awaiting_professional_response",
+      "question_source": "skills/dyz-standards/resources/river-review-readiness/review-pack.md",
+      "native_targets": [
+        {
+          "document_id": "river-1.1-draft",
+          "bookmark": "Riv01",
+          "text_sha256": "671a12243fd4470d5642529b05ffa37a526207c62dcbe12c0573202af57e4b1d",
+          "locator": "body/p[10]/bookmarkStart[1]",
+          "end_locator": "body/p[10]/bookmarkEnd[1]"
+        },
+        {
+          "document_id": "river-1.1-draft",
+          "bookmark": "Riv02",
+          "text_sha256": "bf867660dff9ad18dbb7864a6090aa17a27ddfbb1886556da413d370348582a4",
+          "locator": "body/p[12]/bookmarkStart[1]",
+          "end_locator": "body/p[12]/bookmarkEnd[1]"
+        },
+        {
+          "document_id": "river-1.1-draft",
+          "bookmark": "Riv03",
+          "text_sha256": "bd9368c243c017897094e1db43317007a155c5ed1f389dc8adc9660e41edcf11",
+          "locator": "body/p[14]/bookmarkStart[1]",
+          "end_locator": "body/p[14]/bookmarkEnd[1]"
+        },
+        {
+          "document_id": "river-1.1-draft",
+          "bookmark": "Riv04",
+          "text_sha256": "e651f0f11d0284aca9f646539aca781859edbaee20510fd7ed95de3b1ba06316",
+          "locator": "body/p[16]/bookmarkStart[1]",
+          "end_locator": "body/p[16]/bookmarkEnd[1]"
+        },
+        {
+          "document_id": "river-1.1-draft",
+          "bookmark": "Riv05",
+          "text_sha256": "6a92a3d9aad310dea83eb0f51287afee7ac951d752bf2668652055cefe90a02a",
+          "locator": "body/p[18]/bookmarkStart[1]",
+          "end_locator": "body/p[18]/bookmarkEnd[1]"
+        },
+        {
+          "document_id": "river-1.1-draft",
+          "bookmark": "Riv06",
+          "text_sha256": "9fbacb02934936e4f81515899e590d367e37c547a7ec1c287918cc5918040418",
+          "locator": "body/p[20]/bookmarkStart[1]",
+          "end_locator": "body/p[20]/bookmarkEnd[1]"
+        },
+        {
+          "document_id": "river-1.1-draft",
+          "bookmark": "Riv07",
+          "text_sha256": "a2c22b17689840386b49f15016a59bd6ac4a1b60223af094b0fccca5a4680f10",
+          "locator": "body/p[22]/bookmarkStart[1]",
+          "end_locator": "body/p[22]/bookmarkEnd[1]"
+        },
+        {
+          "document_id": "river-1.1-draft",
+          "bookmark": "Riv08",
+          "text_sha256": "5886e1d11cc5ab27c1f3a45ccaa5aba35c8920f53e7a9f7542b6411fa6b3afd2",
+          "locator": "body/p[24]/bookmarkStart[1]",
+          "end_locator": "body/p[24]/bookmarkEnd[1]"
+        },
+        {
+          "document_id": "river-1.1-draft",
+          "bookmark": "RivErrors",
+          "text_sha256": "7715a7cb67be0662d0911e68bd89d0fdbba7ac65510009bf18988ce8d6bdd2a9",
+          "locator": "body/tbl[1]/tr[1]/tc[1]/p[1]/bookmarkStart[1]",
+          "end_locator": "body/tbl[1]/tr[11]/tc[3]/p[1]/bookmarkEnd[1]"
+        },
+        {
+          "document_id": "river-1.1-verification",
+          "bookmark": "V11Priority",
+          "text_sha256": "1fc84d5c4884037363f8fc93ecf3b2b054f0275d15d9677b4d5eb6795d200239",
+          "locator": "body/tbl[2]/tr[1]/tc[1]/p[1]/bookmarkStart[1]",
+          "end_locator": "body/tbl[2]/tr[10]/tc[3]/p[1]/bookmarkEnd[1]"
+        }
+      ]
+    },
+    {
+      "id": "SQ06",
+      "title": "1.1变化与过渡条件 P1",
+      "state": "awaiting_professional_response",
+      "question_source": "skills/dyz-standards/resources/river-review-readiness/review-pack.md",
+      "native_targets": [
+        {
+          "document_id": "river-1.1-draft",
+          "bookmark": "RivTerms",
+          "text_sha256": "44bab45e81718d9062b63ab8700c2490bebb4642dbc242897f3c88096929c7d2",
+          "locator": "body/p[8]/bookmarkStart[1]",
+          "end_locator": "body/p[8]/bookmarkEnd[1]"
+        },
+        {
+          "document_id": "river-1.1-draft",
+          "bookmark": "Riv03",
+          "text_sha256": "bd9368c243c017897094e1db43317007a155c5ed1f389dc8adc9660e41edcf11",
+          "locator": "body/p[14]/bookmarkStart[1]",
+          "end_locator": "body/p[14]/bookmarkEnd[1]"
+        },
+        {
+          "document_id": "river-1.1-draft",
+          "bookmark": "Riv06",
+          "text_sha256": "9fbacb02934936e4f81515899e590d367e37c547a7ec1c287918cc5918040418",
+          "locator": "body/p[20]/bookmarkStart[1]",
+          "end_locator": "body/p[20]/bookmarkEnd[1]"
+        },
+        {
+          "document_id": "river-1.1-review",
+          "bookmark": "ReviewTransition",
+          "text_sha256": "b83cfd623298cdbe9ab61704f90ad35883409d9dadebe88d3527617b9f1d8300",
+          "locator": "body/p[13]/bookmarkStart[1]",
+          "end_locator": "body/p[13]/bookmarkEnd[1]"
+        }
+      ]
+    },
+    {
+      "id": "SQ07",
+      "title": "正式结构及材料权利 P1",
+      "state": "awaiting_professional_response",
+      "question_source": "skills/dyz-standards/resources/river-review-readiness/review-pack.md",
+      "native_targets": [
+        {
+          "document_id": "river-1.1-draft",
+          "bookmark": "RivReference",
+          "text_sha256": "655338a073e26601443ab5b35bf2e1f6269ed7c62ad6ed7483c1a3a87e68406f",
+          "locator": "body/p[6]/bookmarkStart[1]",
+          "end_locator": "body/p[6]/bookmarkEnd[1]"
+        },
+        {
+          "document_id": "river-1.1-review",
+          "bookmark": "ReviewBasis",
+          "text_sha256": "9de8ebf7855275412fdbf299f19364c72f0bd460dd0bbdb87f4b9629da5de901",
+          "locator": "body/p[4]/bookmarkStart[1]",
+          "end_locator": "body/p[4]/bookmarkEnd[1]"
+        },
+        {
+          "document_id": "river-1.1-review",
+          "bookmark": "ReviewRights",
+          "text_sha256": "a8d39e99b2744567732709cd4762dad595d4ff64d385830bbf6dedb609c87ddc",
+          "locator": "body/p[5]/bookmarkStart[1]",
+          "end_locator": "body/p[5]/bookmarkEnd[1]"
+        }
+      ]
+    },
+    {
+      "id": "SQ08",
+      "title": "试验判定及不适用理由 P1",
+      "state": "awaiting_professional_response",
+      "question_source": "skills/dyz-standards/resources/river-review-readiness/review-pack.md",
+      "native_targets": [
+        {
+          "document_id": "river-1.1-draft",
+          "bookmark": "RivTerms",
+          "text_sha256": "44bab45e81718d9062b63ab8700c2490bebb4642dbc242897f3c88096929c7d2",
+          "locator": "body/p[8]/bookmarkStart[1]",
+          "end_locator": "body/p[8]/bookmarkEnd[1]"
+        },
+        {
+          "document_id": "river-1.1-review",
+          "bookmark": "ReviewConditions",
+          "text_sha256": "dd5e1e568d480a24968b063bdbf13e67e6f48c2a5f2836ed780dfc14804483d3",
+          "locator": "body/p[7]/bookmarkStart[1]",
+          "end_locator": "body/p[7]/bookmarkEnd[1]"
+        },
+        {
+          "document_id": "river-1.1-review",
+          "bookmark": "ReviewMore",
+          "text_sha256": "2e3e3e28aacafb506042a45a83fc77d1f17b99661bedfdb7b43728c91679c9b8",
+          "locator": "body/p[9]/bookmarkStart[1]",
+          "end_locator": "body/p[9]/bookmarkEnd[1]"
+        }
+      ]
+    },
+    {
+      "id": "SQ09",
+      "title": "组织程序与意见的真实性 P1",
+      "state": "awaiting_professional_response",
+      "question_source": "skills/dyz-standards/resources/river-review-readiness/review-pack.md",
+      "native_targets": [
+        {
+          "document_id": "river-1.1-review",
+          "bookmark": "ReviewOpinions",
+          "text_sha256": "f0eeabd8b84b10ac0c9ef76ee19d656987c0e79019009f38a520d89ffcfca896",
+          "locator": "body/tbl[3]/tr[1]/tc[1]/p[1]/bookmarkStart[1]",
+          "end_locator": "body/tbl[3]/tr[6]/tc[3]/p[1]/bookmarkEnd[1]"
+        },
+        {
+          "document_id": "river-1.1-review",
+          "bookmark": "ReviewGovernance",
+          "text_sha256": "5a02e26972eef994ac39c45798509d507b008e230788c71d0fca95f956b33880",
+          "locator": "body/p[11]/bookmarkStart[1]",
+          "end_locator": "body/p[11]/bookmarkEnd[1]"
+        }
+      ]
+    },
+    {
+      "id": "SQ10",
+      "title": "公开前保护及两路IP交接 P0",
+      "state": "awaiting_professional_response",
+      "question_source": "skills/dyz-standards/resources/river-review-readiness/review-pack.md",
+      "native_targets": [
+        {
+          "document_id": "river-1.1-review",
+          "bookmark": "ReviewIP",
+          "text_sha256": "c7a7c4e73ed876b2f0c15f7772e0b61f2aadfb677c56b3d8f2d39f30576a88d4",
+          "locator": "body/p[14]/bookmarkStart[1]",
+          "end_locator": "body/p[14]/bookmarkEnd[1]"
+        }
+      ]
+    },
+    {
+      "id": "SQ11",
+      "title": "交付隔离与行动条件 P0",
+      "state": "awaiting_professional_response",
+      "question_source": "skills/dyz-standards/resources/river-review-readiness/review-pack.md",
+      "native_targets": [
+        {
+          "document_id": "river-1.1-review",
+          "bookmark": "ReviewIdentity",
+          "text_sha256": "52e51df7f0cb14c4a68d90092b4654168dec8967e33115043404f90e7c6d4db1",
+          "locator": "body/p[2]/bookmarkStart[1]",
+          "end_locator": "body/p[2]/bookmarkEnd[1]"
+        },
+        {
+          "document_id": "river-1.1-review",
+          "bookmark": "ReviewRights",
+          "text_sha256": "a8d39e99b2744567732709cd4762dad595d4ff64d385830bbf6dedb609c87ddc",
+          "locator": "body/p[5]/bookmarkStart[1]",
+          "end_locator": "body/p[5]/bookmarkEnd[1]"
+        },
+        {
+          "document_id": "river-1.1-review",
+          "bookmark": "ReviewIP",
+          "text_sha256": "c7a7c4e73ed876b2f0c15f7772e0b61f2aadfb677c56b3d8f2d39f30576a88d4",
+          "locator": "body/p[14]/bookmarkStart[1]",
+          "end_locator": "body/p[14]/bookmarkEnd[1]"
+        }
+      ]
+    },
+    {
+      "id": "SQ12",
+      "title": "修改后复核与历史保全 P1",
+      "state": "awaiting_professional_response",
+      "question_source": "skills/dyz-standards/resources/river-review-readiness/review-pack.md",
+      "native_targets": [
+        {
+          "document_id": "river-1.1-review",
+          "bookmark": "ReviewTransition",
+          "text_sha256": "b83cfd623298cdbe9ab61704f90ad35883409d9dadebe88d3527617b9f1d8300",
+          "locator": "body/p[13]/bookmarkStart[1]",
+          "end_locator": "body/p[13]/bookmarkEnd[1]"
+        },
+        {
+          "document_id": "river-1.1-verification",
+          "bookmark": "V11Impact",
+          "text_sha256": "d4507243f71e8b2f792b49b0069df0d9ca5f74e08188ee7f5244c627ff52e754",
+          "locator": "body/p[12]/bookmarkStart[1]",
+          "end_locator": "body/p[12]/bookmarkEnd[1]"
+        },
+        {
+          "document_id": "river-local-interop",
+          "bookmark": "InteropImpact",
+          "text_sha256": "89f3a8d431aabf5f6d0ecf2429be6813612a52e958194670b58b6a865bdef991",
+          "locator": "body/tbl[3]/tr[1]/tc[1]/p[1]/bookmarkStart[1]",
+          "end_locator": "body/tbl[3]/tr[4]/tc[3]/p[1]/bookmarkEnd[1]"
+        }
+      ]
+    }
+  ],
+  "historical_defects": [
+    {
+      "development_record_reference": "evals/workflows/batch-04-review.json",
+      "record_sha256": "32b2bc78046c9945a1f8104de5f56e5e1c5c0a3066a3355d28bcdd4de4277257",
+      "included_in_runtime_package": false,
+      "case": "STD-04-01",
+      "criterion": 4,
+      "historical_observation": "未实际列完整交付隔离、具体包/对象/用途/渠道及行动批准条件。",
+      "state": "first_failure_preserved",
+      "new_retest_or_regrade": "not_performed"
+    },
+    {
+      "development_record_reference": "evals/workflows/batch-04-retest-review.json",
+      "record_sha256": "25c46d40f2fe19959228ad0e8ca0ec071d9e7fedaf24e33055af5acfa15a8bc2",
+      "included_in_runtime_package": false,
+      "case": "STD-04-01",
+      "criterion": 4,
+      "historical_observation": "定向复验该案四项满足；不是当前全体系验收。",
+      "state": "historical_directed_retest_passed",
+      "new_retest_or_regrade": "not_performed"
+    },
+    {
+      "development_record_reference": "evals/workflows/batch-06-main-review.json",
+      "record_sha256": "9c1785c1a3a0bde143151d0640e6471405214af38a01a18e34f05a15ba12ebaa",
+      "included_in_runtime_package": false,
+      "case": "B06-STD-N",
+      "criterion": 4,
+      "historical_observation": "缺实际候选正文/内部问题/行动条件交接，尤其具体包的接收用途渠道批准状态。",
+      "state": "first_failure_preserved_B06_not_overall_passed",
+      "new_retest_or_regrade": "not_performed"
+    }
+  ],
+  "expected_response_fields": [
+    "actual_reviewer_identity_and_role",
+    "question_id",
+    "actual_files_and_versions",
+    "source_or_method_locations",
+    "decision_and_reasons",
+    "missing_facts_or_evidence",
+    "major_or_local_rework",
+    "affected_clauses_and_outputs",
+    "required_recheck"
+  ],
+  "response_entries": [],
+  "professional_review": "not_performed",
+  "organization_approval": "not_performed",
+  "external_recipient": "not_provided",
+  "external_purpose_and_channel": "not_provided",
+  "specific_external_package_approval": "not_granted",
+  "external_action": "not_performed",
+  "limits": [
+    "no_normative_requirement_or_original_test_changed",
+    "not_independent_product_interoperability_or_unexposed_model_acceptance",
+    "does_not_pass_d23_B06_or_upgrade_83_14_17_support",
+    "no_new_frozen_candidate_or_protocol_or_installation",
+    "native_copy_checks_are_literal_and_byte_checks_not_new_visual_or_professional_review",
+    "source_states_inherited_only_from_dated_reading_not_new_online_verification"
+  ]
+}

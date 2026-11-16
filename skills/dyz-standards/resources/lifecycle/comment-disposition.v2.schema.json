@@ -1,0 +1,342 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "dyz/standards/comment-disposition/v2",
+  "title": "标准意见闭环 v2 输入契约",
+  "description": "comments/comment_outcomes 是真源，与运行时记录使用identity mapping（同形无损映射），不做v1表式迁移；未列出的扩展字段保留，派生表式不反写。仅显式 contract_version=2 使用此契约。空影响评估允许内部草稿并产生缺证 issue；非空必须完整。唯一性、实际落点、权限证据、集合完整性与哈希由 standards.closed_loop 另行检查。结构齐全不认证权限、共识或专业正确性。",
+  "additionalProperties": true,
+  "type": "object",
+  "required": ["contract_version", "project_id", "version", "adaptation"],
+  "properties": {
+    "contract_version": {"type": "integer", "const": 2, "description": "运行时还要求Python精确int类型；JSON须写2，不接受2.0或布尔值。JSON Schema的数学integer本身不能区分2与2.0。"},
+    "project_id": {"$ref": "#/$defs/text"},
+    "version": {"$ref": "#/$defs/text"},
+    "baseline_version": {"type": "string", "description": "有权确认必须绑定此基线版本并与原意见针对版本一致；缺失只生成内部草稿issue。"},
+    "adaptation": {
+      "type": "object",
+      "required": ["organization", "standard_type", "domain", "stage"],
+      "properties": {
+        "organization": {"$ref": "#/$defs/text"},
+        "standard_type": {"$ref": "#/$defs/text"},
+        "domain": {"$ref": "#/$defs/text"},
+        "stage": {"$ref": "#/$defs/text"}
+      }
+    },
+    "standard_name": {"type": "string"},
+    "profile": {"$ref": "#/$defs/profile"},
+    "verification_matrix": {"type": "array", "items": {"$ref": "#/$defs/verification"}},
+    "compilation_note": {
+      "type": "object",
+      "description": "同形保留的说明原记录；完整记录见compilation-note.v2.schema.json。此输入允许缺证草稿，由业务层给出issues，不用完整记录schema提前阻断。"
+    },
+    "decisions": {"description": "旧自由记录原样保留，不猜测或提升为v2受控结果；不是v1表式自动迁移。"},
+    "collection_status": {"enum": ["complete", "partial", "unknown", "not_started"]},
+    "collection_evidence": {
+      "$ref": "#/$defs/texts",
+      "description": "零意见并声明收集完整时须有来源记录，否则 issue，total=null、complete=false；记录本身不构成真实性认证。"
+    },
+    "external_reference_ids": {"$ref": "#/$defs/texts", "uniqueItems": true, "description": "旧外部登记仅产生registered_only和身份待补issue，不提升为完整外部引用。"},
+    "external_references": {"type": "array", "items": {"$ref": "#/$defs/externalReference"}},
+    "reference_bindings": {"type": "array", "items": {"$ref": "#/$defs/referenceBinding"}},
+    "source_reports": {"type": "array", "items": {"$ref": "#/$defs/sourceReport"}},
+    "source_bindings": {"type": "array", "items": {"$ref": "#/$defs/sourceBinding"}},
+    "limitation_reviews": {"type": "array", "items": {"$ref": "#/$defs/limitationReview"}},
+    "presentation": {"$ref": "#/$defs/presentation"},
+    "comments": {"type": "array", "items": {"$ref": "#/$defs/comment"}},
+    "comment_outcomes": {"type": "array", "items": {"$ref": "#/$defs/outcome"}},
+    "participants": {"type": "array", "items": {"$ref": "#/$defs/ballotParticipant"}, "description": "仅显式含votes或ballot_rule时参与表决检查；参与者清单本身不触发表决缺项。记录原样保留，不认证身份。"},
+    "votes": {"type": "array", "items": {"$ref": "#/$defs/vote"}, "description": "显式提供（包括空数组）即请求内部表决检查；同一参与者重复投票由运行时拒绝。旧数值与严格资格/同版状态分列，不删除无效票来宣称原程序有效。"},
+    "ballot_rule": {"$ref": "#/$defs/ballotRule"},
+    "baseline_clauses": {"type": "array", "items": {"$ref": "#/$defs/clause"}},
+    "clauses": {"type": "array", "items": {"$ref": "#/$defs/clause"}},
+    "open_items": {"type": "array", "items": {"$ref": "#/$defs/openItem"}},
+    "verification_open_items": {"type": "array", "items": {"$ref": "#/$defs/openItem"}},
+    "reference_open_items": {"type": "array", "items": {"$ref": "#/$defs/openItem"}},
+    "profile_open_items": {"type": "array", "items": {"$ref": "#/$defs/openItem"}},
+    "material_open_items": {"type": "array", "items": {"$ref": "#/$defs/openItem"}}
+  },
+  "$defs": {
+    "text": {"type": "string", "minLength": 1, "pattern": "\\S"},
+    "texts": {"type": "array", "items": {"$ref": "#/$defs/text"}},
+    "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$", "description": "core.digest规范JSON内容摘要；原件sha256在来源字段另记。"},
+    "externalReference": {
+      "type": "object", "required": ["id", "identifier", "edition", "title", "source"],
+      "properties": {
+        "id": {"$ref": "#/$defs/text"}, "identifier": {"$ref": "#/$defs/text"},
+        "edition": {"$ref": "#/$defs/text", "description": "保留精确年版；未指定须显式使用unspecified，不从标准号或当前年份猜测。"},
+        "title": {"$ref": "#/$defs/text"}, "source": {"$ref": "#/$defs/text"},
+        "citation_ids": {"$ref": "#/$defs/texts"}
+      },
+      "description": "ID与(identifier,edition)组合唯一；内外同名须显式绑定，运行时核重复及身份一致性。登记可定位不代表全文、现行性或适用性已核。"
+    },
+    "referenceBinding": {
+      "type": "object", "required": ["clause_id", "reference", "kind", "target_id"],
+      "properties": {
+        "clause_id": {"$ref": "#/$defs/text"}, "reference": {"$ref": "#/$defs/text"},
+        "kind": {"enum": ["internal", "external"]}, "target_id": {"$ref": "#/$defs/text"}
+      },
+      "description": "每个clause_id与原引用字符串只有一个绑定，须对应当前条款实际出现的引用及存在目标；绑定不得改变原引用的明确版次。"
+    },
+    "baselineScope": {
+      "type": "object", "additionalProperties": false, "required": ["kind", "clause_ids"],
+      "properties": {"kind": {"enum": ["targets", "document"]},
+                     "clause_ids": {"$ref": "#/$defs/texts", "uniqueItems": true}},
+      "allOf": [{"if": {"properties": {"kind": {"const": "targets"}}},
+                 "then": {"properties": {"clause_ids": {"minItems": 1}}}}],
+      "description": "由系统合并原意见、changes、no-change目标及实际引用依赖；不能由输入缩小。缺失目标也进入摘要；依赖不明确时document。"
+    },
+    "contentBinding": {
+      "type": "object", "additionalProperties": false,
+      "required": ["binding_version", "comment_hash", "baseline_scope", "baseline_scope_hash", "decision_hash"],
+      "properties": {
+        "binding_version": {"$ref": "#/$defs/text", "description": "当前支持comment-content/2，纳入相关来源完整声明；旧comment-content/1及其他非空版本保留原记录并判stale。"},
+        "comment_hash": {"$ref": "#/$defs/digest"}, "baseline_scope": {"$ref": "#/$defs/baselineScope"},
+        "baseline_scope_hash": {"$ref": "#/$defs/digest"}, "decision_hash": {"$ref": "#/$defs/digest"}
+      },
+      "description": "完整原意见、系统相关基线及完整决定内容摘要；决定只排confirmation与confirmation_history。读取时独立重算，不接受自报current或passed。"
+    },
+    "historicalConfirmation": {
+      "type": "object", "additionalProperties": false, "minProperties": 1,
+      "properties": {
+        "actor": {"type": "string"}, "authority_evidence": {"type": "string"},
+        "source": {"type": "string"}, "version": {"type": "string"}, "baseline_version": {"type": "string"},
+        "content_binding": {"$ref": "#/$defs/contentBinding"}
+      },
+      "description": "只保存确认记录，旧缺证记录可保留；禁止在排除hash的历史字段中藏决定、changes或扩展业务内容。"
+    },
+    "sourceReport": {
+      "type": "object", "required": ["report_id", "path", "sha256", "source"],
+      "properties": {"report_id": {"$ref": "#/$defs/text"}, "path": {"$ref": "#/$defs/text"},
+                     "sha256": {"$ref": "#/$defs/digest"}, "source": {"oneOf": [{"$ref": "#/$defs/text"}, {"$ref": "#/$defs/sourceIdentity"}]}},
+      "description": "根内报告路径、预期报告原始字节SHA256与来源身份；来源拥有层另核路径、权限、原件及页段，不采信自报passed。"
+    },
+    "sourceIdentity": {
+      "type": "object", "required": ["number", "edition", "publisher", "title"],
+      "properties": {"number": {"$ref": "#/$defs/text"}, "edition": {"$ref": "#/$defs/text"},
+                     "publisher": {"$ref": "#/$defs/text"}, "title": {"$ref": "#/$defs/text"}}
+    },
+    "sourceBinding": {
+      "type": "object", "required": ["binding_id", "target_type", "target_id", "report_id", "citation_ids", "proposition", "version"],
+      "properties": {
+        "binding_id": {"$ref": "#/$defs/text"}, "target_type": {"enum": ["clause", "comment", "comment_reason", "verification", "verification_basis", "compilation_note", "note_section", "external_reference"]},
+        "target_id": {"$ref": "#/$defs/text"}, "report_id": {"$ref": "#/$defs/text"},
+        "citation_ids": {"$ref": "#/$defs/texts", "minItems": 1, "uniqueItems": true},
+        "proposition": {"$ref": "#/$defs/text"}, "version": {"$ref": "#/$defs/text"},
+        "reviewed_dependency_hash": {"$ref": "#/$defs/digest"}
+      },
+      "description": "来源到条款、意见理由、验证或说明的命题绑定；定位存在不证明命题被支持，实际消费仍核原件与适用性。"
+    },
+    "textRange": {
+      "type": "object", "required": ["text", "hash"],
+      "properties": {"text": {"$ref": "#/$defs/text"}, "hash": {"$ref": "#/$defs/digest"},
+                     "locator": {"$ref": "#/$defs/text"}, "citation_ids": {"$ref": "#/$defs/texts"},
+                     "start": {"type": "integer", "minimum": 0}, "end": {"type": "integer", "minimum": 0}},
+      "description": "逐限制的确切文字与内容摘要；locator、citation及实际文件定位由消费者核验，不凭字段自证。"
+    },
+    "limitationReview": {
+      "type": "object", "required": ["id", "target_type", "target_id", "limitation_type", "source_range", "final_range", "judgment", "reason", "reviewer_type", "evidence"],
+      "properties": {
+        "id": {"$ref": "#/$defs/text"}, "target_type": {"$ref": "#/$defs/text"}, "target_id": {"$ref": "#/$defs/text"},
+        "limitation_type": {"enum": ["object_action", "condition_direction", "quantity_unit", "exception", "strength", "verification"]},
+        "source_range": {"$ref": "#/$defs/textRange"}, "final_range": {"$ref": "#/$defs/textRange"},
+        "judgment": {"enum": ["supports", "conflicts", "unknown"]}, "reason": {"$ref": "#/$defs/text"},
+        "reviewer_type": {"$ref": "#/$defs/text"}, "evidence": {"$ref": "#/$defs/text"},
+        "dependency_hash": {"$ref": "#/$defs/digest"}, "rules_hash": {"$ref": "#/$defs/digest"}
+      },
+      "description": "逐限制审阅记录，来源/最终实际文字与摘要必须由拥有层核验；结构齐全不表示专业批准。"
+    },
+    "presentation": {
+      "type": "object", "properties": {"outline": {"type": "array", "maxItems": 1000, "items": {"$ref": "#/$defs/outlineNode"}}},
+      "description": "只承载显示关系；正文和决定仍来自原记录，显示号由投影计算。缺outline使用明确内部默认。"
+    },
+    "outlineNode": {
+      "type": "object", "additionalProperties": false, "required": ["id", "kind"],
+      "properties": {"id": {"$ref": "#/$defs/text"}, "parent_id": {"oneOf": [{"$ref": "#/$defs/text"}, {"type": "null"}]},
+                     "kind": {"enum": ["section", "clause", "annex"]}, "title": {"type": "string"},
+                     "clause_id": {"$ref": "#/$defs/text"}},
+      "allOf": [{"if": {"properties": {"kind": {"const": "clause"}}}, "then": {"required": ["clause_id"]},
+                 "else": {"not": {"required": ["clause_id"]}}}],
+      "description": "节点及条款落位唯一、父节点存在且树无环由投影核验；漏条款或标题不全保留草稿issue。"
+    },
+    "ballotParticipant": {
+      "type": "object", "required": ["id"],
+      "properties": {
+        "id": {"$ref": "#/$defs/text"},
+        "eligible": {"description": "仅true并有非空文本authority_evidence记资格valid；false记invalid；缺失或其他值记unknown，不把未知转换为有资格。为保留旧数值口径，不强制未知记录使用新编码。"},
+        "authority_evidence": {"description": "严格资格只接受非空文本依据；其他类型或空白记unknown。旧valid_vote_counts仍按truthy依据统计，两者不可混用。"}
+      }
+    },
+    "vote": {
+      "type": "object", "required": ["id", "participant_id", "choice", "evidence_id"],
+      "properties": {
+        "id": {"$ref": "#/$defs/text"}, "participant_id": {"$ref": "#/$defs/text"},
+        "choice": {"enum": ["yes", "no", "abstain"]}, "evidence_id": {"$ref": "#/$defs/text"},
+        "version": {"type": ["string", "null"], "description": "与顶层version精确匹配才记同版valid；缺失、null和空白为unknown，不默认当前；明确错配为invalid。仅绑定提交记录，不证明实际稿件字节或证据真实性。"}
+      }
+    },
+    "ballotRule": {
+      "type": "object",
+      "description": "显式提供即请求表决检查。仅source为truthy且三项数值规则均存在时沿用旧数值校验/计算；否则ballot_assessment=unknown。缺项草稿不假设阈值。来源及数值正确性不是组织批准。",
+      "properties": {
+        "source": {"description": "旧数值计算保留truthy来源判断；记录不构成现行组织规则核验。"},
+        "min_votes": {"description": "规则完整时必须是精确正整数（不接受bool或浮点），否则invalid_quorum。"},
+        "min_yes_fraction": {"description": "规则完整时必须是可解析为有限Decimal的number或string，范围(0,1]；不接受bool。解析及精确范围由运行时核验。"},
+        "denominator": {"description": "规则完整时仅支持cast、non_abstaining、eligible；eligible还检查未投票者资格是否未知。"}
+      },
+      "allOf": [{
+        "if": {"required": ["source", "min_votes", "min_yes_fraction", "denominator"], "properties": {"source": {"not": {"enum": [null, false, 0, "", [], {}]}}}},
+        "then": {"properties": {
+          "min_votes": {"type": "integer", "minimum": 1},
+          "min_yes_fraction": {"type": ["number", "string"]},
+          "denominator": {"enum": ["cast", "non_abstaining", "eligible"]}
+        }}
+      }]
+    },
+    "profile": {
+      "type": "object", "required": ["id", "version", "scope", "required_sections"],
+      "properties": {
+        "id": {"$ref": "#/$defs/text"}, "version": {"$ref": "#/$defs/text"},
+        "scope": {"enum": ["internal", "organization"]},
+        "required_sections": {"$ref": "#/$defs/texts"},
+        "source": {"type": "string"}, "section_semantics": {"type": "object"}
+      },
+      "allOf": [
+        {"if": {"properties": {"scope": {"const": "internal"}}}, "then": {
+          "properties": {"required_sections": {"const": [
+            "note-01-work-overview", "note-02-background-purpose", "note-03-principles-basis",
+            "note-04-technical-content-basis", "note-05-comparison", "note-06-legal-standard-relation",
+            "note-07-major-divergence", "note-08-nature-and-implementation",
+            "note-09-comment-disposition", "note-10-verification", "note-11-open-items"
+          ]}}
+        }, "else": {
+          "required": ["source", "section_semantics"],
+          "properties": {
+            "source": {"$ref": "#/$defs/text"},
+            "required_sections": {"minItems": 1, "uniqueItems": true},
+            "section_semantics": {"additionalProperties": {"$ref": "compilation-note.v2.schema.json#/$defs/internalSectionId"}}
+          }
+        }}
+      ],
+      "description": "缺省使用内部11节。组织section_semantics键集合必须精确等于required_sections，动态键集合关系由业务层核验，并始终保留组织适配待审issue。"
+    },
+    "verification": {
+      "type": "object", "required": ["id", "clause_id", "source"],
+      "properties": {
+        "id": {"$ref": "#/$defs/text"}, "clause_id": {"$ref": "#/$defs/text"}, "source": {"$ref": "#/$defs/text"},
+        "status": {"enum": ["planned", "performed", "reviewed", "not_applicable"]},
+        "clause_hash": {"type": "string"}, "method": {"type": "string"},
+        "reason": {"type": "string"}, "applicability_source": {"type": "string"},
+        "execution_evidence": {"type": "string"}, "result_evidence": {"type": "string"}, "review_evidence": {"type": "string"}
+      },
+      "description": "缺证字段可缺失或空白，生成绑定/方法/执行/结果/审阅/不适用依据issues；计划、记录与专业结论分开，不认证证据真实性。"
+    },
+    "clause": {
+      "type": "object", "required": ["id", "text"],
+      "description": "id/text是草稿最低可读结构；完整语义由既有STD条款校验器核strength/kind/source/conditions/exceptions和数量、方法、引用。缺失不得就绪。",
+      "properties": {"id": {"$ref": "#/$defs/text"}, "text": {"$ref": "#/$defs/text"}, "references": {"$ref": "#/$defs/texts"}}
+    },
+    "comment": {
+      "type": "object",
+      "required": ["id", "text", "source", "participant_id", "version"],
+      "properties": {
+        "id": {"$ref": "#/$defs/text"}, "text": {"$ref": "#/$defs/text"},
+        "source": {"$ref": "#/$defs/text"}, "participant_id": {"$ref": "#/$defs/text"},
+        "version": {"$ref": "#/$defs/text"},
+        "clause_id": {"type": "string"}, "scope": {"type": "string"}
+      },
+      "oneOf": [
+        {"required": ["clause_id"], "properties": {"clause_id": {"$ref": "#/$defs/text"}}, "not": {"required": ["scope"], "properties": {"scope": {"$ref": "#/$defs/text"}}}},
+        {"required": ["scope"], "properties": {"scope": {"$ref": "#/$defs/text"}}, "not": {"required": ["clause_id"], "properties": {"clause_id": {"$ref": "#/$defs/text"}}}}
+      ]
+    },
+    "pendingItem": {
+      "type": "object", "required": ["question", "owner", "blocks", "recovery"],
+      "properties": {
+        "id": {"$ref": "#/$defs/text"}, "question": {"$ref": "#/$defs/text"},
+        "owner": {"$ref": "#/$defs/text"}, "blocks": {"enum": ["submission", "approval", "publication", "none"]},
+        "recovery": {"$ref": "#/$defs/text"}, "source_refs": {"$ref": "#/$defs/texts"}
+      }
+    },
+    "openItem": {
+      "allOf": [{"$ref": "#/$defs/pendingItem"}, {"required": ["id", "source_refs"], "properties": {"source_refs": {"minItems": 1}}}]
+    },
+    "impact": {
+      "oneOf": [
+        {"type": "array", "maxItems": 0},
+        {"type": "object", "maxProperties": 0},
+        {
+          "type": "object", "additionalProperties": false,
+          "required": ["verification", "references", "compilation_note", "downstream_products"],
+          "properties": {
+            "verification": {"$ref": "#/$defs/impactValue"},
+            "references": {"$ref": "#/$defs/impactValue"},
+            "compilation_note": {"$ref": "#/$defs/impactValue"},
+            "downstream_products": {"$ref": "#/$defs/impactValue"}
+          }
+        }
+      ]
+    },
+    "impactValue": {"oneOf": [{"type": "boolean"}, {"enum": ["unknown", "undetermined"]}]},
+    "change": {
+      "type": "object", "required": ["operation", "clause_id"],
+      "properties": {
+        "operation": {"enum": ["replace", "add", "delete"]},
+        "clause_id": {"$ref": "#/$defs/text"},
+        "proposed_text": {"type": "string"},
+        "dependency_resolution": {
+          "type": "object",
+          "description": "删除依赖未说明 resolved+source 或 not_applicable+reason 时返回 issue，不阻止内部草稿。",
+          "properties": {"status": {"type": "string"}, "source": {"type": "string"}, "reason": {"type": "string"}}
+        }
+      },
+      "allOf": [
+        {"if": {"properties": {"operation": {"const": "delete"}}}, "then": {"properties": {"proposed_text": {"const": ""}}}, "else": {"required": ["proposed_text"], "properties": {"proposed_text": {"$ref": "#/$defs/text"}}}}
+      ]
+    },
+    "outcome": {
+      "type": "object",
+      "required": ["comment_id", "outcome", "classification", "reason", "decision_status", "major_change"],
+      "properties": {
+        "comment_id": {"$ref": "#/$defs/text"},
+        "outcome": {"enum": ["accepted", "partially_accepted", "rejected", "pending"]},
+        "classification": {"enum": ["technical", "editorial", "procedural", "ip", "insufficient_evidence"]},
+        "reason": {"$ref": "#/$defs/text"}, "reason_source": {"type": "string"},
+        "decision_status": {"enum": ["proposed", "confirmed"]},
+        "decision_version": {"type": "string", "description": "决定记录版本，confirmation.version必须精确匹配；缺失或空白保留草稿并返回缺证issue。"},
+        "decision_by": {"description": "原记录保留，不代替有权确认。"},
+        "decision_source": {"description": "原记录保留，不代替权限证据。"},
+        "confirmation": {
+          "type": "object",
+          "description": "confirmed须有非空actor/authority_evidence/source/version；缺任一项返回权限未证issue。早期v2缺content_binding为unbound；不符为stale，不自动补签。",
+          "properties": {"actor": {"type": "string"}, "authority_evidence": {"type": "string"}, "source": {"type": "string"}, "version": {"type": "string"}, "baseline_version": {"type": "string"}, "content_binding": {"$ref": "#/$defs/contentBinding"}}
+        },
+        "confirmation_history": {"type": "array", "items": {"$ref": "#/$defs/historicalConfirmation"}, "description": "显式新确认将旧确认归档；历史不替代当前确认，也不承载业务决定。"},
+        "major_change": {"enum": ["yes", "no", "undetermined"]},
+        "impact": {"$ref": "#/$defs/impact"},
+        "changes": {"type": "array", "items": {"$ref": "#/$defs/change"}},
+        "clause_id": {"$ref": "#/$defs/text"}, "proposed_text": {"$ref": "#/$defs/text"},
+        "no_change": {"type": "boolean"},
+        "no_change_scope": {"enum": [null, "document"], "description": "显式覆盖原意见作用域；document对比前后全部稳定ID。"},
+        "no_change_targets": {"$ref": "#/$defs/texts", "description": "与非空no_change_scope互斥；未给时使用原意见clause_id或document作用域。无可确定作用域、目标缺失或语义改变均生成issue；assessment.no_change_checks为派生结果，不回写决定。"},
+        "accepted_part": {"type": "string"}, "rejected_part": {"type": "string"}, "rejected_reason": {"type": "string"},
+        "unresolved_item": {"$ref": "#/$defs/pendingItem"},
+        "comment_realizations": false, "realization": false, "realization_evidence": false,
+        "applied": false, "document_hash": false
+      },
+      "dependentRequired": {"clause_id": ["proposed_text"], "proposed_text": ["clause_id"]},
+      "allOf": [
+        {"if": {"anyOf": [{"required": ["clause_id"]}, {"required": ["proposed_text"]}]}, "then": {"properties": {"changes": {"maxItems": 0}}}},
+        {"if": {"properties": {"outcome": {"enum": ["accepted", "partially_accepted"]}}}, "then": {
+          "oneOf": [
+            {"required": ["changes"], "properties": {"changes": {"minItems": 1}, "no_change": {"const": false}}},
+            {"required": ["clause_id", "proposed_text"], "properties": {"no_change": {"const": false}}},
+            {"required": ["no_change", "reason_source"], "properties": {"no_change": {"const": true}, "reason_source": {"$ref": "#/$defs/text"}, "changes": {"maxItems": 0}}, "not": {"anyOf": [{"required": ["clause_id"]}, {"required": ["proposed_text"]}]}}
+          ]
+        }, "else": {"properties": {"changes": {"maxItems": 0}, "no_change": {"const": false}}, "not": {"anyOf": [{"required": ["clause_id"]}, {"required": ["proposed_text"]}]}}},
+        {"if": {"properties": {"outcome": {"const": "partially_accepted"}}}, "then": {"required": ["accepted_part", "rejected_part", "rejected_reason", "reason_source"], "properties": {"accepted_part": {"$ref": "#/$defs/text"}, "rejected_part": {"$ref": "#/$defs/text"}, "rejected_reason": {"$ref": "#/$defs/text"}, "reason_source": {"$ref": "#/$defs/text"}}}},
+        {"if": {"properties": {"outcome": {"const": "rejected"}}}, "then": {"required": ["reason_source"], "properties": {"reason_source": {"$ref": "#/$defs/text"}}}},
+        {"if": {"properties": {"outcome": {"const": "pending"}}}, "then": {"required": ["unresolved_item"]}},
+        {"if": {"required": ["no_change"], "properties": {"no_change": {"const": true}}}, "then": {"not": {"required": ["no_change_targets", "no_change_scope"], "properties": {"no_change_targets": {"minItems": 1}, "no_change_scope": {"const": "document"}}}}}
+      ]
+    }
+  }
+}

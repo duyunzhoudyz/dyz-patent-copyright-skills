@@ -1,0 +1,184 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "dyz/standards/comment-disposition/v1",
+  "title": "征求意见汇总处理表结构",
+  "description": "标准征求意见阶段汇总处理表的结构契约：表头 + 逐条处理 + 表尾统计。统计必须能从逐条段重算；本表不是表决记录。AF-04 实施时由 tools.standards._governance 消费。",
+  "type": "object",
+  "required": ["header", "items", "summary"],
+  "additionalProperties": false,
+  "properties": {
+    "header": { "$ref": "#/$defs/header" },
+    "items": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/item" }
+    },
+    "summary": { "$ref": "#/$defs/summary" },
+    "minority_opinions": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/minority" },
+      "description": "少数意见清单：保留原文与来源，不因汇总合并而删除。"
+    },
+    "reconsultation": {
+      "type": "object",
+      "required": ["required", "basis"],
+      "additionalProperties": false,
+      "properties": {
+        "required": { "type": "string", "enum": ["yes", "no", "organization_decision_required", "undetermined"] },
+        "basis": { "type": "string", "minLength": 1, "description": "组织规则来源；规则未取得写“待组织判断”并说明缺失依据。" }
+      }
+    }
+  },
+  "$defs": {
+    "header": {
+      "type": "object",
+      "required": ["standard_name", "draft_version", "version_date", "total_received"],
+      "additionalProperties": false,
+      "properties": {
+        "standard_name": { "type": "string", "minLength": 1 },
+        "standard_number": { "type": "string", "description": "草案未获编号时写“草案未编号”。" },
+        "draft_version": { "type": "string", "minLength": 1 },
+        "version_date": { "type": "string", "minLength": 1 },
+        "consultation_window": { "type": "string", "description": "实际起止；未定写“未定”。" },
+        "sent_count": {
+          "oneOf": [{ "type": "integer", "minimum": 0 }, { "const": "record_unavailable" }],
+          "description": "无记录写 record_unavailable，不填 0——0 会被读成“无人反馈”。"
+        },
+        "received_count": {
+          "oneOf": [{ "type": "integer", "minimum": 0 }, { "const": "record_unavailable" }]
+        },
+        "total_received": { "type": "integer", "minimum": 0 },
+        "compiled_by": { "type": "string", "minLength": 1 },
+        "compiled_date": { "type": "string", "minLength": 1 },
+        "reviewed_by": { "type": "string", "description": "审核人须有实际确认记录；无则留空并说明。" }
+      }
+    },
+    "item": {
+      "type": "object",
+      "required": ["seq", "clause_id", "origin", "text", "classification", "outcome"],
+      "additionalProperties": false,
+      "properties": {
+        "seq": { "type": "integer", "minimum": 1 },
+        "clause_id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "稳定条款 ID，须在当前正文中存在；跨章意见写“全文”。"
+        },
+        "origin": { "$ref": "#/$defs/origin" },
+        "text": { "type": "string", "minLength": 1, "description": "意见原文照录，不改写、不摘要代替。" },
+        "classification": {
+          "type": "string",
+          "enum": ["technical", "editorial", "procedural", "ip", "insufficient_evidence"]
+        },
+        "outcome": {
+          "type": "string",
+          "enum": ["accepted", "partially_accepted", "rejected", "pending"]
+        },
+        "reason": { "type": "string", "minLength": 1 },
+        "reason_source": {
+          "type": "string",
+          "minLength": 1,
+          "description": "不采纳/部分采纳的依据来源；rejected 时必填。"
+        },
+        "proposed_text": { "type": "string", "description": "拟改条款文字；accepted/partially_accepted 时与 clause_id 二选一必填。" },
+        "no_change": { "type": "boolean", "description": "明确声明本条不改正文。" },
+        "impact": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "verification": { "type": "boolean" },
+            "references": { "type": "boolean" },
+            "compilation_note": { "type": "boolean" },
+            "downstream_products": { "type": "boolean" }
+          },
+          "description": "是否影响验证/引用/编制说明/下游产品；逐项显式，不用空对象省略。"
+        },
+        "major_change": { "type": "string", "enum": ["yes", "no", "undetermined"] },
+        "unresolved_item": { "$ref": "#/$defs/openItem" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "outcome": { "const": "rejected" } }, "required": ["outcome"] },
+          "then": { "required": ["reason", "reason_source"] }
+        },
+        {
+          "if": { "properties": { "outcome": { "const": "pending" } }, "required": ["outcome"] },
+          "then": { "required": ["unresolved_item"] }
+        },
+        {
+          "if": {
+            "properties": { "outcome": { "enum": ["accepted", "partially_accepted"] } },
+            "required": ["outcome"]
+          },
+          "then": {
+            "anyOf": [{ "required": ["proposed_text"] }, { "required": ["no_change"] }],
+            "required": ["reason"]
+          }
+        }
+      ]
+    },
+    "origin": {
+      "type": "object",
+      "required": ["organization", "representative_scope"],
+      "additionalProperties": false,
+      "properties": {
+        "organization": { "type": "string", "minLength": 1, "description": "实际名称，不代拟。" },
+        "representative_scope": {
+          "type": "string",
+          "minLength": 1,
+          "description": "代表范围；无法确认写“未确认”，不省略字段。"
+        },
+        "participant_id": { "type": "string", "description": "与治理参与者记录关联时的 ID。" }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "required": ["total", "accepted", "partially_accepted", "rejected", "pending", "by_classification"],
+      "additionalProperties": false,
+      "properties": {
+        "total": { "type": "integer", "minimum": 1 },
+        "accepted": { "type": "integer", "minimum": 0 },
+        "partially_accepted": { "type": "integer", "minimum": 0 },
+        "rejected": { "type": "integer", "minimum": 0 },
+        "pending": { "type": "integer", "minimum": 0 },
+        "clauses_touched": { "type": "integer", "minimum": 0 },
+        "substantive_changes": { "type": "integer", "minimum": 0 },
+        "major_changes": { "type": "integer", "minimum": 0 },
+        "by_classification": {
+          "type": "object",
+          "required": ["technical", "editorial", "procedural", "ip", "insufficient_evidence"],
+          "additionalProperties": false,
+          "properties": {
+            "technical": { "type": "integer", "minimum": 0 },
+            "editorial": { "type": "integer", "minimum": 0 },
+            "procedural": { "type": "integer", "minimum": 0 },
+            "ip": { "type": "integer", "minimum": 0 },
+            "insufficient_evidence": { "type": "integer", "minimum": 0 }
+          }
+        }
+      }
+    },
+    "minority": {
+      "type": "object",
+      "required": ["seq", "text", "origin"],
+      "additionalProperties": false,
+      "properties": {
+        "seq": { "type": "integer", "minimum": 1 },
+        "text": { "type": "string", "minLength": 1 },
+        "origin": { "$ref": "#/$defs/origin" },
+        "retained_basis": { "type": "string", "description": "为何保留为少数意见。" }
+      }
+    },
+    "openItem": {
+      "type": "object",
+      "required": ["question", "owner", "blocks", "recovery"],
+      "additionalProperties": false,
+      "properties": {
+        "question": { "type": "string", "minLength": 1 },
+        "owner": { "type": "string", "minLength": 1 },
+        "blocks": { "type": "string", "enum": ["submission", "approval", "publication", "none"] },
+        "recovery": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

@@ -1,0 +1,261 @@
+# 港湾记录整理器 v1.2 源码材料（内部合成样本）
+## api.py
+[api.py:001] """港湾记录整理器 v1.2 WSGI；仅提供函数，不启动服务器。"""
+[api.py:002] 
+[api.py:003] import json
+[api.py:004] 
+[api.py:005] from core import InputError, convert
+[api.py:006] 
+[api.py:007] MAX_BODY_BYTES = 65536
+[api.py:008] 
+[api.py:009] 
+[api.py:010] def respond(start_response, status, body, content_type, extra=()):
+[api.py:011]     headers = [("Content-Type", content_type), ("Content-Length", str(len(body)))]
+[api.py:012]     start_response(status, headers + list(extra))
+[api.py:013]     return [body]
+[api.py:014] 
+[api.py:015] 
+[api.py:016] def error_response(start_response, status, code, extra=()):
+[api.py:017]     body = json.dumps({"error": code}, separators=(",", ":")).encode("utf-8")
+[api.py:018]     return respond(start_response, status, body, "application/json", extra)
+[api.py:019] 
+[api.py:020] 
+[api.py:021] def application(environ, start_response):
+[api.py:022]     """POST /convert：WSGI environ由调用者构造；无鉴权或网络入口。"""
+[api.py:023]     if environ.get("PATH_INFO") != "/convert":
+[api.py:024]         return error_response(start_response, "404 Not Found", "not_found")
+[api.py:025]     if environ.get("REQUEST_METHOD") != "POST":
+[api.py:026]         return error_response(start_response, "405 Method Not Allowed", "method_not_allowed",
+[api.py:027]                               [("Allow", "POST")])
+[api.py:028]     query = environ.get("QUERY_STRING", "")
+[api.py:029]     if query not in ("", "strict=0", "strict=1"):
+[api.py:030]         return error_response(start_response, "400 Bad Request", "invalid_query")
+[api.py:031]     strict = query == "strict=1"
+[api.py:032]     content_type = environ.get("CONTENT_TYPE", "").split(";", 1)[0].strip().lower()
+[api.py:033]     if content_type != "application/json":
+[api.py:034]         return error_response(start_response, "415 Unsupported Media Type", "invalid_content_type")
+[api.py:035]     try:
+[api.py:036]         length = int(environ.get("CONTENT_LENGTH", ""))
+[api.py:037]     except (TypeError, ValueError):
+[api.py:038]         return error_response(start_response, "400 Bad Request", "invalid_length")
+[api.py:039]     if length <= 0:
+[api.py:040]         return error_response(start_response, "400 Bad Request", "invalid_length")
+[api.py:041]     if length > MAX_BODY_BYTES:
+[api.py:042]         return error_response(start_response, "413 Payload Too Large", "payload_too_large")
+[api.py:043]     stream = environ.get("wsgi.input")
+[api.py:044]     if stream is None:
+[api.py:045]         return error_response(start_response, "400 Bad Request", "missing_body")
+[api.py:046]     try:
+[api.py:047]         raw = stream.read(length)
+[api.py:048]     except (OSError, ValueError):
+[api.py:049]         return error_response(start_response, "400 Bad Request", "body_read_error")
+[api.py:050]     if not isinstance(raw, bytes) or len(raw) != length:
+[api.py:051]         return error_response(start_response, "400 Bad Request", "body_length_mismatch")
+[api.py:052]     try:
+[api.py:053]         text, _ = convert(raw, strict=strict)
+[api.py:054]     except InputError as error:
+[api.py:055]         status = "400 Bad Request" if str(error) == "invalid_json" else "422 Unprocessable Entity"
+[api.py:056]         return error_response(start_response, status, str(error))
+[api.py:057]     return respond(start_response, "200 OK", text.encode("utf-8"), "text/csv; charset=utf-8")
+## cli.py
+[cli.py:001] """港湾记录整理器 v1.2 CLI；原创合成，沿用项目NC许可。"""
+[cli.py:002] 
+[cli.py:003] import argparse
+[cli.py:004] from pathlib import Path
+[cli.py:005] import sys
+[cli.py:006] 
+[cli.py:007] from core import InputError, VERSION, convert
+[cli.py:008] 
+[cli.py:009] 
+[cli.py:010] def parser():
+[cli.py:011]     command = argparse.ArgumentParser(description="Convert JSON records to CSV")
+[cli.py:012]     command.add_argument("input", type=Path, help="UTF-8 JSON input file")
+[cli.py:013]     command.add_argument("output", type=Path, help="new UTF-8 CSV output file")
+[cli.py:014]     command.add_argument("--strict", action="store_true", help="reject unknown record fields")
+[cli.py:015]     command.add_argument("--version", action="version", version=VERSION)
+[cli.py:016]     return command
+[cli.py:017] 
+[cli.py:018] 
+[cli.py:019] def main(argv=None):
+[cli.py:020]     args = parser().parse_args(argv)
+[cli.py:021]     try:
+[cli.py:022]         raw = args.input.read_bytes()
+[cli.py:023]     except OSError:
+[cli.py:024]         print("input_io_error", file=sys.stderr)
+[cli.py:025]         return 4
+[cli.py:026]     try:
+[cli.py:027]         text, count = convert(raw, strict=args.strict)
+[cli.py:028]     except InputError as error:
+[cli.py:029]         print(str(error), file=sys.stderr)
+[cli.py:030]         return 2
+[cli.py:031]     try:
+[cli.py:032]         # 先完成全部输入验证，再以独占新建模式打开；绝不覆盖已有文件。
+[cli.py:033]         with args.output.open("x", encoding="utf-8", newline="") as destination:
+[cli.py:034]             destination.write(text)
+[cli.py:035]     except FileExistsError:
+[cli.py:036]         print("output_exists", file=sys.stderr)
+[cli.py:037]         return 3
+[cli.py:038]     except OSError:
+[cli.py:039]         # 写入开始后的I/O故障可能留有部分新文件，不承诺原子写入。
+[cli.py:040]         print("output_io_error", file=sys.stderr)
+[cli.py:041]         return 4
+[cli.py:042]     print(f"wrote {count} records")
+[cli.py:043]     return 0
+[cli.py:044] 
+[cli.py:045] 
+[cli.py:046] if __name__ == "__main__":
+[cli.py:047]     raise SystemExit(main())
+## core.py
+[core.py:001] """港湾记录整理器 v1.2：原创合成核心；沿用项目NC许可。"""
+[core.py:002] 
+[core.py:003] import csv
+[core.py:004] import io
+[core.py:005] import json
+[core.py:006] 
+[core.py:007] VERSION = "1.2"
+[core.py:008] FIELDS = ("id", "label", "value")
+[core.py:009] MAX_RECORDS = 1000
+[core.py:010] 
+[core.py:011] 
+[core.py:012] class InputError(ValueError):
+[core.py:013]     """只携带固定错误类别，不回显用户记录。"""
+[core.py:014] 
+[core.py:015] 
+[core.py:016] def decode_payload(raw):
+[core.py:017]     """UTF-8 JSON只解码，不在此决定字段是否合法。"""
+[core.py:018]     try:
+[core.py:019]         return json.loads(raw.decode("utf-8"))
+[core.py:020]     except (UnicodeDecodeError, json.JSONDecodeError) as error:
+[core.py:021]         raise InputError("invalid_json") from error
+[core.py:022] 
+[core.py:023] 
+[core.py:024] def validate_records(records, strict=False):
+[core.py:025]     """v1.2始终拒绝重复ID；strict还拒绝额外字段。"""
+[core.py:026]     if not isinstance(records, list):
+[core.py:027]         raise InputError("records_must_be_array")
+[core.py:028]     if len(records) > MAX_RECORDS:
+[core.py:029]         raise InputError("too_many_records")
+[core.py:030]     cleaned = []
+[core.py:031]     seen_ids = set()
+[core.py:032]     for record in records:
+[core.py:033]         if not isinstance(record, dict):
+[core.py:034]             raise InputError("record_must_be_object")
+[core.py:035]         if not all(field in record for field in FIELDS):
+[core.py:036]             raise InputError("missing_field")
+[core.py:037]         if strict and set(record) != set(FIELDS):
+[core.py:038]             raise InputError("unknown_field")
+[core.py:039]         record_id, label, value = (record[field] for field in FIELDS)
+[core.py:040]         if not isinstance(record_id, str) or not record_id.strip():
+[core.py:041]             raise InputError("invalid_id")
+[core.py:042]         if not isinstance(label, str) or not label.strip():
+[core.py:043]             raise InputError("invalid_label")
+[core.py:044]         try:
+[core.py:045]             (record_id + label).encode("utf-8")
+[core.py:046]         except UnicodeEncodeError as error:
+[core.py:047]             raise InputError("invalid_text_encoding") from error
+[core.py:048]         if type(value) is not int or value < 0:
+[core.py:049]             raise InputError("invalid_value")
+[core.py:050]         if record_id in seen_ids:
+[core.py:051]             raise InputError("duplicate_id")
+[core.py:052]         seen_ids.add(record_id)
+[core.py:053]         cleaned.append({"id": record_id, "label": label, "value": value})
+[core.py:054]     return cleaned
+[core.py:055] 
+[core.py:056] 
+[core.py:057] def render_csv(records):
+[core.py:058]     """输出固定列和LF换行；引号、逗号等由csv模块转义。"""
+[core.py:059]     output = io.StringIO(newline="")
+[core.py:060]     writer = csv.DictWriter(output, fieldnames=FIELDS, lineterminator="\n")
+[core.py:061]     writer.writeheader()
+[core.py:062]     writer.writerows(records)
+[core.py:063]     return output.getvalue()
+[core.py:064] 
+[core.py:065] 
+[core.py:066] def convert(raw, strict=False):
+[core.py:067]     """返回CSV正文与记录数，空数组仍产生表头。"""
+[core.py:068]     records = validate_records(decode_payload(raw), strict=strict)
+[core.py:069]     return render_csv(records), len(records)
+## gui.py
+[gui.py:001] """港湾记录整理器 v1.2：明确新增的本地合成GUI，不改写历史版本事实。"""
+[gui.py:002] import argparse
+[gui.py:003] import json
+[gui.py:004] from pathlib import Path
+[gui.py:005] from wsgiref.simple_server import make_server, WSGIRequestHandler
+[gui.py:006] 
+[gui.py:007] from api import application as convert_application, error_response, respond
+[gui.py:008] from core import VERSION
+[gui.py:009] 
+[gui.py:010] PAGE = Path(__file__).with_name("index.html").read_bytes()
+[gui.py:011] 
+[gui.py:012] 
+[gui.py:013] def application(environ, start_response):
+[gui.py:014]     host = environ.get("HTTP_HOST", "")
+[gui.py:015]     expected = "127.0.0.1:" + environ.get("SERVER_PORT", "")
+[gui.py:016]     if host != expected:
+[gui.py:017]         return error_response(start_response, "403 Forbidden", "local_host_required")
+[gui.py:018]     origin = environ.get("HTTP_ORIGIN")
+[gui.py:019]     if origin is not None and origin != "http://" + expected:
+[gui.py:020]         return error_response(start_response, "403 Forbidden", "origin_rejected")
+[gui.py:021]     path = environ.get("PATH_INFO")
+[gui.py:022]     method = environ.get("REQUEST_METHOD")
+[gui.py:023]     headers = [("Cache-Control", "no-store"), ("X-Content-Type-Options", "nosniff"),
+[gui.py:024]                ("Content-Security-Policy", "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'self'; frame-ancestors 'none'")]
+[gui.py:025]     if path == "/" and method == "GET":
+[gui.py:026]         return respond(start_response, "200 OK", PAGE, "text/html; charset=utf-8", headers)
+[gui.py:027]     if path == "/version" and method == "GET":
+[gui.py:028]         return respond(start_response, "200 OK", json.dumps({"name": "港湾记录整理器", "version": VERSION}, ensure_ascii=False).encode(), "application/json; charset=utf-8", headers)
+[gui.py:029]     return convert_application(environ, start_response)
+[gui.py:030] 
+[gui.py:031] 
+[gui.py:032] class QuietHandler(WSGIRequestHandler):
+[gui.py:033]     def log_message(self, format, *args):
+[gui.py:034]         pass
+[gui.py:035] 
+[gui.py:036] 
+[gui.py:037] def main():
+[gui.py:038]     parser = argparse.ArgumentParser(description="本地合成GUI；仅监听127.0.0.1，无用户认证")
+[gui.py:039]     parser.add_argument("--port", type=int, default=0)
+[gui.py:040]     parser.add_argument("--synthetic", action="store_true", required=True)
+[gui.py:041]     args = parser.parse_args()
+[gui.py:042]     with make_server("127.0.0.1", args.port, application, handler_class=QuietHandler) as server:
+[gui.py:043]         print(json.dumps({"url": "http://127.0.0.1:" + str(server.server_port), "version": VERSION}), flush=True)
+[gui.py:044]         try:
+[gui.py:045]             server.serve_forever()
+[gui.py:046]         except KeyboardInterrupt:
+[gui.py:047]             pass
+[gui.py:048] 
+[gui.py:049] 
+[gui.py:050] if __name__ == "__main__":
+[gui.py:051]     main()
+## index.html
+[index.html:001] <!doctype html>
+[index.html:002] <html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+[index.html:003] <title>港湾记录整理器</title>
+[index.html:004] <style>
+[index.html:005] *{box-sizing:border-box}body{margin:0;background:#edf1f5;color:#182f43;font:16px/1.6 system-ui,sans-serif}main{max-width:1060px;margin:40px auto;padding:32px;background:white;border:1px solid #ccd7e0;border-radius:12px}h1{margin:0;font-size:30px}p{color:#526577}.label{font-weight:600}textarea,pre{width:100%;min-height:220px;padding:16px;border:1px solid #9aafbf;border-radius:6px;background:#f8fafc;white-space:pre-wrap;overflow-wrap:anywhere;font:15px/1.6 Consolas,monospace}textarea:focus,button:focus{outline:3px solid #80b7e8;outline-offset:2px}.columns{display:grid;grid-template-columns:1fr 1fr;gap:24px}button{background:#174e73;color:white;padding:11px 22px;border:0;border-radius:6px;font-size:16px;cursor:pointer}button:disabled{opacity:.5}#status{min-height:26px;font-weight:600}.note{font-size:14px}.toolbar{display:flex;gap:24px;align-items:center;margin:20px 0}@media(max-width:740px){main{margin:12px;padding:20px}.columns{grid-template-columns:1fr}.toolbar{flex-wrap:wrap}}
+[index.html:006] </style>
+[index.html:007] <main><h1>港湾记录整理器 <span id="version"></span></h1>
+[index.html:008] <p>将 JSON 记录转换为 CSV。原创合成演示，仅供本机内部试用。</p>
+[index.html:009] <div class="columns"><section><label class="label" for="input">输入 JSON 记录</label>
+[index.html:010] <textarea id="input" spellcheck="false">[{"id":"A1","label":"港口观测","value":12},{"id":"A2","label":"桥面观测","value":8}]</textarea></section>
+[index.html:011] <section><div class="label">CSV 结果</div><pre id="output" aria-label="CSV结果"></pre></section></div>
+[index.html:012] <div class="toolbar"><label><input type="checkbox" id="strict" checked> 拒绝记录中的额外字段</label><button id="convert" disabled>转换为 CSV</button></div>
+[index.html:013] <div id="status" role="status" aria-live="polite">正在读取版本…</div>
+[index.html:014] <p class="note">最多 1000 条记录，接口请求最多 65536 字节；id 不得重复，value 必须为非负整数。结果仅显示在当前页面；本工具不自动保存文件。</p>
+[index.html:015] </main>
+[index.html:016] <script>
+[index.html:017] const input=document.querySelector('#input'), output=document.querySelector('#output'), strict=document.querySelector('#strict'), button=document.querySelector('#convert'), status=document.querySelector('#status');
+[index.html:018] let revision=0,ready=false,busy=false;
+[index.html:019] function changed(){revision++;output.textContent='';status.textContent='输入已改变，请重新转换。';}
+[index.html:020] input.addEventListener('input',changed);strict.addEventListener('change',changed);
+[index.html:021] fetch('/version').then(r=>{if(!r.ok)throw Error();return r.json()}).then(v=>{document.querySelector('#version').textContent='v'+v.version;ready=true;button.disabled=false;status.textContent='准备就绪。'}).catch(()=>{status.textContent='版本读取失败，请检查本地服务。'});
+[index.html:022] button.addEventListener('click',async()=>{
+[index.html:023]  if(!ready||busy)return;const current=revision;output.textContent='';busy=true;button.disabled=true;status.textContent='转换中…';
+[index.html:024]  try{const response=await fetch('/convert?strict='+Number(strict.checked),{method:'POST',headers:{'Content-Type':'application/json'},body:input.value});const text=await response.text();
+[index.html:025]  if(current!==revision)return;
+[index.html:026]  if(!response.ok){let code='unknown_error';try{code=JSON.parse(text).error}catch{}status.textContent='转换失败：'+code;return;}
+[index.html:027]  output.textContent=text;status.textContent='转换成功。';
+[index.html:028]  }catch{if(current===revision)status.textContent='连接失败，请检查本地服务。';}
+[index.html:029]  finally{busy=false;button.disabled=!ready;}
+[index.html:030] });
+[index.html:031] </script></html>

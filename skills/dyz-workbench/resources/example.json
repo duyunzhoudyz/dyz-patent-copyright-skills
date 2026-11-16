@@ -1,0 +1,6 @@
+{
+  "facts": [
+    {"subject": "synthetic-work", "claim": "synthetic-team-a", "evidence_id": "synthetic-contract-a"},
+    {"subject": "synthetic-work", "claim": "synthetic-team-b", "evidence_id": "synthetic-contract-b"}
+  ]
+}

@@ -1,0 +1,1536 @@
+{
+  "date": "2026-11-03",
+  "kind": "author_observed_code_field_and_version_provenance_not_title_or_originality_verdict",
+  "software_name": "港湾记录整理器",
+  "version": "1.3",
+  "source_physical_lines": 266,
+  "files": [
+    {
+      "file": "api.py",
+      "current": {
+        "path": "skills/dyz-software/resources/harbor-demo/v1.3/api.py",
+        "sha256": "d7a5c8493a1c9b150a9f17ef372b3ad0fbcc6419517f8c9b7a3c065135042ef7",
+        "lines": [
+          1,
+          65
+        ],
+        "span_sha256": "c153a1a57bb03c8bb72803c0def54be3dadab75774d80081c639c22ca8573a9d"
+      },
+      "baseline": {
+        "path": "skills/dyz-software/resources/harbor-demo/v1.2/api.py",
+        "sha256": "b406d4feb39224557dd73d0aad3565e2b11cdb84729668bb45470a15c31398d5",
+        "lines": [
+          1,
+          57
+        ],
+        "span_sha256": "4a67f3de212ad8e5406f4125abcc145fa4a5abbd91be2e55071847892f1fdf12"
+      },
+      "changed_line_hunks": [
+        {
+          "operation": "replace",
+          "old_lines": [
+            1,
+            1
+          ],
+          "new_lines": [
+            1,
+            1
+          ],
+          "old_text_sha256": "5bfa4242053c76543c53d76a11b7d3ee71da1d4971cbe8182ffb527804e28c92",
+          "new_text_sha256": "b1edf766f33411b0a81ce78f990866bfb9c6eda2b8afac4cdd4ad3cc4ab8c0bc"
+        },
+        {
+          "operation": "insert",
+          "old_lines": [],
+          "new_lines": [
+            4,
+            4
+          ],
+          "old_text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "new_text_sha256": "70b79c6a95194703f89cc7b9adcf5b53d697703589872c637d7354a8945bd8d2"
+        },
+        {
+          "operation": "replace",
+          "old_lines": [
+            29,
+            29
+          ],
+          "new_lines": [
+            30,
+            32
+          ],
+          "old_text_sha256": "caf12043c126c8df6a7148413049481175dcb7f9b08dba905576dc4fd13c7caa",
+          "new_text_sha256": "45a7e93dc654f55cd4d6fdf905be87cf70c1c116a18bb8d93fce76790dc5063b"
+        },
+        {
+          "operation": "replace",
+          "old_lines": [
+            31,
+            31
+          ],
+          "new_lines": [
+            34,
+            39
+          ],
+          "old_text_sha256": "123e104066762afaf93cf5f458e439c5605266083683d389725ce61edeb6c51a",
+          "new_text_sha256": "4b57183bcdab0faed5aa76d7df26b6a64535246b1f965531a8c38c15ba87ace6"
+        },
+        {
+          "operation": "replace",
+          "old_lines": [
+            53,
+            53
+          ],
+          "new_lines": [
+            61,
+            61
+          ],
+          "old_text_sha256": "71643621d7ef1c4a1ccdac9885b6b4783494076fd987ec767720e1eb953a96d6",
+          "new_text_sha256": "2923a056dd8b35de04dcebce25d60aac5021b00a7c39fd9b89fc2db821aa9b66"
+        }
+      ],
+      "expression_candidates": [
+        {
+          "name": "respond",
+          "path": "skills/dyz-software/resources/harbor-demo/v1.3/api.py",
+          "sha256": "d7a5c8493a1c9b150a9f17ef372b3ad0fbcc6419517f8c9b7a3c065135042ef7",
+          "lines": [
+            11,
+            14
+          ],
+          "span_sha256": "7ce51ee1b9acaf01181b34560bc2f6d870f87bd213f2bb8b509ab8a2ee5193c7"
+        },
+        {
+          "name": "error_response",
+          "path": "skills/dyz-software/resources/harbor-demo/v1.3/api.py",
+          "sha256": "d7a5c8493a1c9b150a9f17ef372b3ad0fbcc6419517f8c9b7a3c065135042ef7",
+          "lines": [
+            17,
+            19
+          ],
+          "span_sha256": "aaaed3aa170ee64d4d801c03e5aaa56473c31ae3bb3b21ff3c527c0eee99ae10"
+        },
+        {
+          "name": "application",
+          "path": "skills/dyz-software/resources/harbor-demo/v1.3/api.py",
+          "sha256": "d7a5c8493a1c9b150a9f17ef372b3ad0fbcc6419517f8c9b7a3c065135042ef7",
+          "lines": [
+            22,
+            65
+          ],
+          "span_sha256": "f4b804a30a5a563898102b8644ffc5f70702fb411e984b38eac9ee7d116497d3"
+        }
+      ],
+      "imports": [
+        {
+          "module": "json",
+          "expression_scope": "external_runtime_reference_not_copied_source",
+          "path": "skills/dyz-software/resources/harbor-demo/v1.3/api.py",
+          "sha256": "d7a5c8493a1c9b150a9f17ef372b3ad0fbcc6419517f8c9b7a3c065135042ef7",
+          "lines": [
+            3,
+            3
+          ],
+          "span_sha256": "ff3e4d4dcf7250cae8d622d77c9a6d69aefcf4ab04ef9920218fafe93c0f1991"
+        },
+        {
+          "module": "urllib.parse",
+          "expression_scope": "external_runtime_reference_not_copied_source",
+          "path": "skills/dyz-software/resources/harbor-demo/v1.3/api.py",
+          "sha256": "d7a5c8493a1c9b150a9f17ef372b3ad0fbcc6419517f8c9b7a3c065135042ef7",
+          "lines": [
+            4,
+            4
+          ],
+          "span_sha256": "70b79c6a95194703f89cc7b9adcf5b53d697703589872c637d7354a8945bd8d2"
+        },
+        {
+          "module": "core",
+          "expression_scope": "project_module",
+          "path": "skills/dyz-software/resources/harbor-demo/v1.3/api.py",
+          "sha256": "d7a5c8493a1c9b150a9f17ef372b3ad0fbcc6419517f8c9b7a3c065135042ef7",
+          "lines": [
+            6,
+            6
+          ],
+          "span_sha256": "f15a3f89d4ed49acf156ccf34cc448a8878009b898a6ff0266c24c76ebf3fc05"
+        }
+      ],
+      "attribution": "Observed locations/byte changes only. Author, human contribution, title and exclusivity remain unverified."
+    },
+    {
+      "file": "cli.py",
+      "current": {
+        "path": "skills/dyz-software/resources/harbor-demo/v1.3/cli.py",
+        "sha256": "de887993b20563ae0ce2d0a32f9ca837e928320fd50dad9b5347d013cd0c0edd",
+        "lines": [
+          1,
+          48
+        ],
+        "span_sha256": "cc87dbc93681bb0d36b4230e931c0e8225df78427b1be864f49ea2d678b13b74"
+      },
+      "baseline": {
+        "path": "skills/dyz-software/resources/harbor-demo/v1.2/cli.py",
+        "sha256": "17d16810181a82a31a99d60da863d91e6f64ca8467527049ae5491ade9614cc9",
+        "lines": [
+          1,
+          47
+        ],
+        "span_sha256": "86349b4188bc1d5ef975f79d070c83a7e6d3be1af37ba576a6394ef1ac27b66f"
+      },
+      "changed_line_hunks": [
+        {
+          "operation": "replace",
+          "old_lines": [
+            1,
+            1
+          ],
+          "new_lines": [
+            1,
+            1
+          ],
+          "old_text_sha256": "58d84ceecd4302416c0c531e944938694de047c30d777f9d14529710537c264c",
+          "new_text_sha256": "0e9b18525cdfab3e35b0bd1f0f28c8b06ac31492b3cddb1040aea950729563ac"
+        },
+        {
+          "operation": "insert",
+          "old_lines": [],
+          "new_lines": [
+            15,
+            15
+          ],
+          "old_text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "new_text_sha256": "75f989b1d08bf48aed7cbb64c9be2ed17790b71a246b49177e1113bfaea9d198"
+        },
+        {
+          "operation": "replace",
+          "old_lines": [
+            27,
+            27
+          ],
+          "new_lines": [
+            28,
+            28
+          ],
+          "old_text_sha256": "9b21fafc321e1ac3742b69ff8e6c66540cb6ec07da37f0994cd9c9492b34f164",
+          "new_text_sha256": "1a03b17319943374c03d7124b518c25e9859faffed4388c7afaab3bc1cdaed11"
+        }
+      ],
+      "expression_candidates": [
+        {
+          "name": "parser",
+          "path": "skills/dyz-software/resources/harbor-demo/v1.3/cli.py",
+          "sha256": "de887993b20563ae0ce2d0a32f9ca837e928320fd50dad9b5347d013cd0c0edd",
+          "lines": [
+            10,
+            17
+          ],
+          "span_sha256": "fba961e2df8fcf59fd497c6e58eb753e1aadf192176c5e5c599dbafc7aa3fbe4"
+        },
+        {
+          "name": "main",
+          "path": "skills/dyz-software/resources/harbor-demo/v1.3/cli.py",
+          "sha256": "de887993b20563ae0ce2d0a32f9ca837e928320fd50dad9b5347d013cd0c0edd",
+          "lines": [
+            20,
+            44
+          ],
+          "span_sha256": "f340561b2d0654a83ef380cc53a5bde6dc56f9eddb0b06486d3a37a61bd859a5"
+        }
+      ],
+      "imports": [
+        {
+          "module": "argparse",
+          "expression_scope": "external_runtime_reference_not_copied_source",
+          "path": "skills/dyz-software/resources/harbor-demo/v1.3/cli.py",
+          "sha256": "de887993b20563ae0ce2d0a32f9ca837e928320fd50dad9b5347d013cd0c0edd",
+          "lines": [
+            3,
+            3
+          ],
+          "span_sha256": "f534a72c58d199602723840a24761409f227f4238759b1f6b1982afb8956b460"
+        },
+        {
+          "module": "pathlib",
+          "expression_scope": "external_runtime_reference_not_copied_source",
+          "path": "skills/dyz-software/resources/harbor-demo/v1.3/cli.py",
+          "sha256": "de887993b20563ae0ce2d0a32f9ca837e928320fd50dad9b5347d013cd0c0edd",
+          "lines": [
+            4,
+            4
+          ],
+          "span_sha256": "6d69f2ac09017b8a49d050ab336e953b8fa02ae08c24396916ea7ea42418e627"
+        },
+        {
+          "module": "sys",
+          "expression_scope": "external_runtime_reference_not_copied_source",
+          "path": "skills/dyz-software/resources/harbor-demo/v1.3/cli.py",
+          "sha256": "de887993b20563ae0ce2d0a32f9ca837e928320fd50dad9b5347d013cd0c0edd",
+          "lines": [
+            5,
+            5
+          ],
+          "span_sha256": "9e77b3746ea081eb4c557e71cc84ca29dc66a89d18a07e85dba66a336e7310ae"
+        },
+        {
+          "module": "core",
+          "expression_scope": "project_module",
+          "path": "skills/dyz-software/resources/harbor-demo/v1.3/cli.py",
+          "sha256": "de887993b20563ae0ce2d0a32f9ca837e928320fd50dad9b5347d013cd0c0edd",
+          "lines": [
+            7,
+            7
+          ],
+          "span_sha256": "d2520039493363b9c724d6a8d15a210900d9bbb27d285d911073bde849144136"
+        }
+      ],
+      "attribution": "Observed locations/byte changes only. Author, human contribution, title and exclusivity remain unverified."
+    },
+    {
+      "file": "core.py",
+      "current": {
+        "path": "skills/dyz-software/resources/harbor-demo/v1.3/core.py",
+        "sha256": "e6acd5ed00bd9ff64069fef84fb6489f4986c03ba441a2367fd383ad68e419a9",
+        "lines": [
+          1,
+          71
+        ],
+        "span_sha256": "8f98bdb81611c089ed60b3d244209c18192126450585f1462914d5712e80d92f"
+      },
+      "baseline": {
+        "path": "skills/dyz-software/resources/harbor-demo/v1.2/core.py",
+        "sha256": "a2840b6097524f5b5c95ba60e3313004d28cbf86963a1933bdcedd3486ce49c5",
+        "lines": [
+          1,
+          69
+        ],
+        "span_sha256": "c1adfbf95724ffa4422d0ec4edc5a117bb47a8de78cd2e316ecfe2b1c5b890de"
+      },
+      "changed_line_hunks": [
+        {
+          "operation": "replace",
+          "old_lines": [
+            1,
+            1
+          ],
+          "new_lines": [
+            1,
+            1
+          ],
+          "old_text_sha256": "1f075cf7b43a378b56d92700bd16fc0d8909b048d468adfa6e61f7f2aebc12a4",
+          "new_text_sha256": "5cd3e2c6441827c38d69b3b3eaf7c1b9a2603d2dc00208337c624295377b06bf"
+        },
+        {
+          "operation": "replace",
+          "old_lines": [
+            7,
+            7
+          ],
+          "new_lines": [
+            7,
+            7
+          ],
+          "old_text_sha256": "492772fc776e23feab427cce9b1150539be939b241761a75f822d43be2cff0c3",
+          "new_text_sha256": "070638937c264cb4ffb8226424323215292fbb445564763c00c3c4d5917f5b45"
+        },
+        {
+          "operation": "replace",
+          "old_lines": [
+            25,
+            25
+          ],
+          "new_lines": [
+            25,
+            25
+          ],
+          "old_text_sha256": "f2afe4f08467e905f8b561ff8eae912280e11657a1af53666a517b5db34e12ad",
+          "new_text_sha256": "32824a391fbe03fce854f77c599f8d48c36c4de453772e2d84db270240f52331"
+        },
+        {
+          "operation": "replace",
+          "old_lines": [
+            66,
+            67
+          ],
+          "new_lines": [
+            66,
+            67
+          ],
+          "old_text_sha256": "d1329e9a91cb223a08d14bb53a2f2253a048b201f3c56c7ba909d428b0ab32b8",
+          "new_text_sha256": "1db4a4a7756c92fcad1e70ef67e85a7c5d7a1fbd5478f55fe6e9608fa6faca3a"
+        },
+        {
+          "operation": "insert",
+          "old_lines": [],
+          "new_lines": [
+            69,
+            70
+          ],
+          "old_text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "new_text_sha256": "4137014063ae28210984530de75daf62baaea7b88645b4f0629325f0b078f1b3"
+        }
+      ],
+      "expression_candidates": [
+        {
+          "name": "InputError",
+          "path": "skills/dyz-software/resources/harbor-demo/v1.3/core.py",
+          "sha256": "e6acd5ed00bd9ff64069fef84fb6489f4986c03ba441a2367fd383ad68e419a9",
+          "lines": [
+            12,
+            13
+          ],
+          "span_sha256": "5ae0f04e1433dd01dad48a2a170868cf6a7e83bc8359325c6428b9ac8ff4cbc3"
+        },
+        {
+          "name": "decode_payload",
+          "path": "skills/dyz-software/resources/harbor-demo/v1.3/core.py",
+          "sha256": "e6acd5ed00bd9ff64069fef84fb6489f4986c03ba441a2367fd383ad68e419a9",
+          "lines": [
+            16,
+            21
+          ],
+          "span_sha256": "46e9908145cd54fe69ca4a2337ce620bb4b5359ae4b7958be1ba25446e76ba00"
+        },
+        {
+          "name": "validate_records",
+          "path": "skills/dyz-software/resources/harbor-demo/v1.3/core.py",
+          "sha256": "e6acd5ed00bd9ff64069fef84fb6489f4986c03ba441a2367fd383ad68e419a9",
+          "lines": [
+            24,
+            54
+          ],
+          "span_sha256": "0bac7d4fbd53428c3d511d6788e0d8f6a40c893ebef32de46663913e57d709b9"
+        },
+        {
+          "name": "render_csv",
+          "path": "skills/dyz-software/resources/harbor-demo/v1.3/core.py",
+          "sha256": "e6acd5ed00bd9ff64069fef84fb6489f4986c03ba441a2367fd383ad68e419a9",
+          "lines": [
+            57,
+            63
+          ],
+          "span_sha256": "556511daa80004ab3e46697fc56cd4946390f75954b6f2fab7c292160d20405f"
+        },
+        {
+          "name": "convert",
+          "path": "skills/dyz-software/resources/harbor-demo/v1.3/core.py",
+          "sha256": "e6acd5ed00bd9ff64069fef84fb6489f4986c03ba441a2367fd383ad68e419a9",
+          "lines": [
+            66,
+            71
+          ],
+          "span_sha256": "20d04c9a60b3a9838db2cb52de5aca92993c20f1e43b916a838cb58f4b8a360b"
+        }
+      ],
+      "imports": [
+        {
+          "module": "csv",
+          "expression_scope": "external_runtime_reference_not_copied_source",
+          "path": "skills/dyz-software/resources/harbor-demo/v1.3/core.py",
+          "sha256": "e6acd5ed00bd9ff64069fef84fb6489f4986c03ba441a2367fd383ad68e419a9",
+          "lines": [
+            3,
+            3
+          ],
+          "span_sha256": "ab159f81f279e2664ad5dedfcb52b2fdfc9f411b53510899c5aaafe5e5b2909c"
+        },
+        {
+          "module": "io",
+          "expression_scope": "external_runtime_reference_not_copied_source",
+          "path": "skills/dyz-software/resources/harbor-demo/v1.3/core.py",
+          "sha256": "e6acd5ed00bd9ff64069fef84fb6489f4986c03ba441a2367fd383ad68e419a9",
+          "lines": [
+            4,
+            4
+          ],
+          "span_sha256": "b000f4590d6af9cfe633ffe0faae301a05dde8e4ca7757d7566f899d61f240b8"
+        },
+        {
+          "module": "json",
+          "expression_scope": "external_runtime_reference_not_copied_source",
+          "path": "skills/dyz-software/resources/harbor-demo/v1.3/core.py",
+          "sha256": "e6acd5ed00bd9ff64069fef84fb6489f4986c03ba441a2367fd383ad68e419a9",
+          "lines": [
+            5,
+            5
+          ],
+          "span_sha256": "ff3e4d4dcf7250cae8d622d77c9a6d69aefcf4ab04ef9920218fafe93c0f1991"
+        }
+      ],
+      "attribution": "Observed locations/byte changes only. Author, human contribution, title and exclusivity remain unverified."
+    },
+    {
+      "file": "gui.py",
+      "current": {
+        "path": "skills/dyz-software/resources/harbor-demo/v1.3/gui.py",
+        "sha256": "ce462a1e279b9cbdb4346b9533ffc092b3f713a1443e715e0755d0a2d6bffaea",
+        "lines": [
+          1,
+          51
+        ],
+        "span_sha256": "898ce6ae1d47d605af872c3f92840942802e91b472933cde4f3d11acac6ddf89"
+      },
+      "baseline": {
+        "path": "skills/dyz-software/resources/harbor-demo/v1.2/gui.py",
+        "sha256": "78088ab67941836bcfc0c5258b8acf8dee64ff3643a1ddd65afa82ec94d74494",
+        "lines": [
+          1,
+          51
+        ],
+        "span_sha256": "eff5e89c298917f8fbf47990e8abc6bab54fda91bbf2cf73b213e1346de1ceee"
+      },
+      "changed_line_hunks": [
+        {
+          "operation": "replace",
+          "old_lines": [
+            1,
+            1
+          ],
+          "new_lines": [
+            1,
+            1
+          ],
+          "old_text_sha256": "b32b18dd130ea24a6149c9319d14adda62feebd2f358d8d764f8328b9e455726",
+          "new_text_sha256": "d51b8eab24a962aeed81ff4b3808fdcff0e6688ce8a05d450561cb132d0b39eb"
+        }
+      ],
+      "expression_candidates": [
+        {
+          "name": "application",
+          "path": "skills/dyz-software/resources/harbor-demo/v1.3/gui.py",
+          "sha256": "ce462a1e279b9cbdb4346b9533ffc092b3f713a1443e715e0755d0a2d6bffaea",
+          "lines": [
+            13,
+            29
+          ],
+          "span_sha256": "894b6b6f65f9ac11fb42eb60a47dd2809fda9edffe940049b9a53a6551fef472"
+        },
+        {
+          "name": "QuietHandler",
+          "path": "skills/dyz-software/resources/harbor-demo/v1.3/gui.py",
+          "sha256": "ce462a1e279b9cbdb4346b9533ffc092b3f713a1443e715e0755d0a2d6bffaea",
+          "lines": [
+            32,
+            34
+          ],
+          "span_sha256": "2124f522e91094800c692d26ef82ebe187a3208cfc1f0053701034f42e3e6c22"
+        },
+        {
+          "name": "main",
+          "path": "skills/dyz-software/resources/harbor-demo/v1.3/gui.py",
+          "sha256": "ce462a1e279b9cbdb4346b9533ffc092b3f713a1443e715e0755d0a2d6bffaea",
+          "lines": [
+            37,
+            47
+          ],
+          "span_sha256": "34ba166310d895722091e29ff453c3ff6ed1bdd3d216b9efa31b2accc391faad"
+        }
+      ],
+      "imports": [
+        {
+          "module": "argparse",
+          "expression_scope": "external_runtime_reference_not_copied_source",
+          "path": "skills/dyz-software/resources/harbor-demo/v1.3/gui.py",
+          "sha256": "ce462a1e279b9cbdb4346b9533ffc092b3f713a1443e715e0755d0a2d6bffaea",
+          "lines": [
+            2,
+            2
+          ],
+          "span_sha256": "f534a72c58d199602723840a24761409f227f4238759b1f6b1982afb8956b460"
+        },
+        {
+          "module": "json",
+          "expression_scope": "external_runtime_reference_not_copied_source",
+          "path": "skills/dyz-software/resources/harbor-demo/v1.3/gui.py",
+          "sha256": "ce462a1e279b9cbdb4346b9533ffc092b3f713a1443e715e0755d0a2d6bffaea",
+          "lines": [
+            3,
+            3
+          ],
+          "span_sha256": "ff3e4d4dcf7250cae8d622d77c9a6d69aefcf4ab04ef9920218fafe93c0f1991"
+        },
+        {
+          "module": "pathlib",
+          "expression_scope": "external_runtime_reference_not_copied_source",
+          "path": "skills/dyz-software/resources/harbor-demo/v1.3/gui.py",
+          "sha256": "ce462a1e279b9cbdb4346b9533ffc092b3f713a1443e715e0755d0a2d6bffaea",
+          "lines": [
+            4,
+            4
+          ],
+          "span_sha256": "6d69f2ac09017b8a49d050ab336e953b8fa02ae08c24396916ea7ea42418e627"
+        },
+        {
+          "module": "wsgiref.simple_server",
+          "expression_scope": "external_runtime_reference_not_copied_source",
+          "path": "skills/dyz-software/resources/harbor-demo/v1.3/gui.py",
+          "sha256": "ce462a1e279b9cbdb4346b9533ffc092b3f713a1443e715e0755d0a2d6bffaea",
+          "lines": [
+            5,
+            5
+          ],
+          "span_sha256": "0ec75997ce00f7cf24493ef9379062a790650ee9bb5bd057b24db8f1a1bf66fb"
+        },
+        {
+          "module": "api",
+          "expression_scope": "project_module",
+          "path": "skills/dyz-software/resources/harbor-demo/v1.3/gui.py",
+          "sha256": "ce462a1e279b9cbdb4346b9533ffc092b3f713a1443e715e0755d0a2d6bffaea",
+          "lines": [
+            7,
+            7
+          ],
+          "span_sha256": "1a74530c90af51f4368a97a493283a512e6e7759f56082531182a275e8864156"
+        },
+        {
+          "module": "core",
+          "expression_scope": "project_module",
+          "path": "skills/dyz-software/resources/harbor-demo/v1.3/gui.py",
+          "sha256": "ce462a1e279b9cbdb4346b9533ffc092b3f713a1443e715e0755d0a2d6bffaea",
+          "lines": [
+            8,
+            8
+          ],
+          "span_sha256": "6dd7723b5af8d39be7a9d384abd7c0671833dede5bf63947fe0f82146d9043d3"
+        }
+      ],
+      "attribution": "Observed locations/byte changes only. Author, human contribution, title and exclusivity remain unverified."
+    },
+    {
+      "file": "index.html",
+      "current": {
+        "path": "skills/dyz-software/resources/harbor-demo/v1.3/index.html",
+        "sha256": "00fb5fa5a9d6e9a0137dbff985f6b109e0cbf8d3c18422d75de9bf49a48a86c7",
+        "lines": [
+          1,
+          31
+        ],
+        "span_sha256": "1158283683742b8260a6b008050e977f1586bc76a82fed80c617512831ef2cd7"
+      },
+      "baseline": {
+        "path": "skills/dyz-software/resources/harbor-demo/v1.2/index.html",
+        "sha256": "f406ae71dd05f63eecc5bcf27e7857c79961085d575489c9aecf4118bcb1708b",
+        "lines": [
+          1,
+          31
+        ],
+        "span_sha256": "9acbb55d25c5d95276384028b20c569b555e3c3bcd14e6eea13e929d5b3ecfcf"
+      },
+      "changed_line_hunks": [
+        {
+          "operation": "replace",
+          "old_lines": [
+            8,
+            8
+          ],
+          "new_lines": [
+            8,
+            8
+          ],
+          "old_text_sha256": "05d9c6ee747c0e96b2abcbc13d72f35fc401a4ea949c0c154affed2ae91831c5",
+          "new_text_sha256": "b4ca9dedf96f9f44066b624dfffb57e21309b901fb153f4c6cfce15ce17c6864"
+        },
+        {
+          "operation": "replace",
+          "old_lines": [
+            12,
+            12
+          ],
+          "new_lines": [
+            12,
+            12
+          ],
+          "old_text_sha256": "122c44d74478e530a945a91fd5be6a032fce938dc71b511662ae9a5e64a293eb",
+          "new_text_sha256": "342d1f52842bbece37e053e30b3948dfbe0bc54a0d5e20973f9245c09ea99258"
+        },
+        {
+          "operation": "replace",
+          "old_lines": [
+            17,
+            17
+          ],
+          "new_lines": [
+            17,
+            17
+          ],
+          "old_text_sha256": "127a136238cea1e61d9a69b3155353f488620024be850f8b7c498fb54e56b6bd",
+          "new_text_sha256": "291f9b29828bb424af7156170453b98afd8efadd3c2bbc699be83b0eb9afcd36"
+        },
+        {
+          "operation": "replace",
+          "old_lines": [
+            20,
+            20
+          ],
+          "new_lines": [
+            20,
+            20
+          ],
+          "old_text_sha256": "29488eb59e49a07d5c4cd8140fd33958563a7d44b6db20e3c2d2f05425c222d0",
+          "new_text_sha256": "51656a6c88161888b7f413a8b62f293bef3d0aa8f41ebefe1f169bb67efa4f27"
+        },
+        {
+          "operation": "replace",
+          "old_lines": [
+            24,
+            24
+          ],
+          "new_lines": [
+            24,
+            24
+          ],
+          "old_text_sha256": "e6ab587f1605afb70ce6c44ffb98889ed7937158b629fd64bd0a6f83f49f01bb",
+          "new_text_sha256": "190a823c96c3d8a3662752855fc49ed2884102d77f3911524729daaf90291485"
+        }
+      ],
+      "expression_candidates": [
+        {
+          "name": "HTML/CSS界面资源",
+          "path": "skills/dyz-software/resources/harbor-demo/v1.3/index.html",
+          "sha256": "00fb5fa5a9d6e9a0137dbff985f6b109e0cbf8d3c18422d75de9bf49a48a86c7",
+          "lines": [
+            1,
+            15
+          ],
+          "span_sha256": "6d35c91c6075e65e9f678af0f72d71ce6895da2d397e5b6823c446af86e66bce"
+        },
+        {
+          "name": "JavaScript事件与本机请求表达",
+          "path": "skills/dyz-software/resources/harbor-demo/v1.3/index.html",
+          "sha256": "00fb5fa5a9d6e9a0137dbff985f6b109e0cbf8d3c18422d75de9bf49a48a86c7",
+          "lines": [
+            16,
+            31
+          ],
+          "span_sha256": "222daf0240be9f556ca72c386c996c952f962432e6317d2b66d2d9187588e918"
+        }
+      ],
+      "imports": [],
+      "attribution": "Observed locations/byte changes only. Author, human contribution, title and exclusivity remain unverified."
+    }
+  ],
+  "fields": [
+    {
+      "id": "FIELD-01",
+      "field": "软件全称",
+      "candidate": "港湾记录整理器",
+      "candidate_status": "同版名称候选",
+      "evidence_state": "provided_technical_candidate",
+      "evidence": [
+        {
+          "path": "skills/dyz-software/resources/harbor-delivery-v1.3/form-candidate.md",
+          "sha256": "3212523f09ba1a0861837dd9e3f77f9e6301339bca54a5c67379421a59ac65bf",
+          "lines": [
+            9,
+            9
+          ],
+          "span_sha256": "f1a60963a83d7ac214a6e328c600bd51c3a10b41e50791604981e531cc2f3025"
+        },
+        {
+          "path": "skills/dyz-software/resources/harbor-delivery-v1.3/facts.json",
+          "sha256": "7d794c758fa83a5b2e56346890bbdc74de9b0e98d1eb91c8b06eafd589366ba0",
+          "lines": [
+            1,
+            71
+          ],
+          "span_sha256": "3e37d363255534a550c7bb3f4cdbd0c621df465c0b05d608f21b1e659a34ae15"
+        },
+        {
+          "path": "skills/dyz-software/resources/harbor-demo/v1.3/gui.py",
+          "sha256": "ce462a1e279b9cbdb4346b9533ffc092b3f713a1443e715e0755d0a2d6bffaea",
+          "lines": [
+            28,
+            28
+          ],
+          "span_sha256": "bfb24ede6e698e7f51e531b56737b4d42d94de1ec73dd01f73d5343d659cab98"
+        },
+        {
+          "path": "skills/dyz-software/resources/harbor-demo/v1.3/index.html",
+          "sha256": "00fb5fa5a9d6e9a0137dbff985f6b109e0cbf8d3c18422d75de9bf49a48a86c7",
+          "lines": [
+            3,
+            3
+          ],
+          "span_sha256": "7398444d5688ab4da69578dbe335e466c08a2ebd693dac0b358b164dde14b9fe"
+        }
+      ],
+      "restoration_question": "按当前字节和正式表所选写法核对，专业状态不自动升级。",
+      "responsible_role": "技术／材料负责人",
+      "limit": "Unknown means absent/unconfirmed within provided materials, never proof the real fact does not exist."
+    },
+    {
+      "id": "FIELD-02",
+      "field": "简称",
+      "candidate": "未提供简称事实；候选留空，待确认",
+      "candidate_status": "未确认，勿填“无”",
+      "evidence_state": "not_provided",
+      "evidence": [
+        {
+          "path": "skills/dyz-software/resources/harbor-delivery-v1.3/form-candidate.md",
+          "sha256": "3212523f09ba1a0861837dd9e3f77f9e6301339bca54a5c67379421a59ac65bf",
+          "lines": [
+            10,
+            10
+          ],
+          "span_sha256": "d0957bcebf5db377d7aa9346857c440f69b385cb769240092b3516568fe33827"
+        },
+        {
+          "path": "skills/dyz-software/resources/harbor-delivery-v1.3/facts.json",
+          "sha256": "7d794c758fa83a5b2e56346890bbdc74de9b0e98d1eb91c8b06eafd589366ba0",
+          "lines": [
+            1,
+            71
+          ],
+          "span_sha256": "3e37d363255534a550c7bb3f4cdbd0c621df465c0b05d608f21b1e659a34ae15"
+        }
+      ],
+      "restoration_question": "是否存在正式简称；未确认前留空，不把未知填为“无”。",
+      "responsible_role": "材料负责人",
+      "limit": "Unknown means absent/unconfirmed within provided materials, never proof the real fact does not exist."
+    },
+    {
+      "id": "FIELD-03",
+      "field": "版本号",
+      "candidate": "1.3",
+      "candidate_status": "同版值，不自动加V",
+      "evidence_state": "provided_technical_candidate",
+      "evidence": [
+        {
+          "path": "skills/dyz-software/resources/harbor-delivery-v1.3/form-candidate.md",
+          "sha256": "3212523f09ba1a0861837dd9e3f77f9e6301339bca54a5c67379421a59ac65bf",
+          "lines": [
+            11,
+            11
+          ],
+          "span_sha256": "ff65fd9515028c73da00481b64fdc0dda00961957e454e2ab6d5d7efdc4ec5b5"
+        },
+        {
+          "path": "skills/dyz-software/resources/harbor-delivery-v1.3/facts.json",
+          "sha256": "7d794c758fa83a5b2e56346890bbdc74de9b0e98d1eb91c8b06eafd589366ba0",
+          "lines": [
+            1,
+            71
+          ],
+          "span_sha256": "3e37d363255534a550c7bb3f4cdbd0c621df465c0b05d608f21b1e659a34ae15"
+        },
+        {
+          "path": "skills/dyz-software/resources/harbor-demo/v1.3/core.py",
+          "sha256": "e6acd5ed00bd9ff64069fef84fb6489f4986c03ba441a2367fd383ad68e419a9",
+          "lines": [
+            7,
+            7
+          ],
+          "span_sha256": "070638937c264cb4ffb8226424323215292fbb445564763c00c3c4d5917f5b45"
+        }
+      ],
+      "restoration_question": "按当前字节和正式表所选写法核对，专业状态不自动升级。",
+      "responsible_role": "技术／材料负责人",
+      "limit": "Unknown means absent/unconfirmed within provided materials, never proof the real fact does not exist."
+    },
+    {
+      "id": "FIELD-04",
+      "field": "主要功能",
+      "candidate": "将UTF-8 JSON记录数组转为固定列CSV，提供CLI、WSGI接口和本机GUI，可选按id的Unicode字符序排序",
+      "candidate_status": "来自现有实现",
+      "evidence_state": "provided_technical_candidate",
+      "evidence": [
+        {
+          "path": "skills/dyz-software/resources/harbor-delivery-v1.3/form-candidate.md",
+          "sha256": "3212523f09ba1a0861837dd9e3f77f9e6301339bca54a5c67379421a59ac65bf",
+          "lines": [
+            12,
+            12
+          ],
+          "span_sha256": "ef12b4d23af8cf3dcc16d8f6f7716258ea5c925cc8c13c9c9112aca89f19b825"
+        },
+        {
+          "path": "skills/dyz-software/resources/harbor-delivery-v1.3/facts.json",
+          "sha256": "7d794c758fa83a5b2e56346890bbdc74de9b0e98d1eb91c8b06eafd589366ba0",
+          "lines": [
+            1,
+            71
+          ],
+          "span_sha256": "3e37d363255534a550c7bb3f4cdbd0c621df465c0b05d608f21b1e659a34ae15"
+        },
+        {
+          "path": "skills/dyz-software/resources/harbor-demo/v1.3/core.py",
+          "sha256": "e6acd5ed00bd9ff64069fef84fb6489f4986c03ba441a2367fd383ad68e419a9",
+          "lines": [
+            66,
+            66
+          ],
+          "span_sha256": "2cff1251802b216eabd2ec274f0fa328cfb753710e3849ac7a6806ffa198aaca"
+        },
+        {
+          "path": "skills/dyz-software/resources/harbor-demo/v1.3/cli.py",
+          "sha256": "de887993b20563ae0ce2d0a32f9ca837e928320fd50dad9b5347d013cd0c0edd",
+          "lines": [
+            15,
+            15
+          ],
+          "span_sha256": "75f989b1d08bf48aed7cbb64c9be2ed17790b71a246b49177e1113bfaea9d198"
+        },
+        {
+          "path": "skills/dyz-software/resources/harbor-demo/v1.3/api.py",
+          "sha256": "d7a5c8493a1c9b150a9f17ef372b3ad0fbcc6419517f8c9b7a3c065135042ef7",
+          "lines": [
+            39,
+            39
+          ],
+          "span_sha256": "bda805540a63f988057052cc1358277a37c51f71d557c7f4a0b273df8fc73c6d"
+        },
+        {
+          "path": "skills/dyz-software/resources/harbor-delivery-v1.3/manual.md",
+          "sha256": "1a0c1bf88e4f2f054aaa953c33c4006a6e9cbf5e0a11c2fc81631cd7c6ea874f",
+          "lines": [
+            1,
+            45
+          ],
+          "span_sha256": "424f6a6b796432bb8d2d8f4421bd0bba382a34ef205e1212cd4e89e6062210f3"
+        }
+      ],
+      "restoration_question": "按当前字节和正式表所选写法核对，专业状态不自动升级。",
+      "responsible_role": "技术／材料负责人",
+      "limit": "Unknown means absent/unconfirmed within provided materials, never proof the real fact does not exist."
+    },
+    {
+      "id": "FIELD-05",
+      "field": "开发目的及领域/行业",
+      "candidate": "已知用途为合成内部记录整理演示；真实产品目的与目标行业未提供",
+      "candidate_status": "演示用途已知，实际业务待核",
+      "evidence_state": "mixed",
+      "evidence": [
+        {
+          "path": "skills/dyz-software/resources/harbor-delivery-v1.3/form-candidate.md",
+          "sha256": "3212523f09ba1a0861837dd9e3f77f9e6301339bca54a5c67379421a59ac65bf",
+          "lines": [
+            13,
+            13
+          ],
+          "span_sha256": "5785f5d56d675152542cbd525856e06954e1705dfc0b41724bed28161a7232d9"
+        },
+        {
+          "path": "skills/dyz-software/resources/harbor-delivery-v1.3/facts.json",
+          "sha256": "7d794c758fa83a5b2e56346890bbdc74de9b0e98d1eb91c8b06eafd589366ba0",
+          "lines": [
+            1,
+            71
+          ],
+          "span_sha256": "3e37d363255534a550c7bb3f4cdbd0c621df465c0b05d608f21b1e659a34ae15"
+        }
+      ],
+      "restoration_question": "核实际产品目的、用户及行业；合成演示用途不代替真实业务。",
+      "responsible_role": "产品／技术负责人",
+      "limit": "Unknown means absent/unconfirmed within provided materials, never proof the real fact does not exist."
+    },
+    {
+      "id": "FIELD-06",
+      "field": "技术特点",
+      "candidate": "先校验整批再转换；拒绝重复id；严格模式拒绝额外字段；默认保留输入顺序",
+      "candidate_status": "来自现有实现",
+      "evidence_state": "provided_technical_candidate",
+      "evidence": [
+        {
+          "path": "skills/dyz-software/resources/harbor-delivery-v1.3/form-candidate.md",
+          "sha256": "3212523f09ba1a0861837dd9e3f77f9e6301339bca54a5c67379421a59ac65bf",
+          "lines": [
+            14,
+            14
+          ],
+          "span_sha256": "54d8b59097d7a0f5f43f259459df5522cfc5bd898ff83ab5f7e455b1b5da0ad8"
+        },
+        {
+          "path": "skills/dyz-software/resources/harbor-delivery-v1.3/facts.json",
+          "sha256": "7d794c758fa83a5b2e56346890bbdc74de9b0e98d1eb91c8b06eafd589366ba0",
+          "lines": [
+            1,
+            71
+          ],
+          "span_sha256": "3e37d363255534a550c7bb3f4cdbd0c621df465c0b05d608f21b1e659a34ae15"
+        },
+        {
+          "path": "skills/dyz-software/resources/harbor-demo/v1.3/core.py",
+          "sha256": "e6acd5ed00bd9ff64069fef84fb6489f4986c03ba441a2367fd383ad68e419a9",
+          "lines": [
+            25,
+            52
+          ],
+          "span_sha256": "91ba4e038942b1c6bc374492efcdeb6410ae5872e2b015770cf2f99144145e45"
+        },
+        {
+          "path": "skills/dyz-software/resources/harbor-demo/v1.3/core.py",
+          "sha256": "e6acd5ed00bd9ff64069fef84fb6489f4986c03ba441a2367fd383ad68e419a9",
+          "lines": [
+            66,
+            71
+          ],
+          "span_sha256": "20d04c9a60b3a9838db2cb52de5aca92993c20f1e43b916a838cb58f4b8a360b"
+        },
+        {
+          "path": "skills/dyz-software/resources/harbor-delivery-v1.3/manual.md",
+          "sha256": "1a0c1bf88e4f2f054aaa953c33c4006a6e9cbf5e0a11c2fc81631cd7c6ea874f",
+          "lines": [
+            1,
+            45
+          ],
+          "span_sha256": "424f6a6b796432bb8d2d8f4421bd0bba382a34ef205e1212cd4e89e6062210f3"
+        }
+      ],
+      "restoration_question": "按当前字节和正式表所选写法核对，专业状态不自动升级。",
+      "responsible_role": "技术／材料负责人",
+      "limit": "Unknown means absent/unconfirmed within provided materials, never proof the real fact does not exist."
+    },
+    {
+      "id": "FIELD-07",
+      "field": "编写语言",
+      "candidate": "Python、JavaScript；HTML/CSS另列为界面资源",
+      "candidate_status": "已读显式文件",
+      "evidence_state": "provided_technical_candidate",
+      "evidence": [
+        {
+          "path": "skills/dyz-software/resources/harbor-delivery-v1.3/form-candidate.md",
+          "sha256": "3212523f09ba1a0861837dd9e3f77f9e6301339bca54a5c67379421a59ac65bf",
+          "lines": [
+            15,
+            15
+          ],
+          "span_sha256": "b448eccaa59ba885447d234b0aee7a6defd75e5853b3c2ea1524253730882255"
+        },
+        {
+          "path": "skills/dyz-software/resources/harbor-delivery-v1.3/facts.json",
+          "sha256": "7d794c758fa83a5b2e56346890bbdc74de9b0e98d1eb91c8b06eafd589366ba0",
+          "lines": [
+            1,
+            71
+          ],
+          "span_sha256": "3e37d363255534a550c7bb3f4cdbd0c621df465c0b05d608f21b1e659a34ae15"
+        },
+        {
+          "path": "skills/dyz-software/resources/harbor-demo/v1.3/core.py",
+          "sha256": "e6acd5ed00bd9ff64069fef84fb6489f4986c03ba441a2367fd383ad68e419a9",
+          "lines": [
+            1,
+            8
+          ],
+          "span_sha256": "4735b4acc995ae9d08f48559e2a3ed5ae7bfe7dd48bfb4c93b99e66576156320"
+        },
+        {
+          "path": "skills/dyz-software/resources/harbor-demo/v1.3/index.html",
+          "sha256": "00fb5fa5a9d6e9a0137dbff985f6b109e0cbf8d3c18422d75de9bf49a48a86c7",
+          "lines": [
+            1,
+            6
+          ],
+          "span_sha256": "41c3ea90ebf28cc5336ee270040aa2fd16d092f3fe4482394bf0c5f64f0d8d8a"
+        },
+        {
+          "path": "skills/dyz-software/resources/harbor-demo/v1.3/index.html",
+          "sha256": "00fb5fa5a9d6e9a0137dbff985f6b109e0cbf8d3c18422d75de9bf49a48a86c7",
+          "lines": [
+            16,
+            31
+          ],
+          "span_sha256": "222daf0240be9f556ca72c386c996c952f962432e6317d2b66d2d9187588e918"
+        }
+      ],
+      "restoration_question": "按当前字节和正式表所选写法核对，专业状态不自动升级。",
+      "responsible_role": "技术／材料负责人",
+      "limit": "Unknown means absent/unconfirmed within provided materials, never proof the real fact does not exist."
+    },
+    {
+      "id": "FIELD-08",
+      "field": "软件环境（要求与事实）",
+      "candidate": "要求Python3.11标准库，GUI另需浏览器且仅本机服务；实际开发环境、部署系统及版本未提供",
+      "candidate_status": "声明要求不等于实际环境",
+      "evidence_state": "mixed",
+      "evidence": [
+        {
+          "path": "skills/dyz-software/resources/harbor-delivery-v1.3/form-candidate.md",
+          "sha256": "3212523f09ba1a0861837dd9e3f77f9e6301339bca54a5c67379421a59ac65bf",
+          "lines": [
+            16,
+            16
+          ],
+          "span_sha256": "55c07984cb041857fbae478128f59e089ae57034a12e5fe8ac4798f78998319d"
+        },
+        {
+          "path": "skills/dyz-software/resources/harbor-delivery-v1.3/facts.json",
+          "sha256": "7d794c758fa83a5b2e56346890bbdc74de9b0e98d1eb91c8b06eafd589366ba0",
+          "lines": [
+            1,
+            71
+          ],
+          "span_sha256": "3e37d363255534a550c7bb3f4cdbd0c621df465c0b05d608f21b1e659a34ae15"
+        },
+        {
+          "path": "skills/dyz-software/resources/harbor-delivery-v1.3/manual.md",
+          "sha256": "1a0c1bf88e4f2f054aaa953c33c4006a6e9cbf5e0a11c2fc81631cd7c6ea874f",
+          "lines": [
+            1,
+            45
+          ],
+          "span_sha256": "424f6a6b796432bb8d2d8f4421bd0bba382a34ef205e1212cd4e89e6062210f3"
+        }
+      ],
+      "restoration_question": "分开最低／声明要求、本次测试环境、实际开发与部署环境；缺事实不套本机。",
+      "responsible_role": "技术负责人",
+      "limit": "Unknown means absent/unconfirmed within provided materials, never proof the real fact does not exist."
+    },
+    {
+      "id": "FIELD-09",
+      "field": "开发及运行硬件",
+      "candidate": "未提供真实设备或最低配置",
+      "candidate_status": "未知，不套当前机器",
+      "evidence_state": "not_provided",
+      "evidence": [
+        {
+          "path": "skills/dyz-software/resources/harbor-delivery-v1.3/form-candidate.md",
+          "sha256": "3212523f09ba1a0861837dd9e3f77f9e6301339bca54a5c67379421a59ac65bf",
+          "lines": [
+            17,
+            17
+          ],
+          "span_sha256": "0c210f16b2f1e3d20e593a61edf22dd737b8c2d850d2850891c9e5ab85e25131"
+        },
+        {
+          "path": "skills/dyz-software/resources/harbor-delivery-v1.3/facts.json",
+          "sha256": "7d794c758fa83a5b2e56346890bbdc74de9b0e98d1eb91c8b06eafd589366ba0",
+          "lines": [
+            1,
+            71
+          ],
+          "span_sha256": "3e37d363255534a550c7bb3f4cdbd0c621df465c0b05d608f21b1e659a34ae15"
+        }
+      ],
+      "restoration_question": "核真实开发／运行设备及必要配置；无给定下限不编最低配置。",
+      "responsible_role": "技术负责人",
+      "limit": "Unknown means absent/unconfirmed within provided materials, never proof the real fact does not exist."
+    },
+    {
+      "id": "FIELD-10",
+      "field": "开发完成日期",
+      "candidate": "未提供，不能用本次导出日期代填",
+      "candidate_status": "未知",
+      "evidence_state": "not_provided",
+      "evidence": [
+        {
+          "path": "skills/dyz-software/resources/harbor-delivery-v1.3/form-candidate.md",
+          "sha256": "3212523f09ba1a0861837dd9e3f77f9e6301339bca54a5c67379421a59ac65bf",
+          "lines": [
+            18,
+            18
+          ],
+          "span_sha256": "7e48818f660f6bfc27613b634104fa2660b51b70cfef3db2f6d658b2fdb092e8"
+        },
+        {
+          "path": "skills/dyz-software/resources/harbor-delivery-v1.3/facts.json",
+          "sha256": "7d794c758fa83a5b2e56346890bbdc74de9b0e98d1eb91c8b06eafd589366ba0",
+          "lines": [
+            1,
+            71
+          ],
+          "span_sha256": "3e37d363255534a550c7bb3f4cdbd0c621df465c0b05d608f21b1e659a34ae15"
+        }
+      ],
+      "restoration_question": "提供完成范围、日期及相应版本记录；导出日期不是开发完成日。",
+      "responsible_role": "材料负责人",
+      "limit": "Unknown means absent/unconfirmed within provided materials, never proof the real fact does not exist."
+    },
+    {
+      "id": "FIELD-11",
+      "field": "发表状态、日期及地点",
+      "candidate": "未提供；未登记不能推出未发表",
+      "candidate_status": "未知",
+      "evidence_state": "not_provided",
+      "evidence": [
+        {
+          "path": "skills/dyz-software/resources/harbor-delivery-v1.3/form-candidate.md",
+          "sha256": "3212523f09ba1a0861837dd9e3f77f9e6301339bca54a5c67379421a59ac65bf",
+          "lines": [
+            19,
+            19
+          ],
+          "span_sha256": "7c74423d6deacb457be4386fce660e1815d02c2336d5cac7621591318a4a446b"
+        },
+        {
+          "path": "skills/dyz-software/resources/harbor-delivery-v1.3/facts.json",
+          "sha256": "7d794c758fa83a5b2e56346890bbdc74de9b0e98d1eb91c8b06eafd589366ba0",
+          "lines": [
+            1,
+            71
+          ],
+          "span_sha256": "3e37d363255534a550c7bb3f4cdbd0c621df465c0b05d608f21b1e659a34ae15"
+        }
+      ],
+      "restoration_question": "提供实际发表或未发表的事实范围；登记未执行不能推出未发表。",
+      "responsible_role": "材料负责人／版权审阅者",
+      "limit": "Unknown means absent/unconfirmed within provided materials, never proof the real fact does not exist."
+    },
+    {
+      "id": "FIELD-12",
+      "field": "开发方式",
+      "candidate": "无真实职务、委托、合作或任务事实",
+      "candidate_status": "未知，需对应依据",
+      "evidence_state": "not_provided",
+      "evidence": [
+        {
+          "path": "skills/dyz-software/resources/harbor-delivery-v1.3/form-candidate.md",
+          "sha256": "3212523f09ba1a0861837dd9e3f77f9e6301339bca54a5c67379421a59ac65bf",
+          "lines": [
+            20,
+            20
+          ],
+          "span_sha256": "b9fbd2014ddd1706ec2980b2722d8b70b2e146daf021059ba93000064e822d8f"
+        },
+        {
+          "path": "skills/dyz-software/resources/harbor-delivery-v1.3/facts.json",
+          "sha256": "7d794c758fa83a5b2e56346890bbdc74de9b0e98d1eb91c8b06eafd589366ba0",
+          "lines": [
+            1,
+            71
+          ],
+          "span_sha256": "3e37d363255534a550c7bb3f4cdbd0c621df465c0b05d608f21b1e659a34ae15"
+        }
+      ],
+      "restoration_question": "逐组件提供职务、委托、合作或其他关系及合同／任务材料。",
+      "responsible_role": "贡献者／权利负责人",
+      "limit": "Unknown means absent/unconfirmed within provided materials, never proof the real fact does not exist."
+    },
+    {
+      "id": "FIELD-13",
+      "field": "软件作品说明",
+      "candidate": "v1.3新增id排序，v1.2已提供GUI；登记原创/修改选项另核旧版、旧登记和权利事实",
+      "candidate_status": "已知沿革，路线待核",
+      "evidence_state": "mixed",
+      "evidence": [
+        {
+          "path": "skills/dyz-software/resources/harbor-delivery-v1.3/form-candidate.md",
+          "sha256": "3212523f09ba1a0861837dd9e3f77f9e6301339bca54a5c67379421a59ac65bf",
+          "lines": [
+            21,
+            21
+          ],
+          "span_sha256": "5d49478a351fcaebeefbbd2622c0984518bd308b230f256162524f7a1dcb4a22"
+        },
+        {
+          "path": "skills/dyz-software/resources/harbor-delivery-v1.3/facts.json",
+          "sha256": "7d794c758fa83a5b2e56346890bbdc74de9b0e98d1eb91c8b06eafd589366ba0",
+          "lines": [
+            1,
+            71
+          ],
+          "span_sha256": "3e37d363255534a550c7bb3f4cdbd0c621df465c0b05d608f21b1e659a34ae15"
+        },
+        {
+          "path": "skills/dyz-software/resources/harbor-delivery-v1.3/manual.md",
+          "sha256": "1a0c1bf88e4f2f054aaa953c33c4006a6e9cbf5e0a11c2fc81631cd7c6ea874f",
+          "lines": [
+            1,
+            45
+          ],
+          "span_sha256": "424f6a6b796432bb8d2d8f4421bd0bba382a34ef205e1212cd4e89e6062210f3"
+        }
+      ],
+      "restoration_question": "核旧版、旧登记与取得权利事实，再决定原创／修改路线；排序增量不自动决定登记路线。",
+      "responsible_role": "版权审阅者",
+      "limit": "Unknown means absent/unconfirmed within provided materials, never proof the real fact does not exist."
+    },
+    {
+      "id": "FIELD-14",
+      "field": "著作权人及申请人",
+      "candidate": "主体、共同权利人及代表资格未提供；不以维护者等代入",
+      "candidate_status": "未知",
+      "evidence_state": "not_provided",
+      "evidence": [
+        {
+          "path": "skills/dyz-software/resources/harbor-delivery-v1.3/form-candidate.md",
+          "sha256": "3212523f09ba1a0861837dd9e3f77f9e6301339bca54a5c67379421a59ac65bf",
+          "lines": [
+            22,
+            22
+          ],
+          "span_sha256": "6e09f732ab086b03d72a356ad2b5727d256f0d8769d7c7f46b36ebcba44bfa15"
+        },
+        {
+          "path": "skills/dyz-software/resources/harbor-delivery-v1.3/facts.json",
+          "sha256": "7d794c758fa83a5b2e56346890bbdc74de9b0e98d1eb91c8b06eafd589366ba0",
+          "lines": [
+            1,
+            71
+          ],
+          "span_sha256": "3e37d363255534a550c7bb3f4cdbd0c621df465c0b05d608f21b1e659a34ae15"
+        }
+      ],
+      "restoration_question": "提供主体、共有权利、代表资格与取得链；不以仓库维护者或提交者代入。",
+      "responsible_role": "权利负责人",
+      "limit": "Unknown means absent/unconfirmed within provided materials, never proof the real fact does not exist."
+    },
+    {
+      "id": "FIELD-15",
+      "field": "主体类别、证件及所在地",
+      "candidate": "类别、证件类型/号码、国籍及省份/城市均未提供",
+      "candidate_status": "未知，按真实材料核对",
+      "evidence_state": "not_provided",
+      "evidence": [
+        {
+          "path": "skills/dyz-software/resources/harbor-delivery-v1.3/form-candidate.md",
+          "sha256": "3212523f09ba1a0861837dd9e3f77f9e6301339bca54a5c67379421a59ac65bf",
+          "lines": [
+            23,
+            23
+          ],
+          "span_sha256": "b8fc936e74a73e601ff380bc0dc8cb50101679d02db8f7ab6727adf1dfb592f2"
+        },
+        {
+          "path": "skills/dyz-software/resources/harbor-delivery-v1.3/facts.json",
+          "sha256": "7d794c758fa83a5b2e56346890bbdc74de9b0e98d1eb91c8b06eafd589366ba0",
+          "lines": [
+            1,
+            71
+          ],
+          "span_sha256": "3e37d363255534a550c7bb3f4cdbd0c621df465c0b05d608f21b1e659a34ae15"
+        }
+      ],
+      "restoration_question": "以获准真实证件及主体资料核对，不使用合成演练主体。",
+      "responsible_role": "材料负责人",
+      "limit": "Unknown means absent/unconfirmed within provided materials, never proof the real fact does not exist."
+    },
+    {
+      "id": "FIELD-16",
+      "field": "原登记及变更补充编号",
+      "candidate": "未提供旧版登记/变更事实和编号，不填0或推定已有",
+      "candidate_status": "未知",
+      "evidence_state": "not_provided",
+      "evidence": [
+        {
+          "path": "skills/dyz-software/resources/harbor-delivery-v1.3/form-candidate.md",
+          "sha256": "3212523f09ba1a0861837dd9e3f77f9e6301339bca54a5c67379421a59ac65bf",
+          "lines": [
+            24,
+            24
+          ],
+          "span_sha256": "a6af0c8c011f721405c9a6d8ca8346389b837da487e7cf440b1c543d04f23f2e"
+        },
+        {
+          "path": "skills/dyz-software/resources/harbor-delivery-v1.3/facts.json",
+          "sha256": "7d794c758fa83a5b2e56346890bbdc74de9b0e98d1eb91c8b06eafd589366ba0",
+          "lines": [
+            1,
+            71
+          ],
+          "span_sha256": "3e37d363255534a550c7bb3f4cdbd0c621df465c0b05d608f21b1e659a34ae15"
+        }
+      ],
+      "restoration_question": "核旧版登记／变更原件与号码；本次流程未登记不证明历史不存在。",
+      "responsible_role": "材料负责人",
+      "limit": "Unknown means absent/unconfirmed within provided materials, never proof the real fact does not exist."
+    },
+    {
+      "id": "FIELD-17",
+      "field": "权利取得方式及范围",
+      "candidate": "项目许可不代替个案权属、合同和范围证据",
+      "candidate_status": "未专业核定",
+      "evidence_state": "not_provided",
+      "evidence": [
+        {
+          "path": "skills/dyz-software/resources/harbor-delivery-v1.3/form-candidate.md",
+          "sha256": "3212523f09ba1a0861837dd9e3f77f9e6301339bca54a5c67379421a59ac65bf",
+          "lines": [
+            25,
+            25
+          ],
+          "span_sha256": "fb81e294ecba61fd66aefba6ae94cfa5b27bcb263658dbfb49430b6623490232"
+        },
+        {
+          "path": "skills/dyz-software/resources/harbor-delivery-v1.3/facts.json",
+          "sha256": "7d794c758fa83a5b2e56346890bbdc74de9b0e98d1eb91c8b06eafd589366ba0",
+          "lines": [
+            1,
+            71
+          ],
+          "span_sha256": "3e37d363255534a550c7bb3f4cdbd0c621df465c0b05d608f21b1e659a34ae15"
+        }
+      ],
+      "restoration_question": "逐文件核原始／继受、合同、许可、贡献与排除；项目许可不能证明真实个案权属。",
+      "responsible_role": "版权审阅者",
+      "limit": "Unknown means absent/unconfirmed within provided materials, never proof the real fact does not exist."
+    },
+    {
+      "id": "FIELD-18",
+      "field": "源程序量",
+      "candidate": "内部母本266物理行，含注释和空行；正式填报口径待核",
+      "candidate_status": "内部数量已核，非正式量认定",
+      "evidence_state": "mixed",
+      "evidence": [
+        {
+          "path": "skills/dyz-software/resources/harbor-delivery-v1.3/form-candidate.md",
+          "sha256": "3212523f09ba1a0861837dd9e3f77f9e6301339bca54a5c67379421a59ac65bf",
+          "lines": [
+            26,
+            26
+          ],
+          "span_sha256": "8d9a49359bb16a4ece2e0e738fead7aaf6564e2e5e8218d3acc9df8711e72755"
+        },
+        {
+          "path": "skills/dyz-software/resources/harbor-delivery-v1.3/facts.json",
+          "sha256": "7d794c758fa83a5b2e56346890bbdc74de9b0e98d1eb91c8b06eafd589366ba0",
+          "lines": [
+            1,
+            71
+          ],
+          "span_sha256": "3e37d363255534a550c7bb3f4cdbd0c621df465c0b05d608f21b1e659a34ae15"
+        },
+        {
+          "path": "skills/dyz-software/resources/harbor-delivery-v1.3/manual.md",
+          "sha256": "1a0c1bf88e4f2f054aaa953c33c4006a6e9cbf5e0a11c2fc81631cd7c6ea874f",
+          "lines": [
+            1,
+            45
+          ],
+          "span_sha256": "424f6a6b796432bb8d2d8f4421bd0bba382a34ef205e1212cd4e89e6062210f3"
+        }
+      ],
+      "restoration_question": "266仅内部物理行；核正式数量口径、选材／排版及当前路线，不把行数当独创性。",
+      "responsible_role": "材料／排版负责人",
+      "limit": "Unknown means absent/unconfirmed within provided materials, never proof the real fact does not exist."
+    },
+    {
+      "id": "FIELD-19",
+      "field": "软件鉴别材料",
+      "candidate": "已有同版源码母本和完整说明；一般/例外交存路线、正式分页和范围待核",
+      "candidate_status": "材料在，交存资格未核",
+      "evidence_state": "mixed",
+      "evidence": [
+        {
+          "path": "skills/dyz-software/resources/harbor-delivery-v1.3/form-candidate.md",
+          "sha256": "3212523f09ba1a0861837dd9e3f77f9e6301339bca54a5c67379421a59ac65bf",
+          "lines": [
+            27,
+            27
+          ],
+          "span_sha256": "28186abae68a04f30c7fbc0020651ab734448f1104e91c4e01cdb29f2dcf53db"
+        },
+        {
+          "path": "skills/dyz-software/resources/harbor-delivery-v1.3/facts.json",
+          "sha256": "7d794c758fa83a5b2e56346890bbdc74de9b0e98d1eb91c8b06eafd589366ba0",
+          "lines": [
+            1,
+            71
+          ],
+          "span_sha256": "3e37d363255534a550c7bb3f4cdbd0c621df465c0b05d608f21b1e659a34ae15"
+        },
+        {
+          "path": "skills/dyz-software/resources/harbor-delivery-v1.3/manual.md",
+          "sha256": "1a0c1bf88e4f2f054aaa953c33c4006a6e9cbf5e0a11c2fc81631cd7c6ea874f",
+          "lines": [
+            1,
+            45
+          ],
+          "span_sha256": "424f6a6b796432bb8d2d8f4421bd0bba382a34ef205e1212cd4e89e6062210f3"
+        }
+      ],
+      "restoration_question": "核完整对象、权利、秘密和处理范围后选择一般／例外或其他路线；现为内部母本。",
+      "responsible_role": "技术／版权审阅者",
+      "limit": "Unknown means absent/unconfirmed within provided materials, never proof the real fact does not exist."
+    },
+    {
+      "id": "FIELD-20",
+      "field": "办理方式及代理",
+      "candidate": "尚未选择；代理范围、权限和有效期限均未提供",
+      "candidate_status": "未授权实际办理",
+      "evidence_state": "not_provided",
+      "evidence": [
+        {
+          "path": "skills/dyz-software/resources/harbor-delivery-v1.3/form-candidate.md",
+          "sha256": "3212523f09ba1a0861837dd9e3f77f9e6301339bca54a5c67379421a59ac65bf",
+          "lines": [
+            28,
+            28
+          ],
+          "span_sha256": "9937dbababd5ee6dc088b6e066935b0b96b4c55ea08c8b4846d9d6ca1606ab1e"
+        },
+        {
+          "path": "skills/dyz-software/resources/harbor-delivery-v1.3/facts.json",
+          "sha256": "7d794c758fa83a5b2e56346890bbdc74de9b0e98d1eb91c8b06eafd589366ba0",
+          "lines": [
+            1,
+            71
+          ],
+          "span_sha256": "3e37d363255534a550c7bb3f4cdbd0c621df465c0b05d608f21b1e659a34ae15"
+        }
+      ],
+      "restoration_question": "取得实际办理选择及代理权限、范围和有效条件；不自动办理。",
+      "responsible_role": "权利负责人",
+      "limit": "Unknown means absent/unconfirmed within provided materials, never proof the real fact does not exist."
+    }
+  ],
+  "source_bindings": [
+    {
+      "path": "skills/dyz-software/resources/harbor-demo/v1.3/api.py",
+      "sha256": "d7a5c8493a1c9b150a9f17ef372b3ad0fbcc6419517f8c9b7a3c065135042ef7"
+    },
+    {
+      "path": "skills/dyz-software/resources/harbor-demo/v1.3/cli.py",
+      "sha256": "de887993b20563ae0ce2d0a32f9ca837e928320fd50dad9b5347d013cd0c0edd"
+    },
+    {
+      "path": "skills/dyz-software/resources/harbor-demo/v1.3/core.py",
+      "sha256": "e6acd5ed00bd9ff64069fef84fb6489f4986c03ba441a2367fd383ad68e419a9"
+    },
+    {
+      "path": "skills/dyz-software/resources/harbor-demo/v1.3/gui.py",
+      "sha256": "ce462a1e279b9cbdb4346b9533ffc092b3f713a1443e715e0755d0a2d6bffaea"
+    },
+    {
+      "path": "skills/dyz-software/resources/harbor-demo/v1.3/index.html",
+      "sha256": "00fb5fa5a9d6e9a0137dbff985f6b109e0cbf8d3c18422d75de9bf49a48a86c7"
+    },
+    {
+      "path": "skills/dyz-software/resources/harbor-demo/v1.2/api.py",
+      "sha256": "b406d4feb39224557dd73d0aad3565e2b11cdb84729668bb45470a15c31398d5"
+    },
+    {
+      "path": "skills/dyz-software/resources/harbor-demo/v1.2/cli.py",
+      "sha256": "17d16810181a82a31a99d60da863d91e6f64ca8467527049ae5491ade9614cc9"
+    },
+    {
+      "path": "skills/dyz-software/resources/harbor-demo/v1.2/core.py",
+      "sha256": "a2840b6097524f5b5c95ba60e3313004d28cbf86963a1933bdcedd3486ce49c5"
+    },
+    {
+      "path": "skills/dyz-software/resources/harbor-demo/v1.2/gui.py",
+      "sha256": "78088ab67941836bcfc0c5258b8acf8dee64ff3643a1ddd65afa82ec94d74494"
+    },
+    {
+      "path": "skills/dyz-software/resources/harbor-demo/v1.2/index.html",
+      "sha256": "f406ae71dd05f63eecc5bcf27e7857c79961085d575489c9aecf4118bcb1708b"
+    },
+    {
+      "path": "skills/dyz-software/resources/harbor-delivery-v1.3/facts.json",
+      "sha256": "7d794c758fa83a5b2e56346890bbdc74de9b0e98d1eb91c8b06eafd589366ba0"
+    },
+    {
+      "path": "skills/dyz-software/resources/harbor-delivery-v1.3/form-candidate.md",
+      "sha256": "3212523f09ba1a0861837dd9e3f77f9e6301339bca54a5c67379421a59ac65bf"
+    },
+    {
+      "path": "skills/dyz-software/resources/harbor-delivery-v1.3/manual.md",
+      "sha256": "1a0c1bf88e4f2f054aaa953c33c4006a6e9cbf5e0a11c2fc81631cd7c6ea874f"
+    },
+    {
+      "path": "skills/dyz-software/resources/harbor-delivery-v1.3/scope-and-rights.md",
+      "sha256": "246ac49a6cc20d907766bc9e0429d352c9c666ca3100fbbb916a7d2dffc4ff23"
+    },
+    {
+      "path": "skills/dyz-software/resources/harbor-delivery-v1.3/source-lines.json",
+      "sha256": "ee3463b7ecf52ebcc8aa214402e047645eac4ccf097ae7b40ce5c61c42eb15cf"
+    }
+  ],
+  "actual_case_rights": "applicant/dates/title/human contribution unconfirmed; no new personal/contract evidence supplied",
+  "scope_choices": [
+    "Five files form one internal technical release; shared core and routes do not by themselves decide legal software count.",
+    "Observed1.2-to1.3 changes do not prove authorship, ownership or legal originality; imports do not prove complete third-party provenance.",
+    "Current full internal mother copy is not a chosen normal/exception deposit or public source license."
+  ],
+  "professional_review": "not_performed"
+}

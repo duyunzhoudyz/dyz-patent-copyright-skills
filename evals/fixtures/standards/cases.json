@@ -1,0 +1,86 @@
+{
+  "synthetic": true,
+  "notice": "全部编号、规则、组织、量值和人员均为合成测试资料，不代表真实标准或适用专业规则。",
+  "common": {
+    "project_id": "SYNTHETIC-STD",
+    "version": "1",
+    "adaptation": {"organization": "SYNTHETIC-ORG", "standard_type": "product", "domain": "synthetic_sensor", "stage": "working_draft"},
+    "evidence_ids": ["synthetic-evidence-1"]
+  },
+  "clause": {
+    "id": "C-1", "text": "传感器应记录测量时间。", "strength": "requirement", "kind": "normative",
+    "source": "synthetic-evidence-1#requirement", "conditions": ["工作温度20摄氏度"],
+    "exceptions": ["维护模式除外"], "method_ids": ["M-1"], "references": [],
+    "quantities": [{"id": "Q-1", "value": 10, "unit": "ms", "tolerance": 1, "source": "synthetic-evidence-1#quantity"}]
+  },
+  "cases": {
+    "STD-01": {
+      "catalog": [
+        {"id": "S-2020", "number": "SYNTHETIC 1", "edition": "2020", "status": "replaced", "source": "synthetic-catalog#1", "access": {"fulltext": "restricted"}},
+        {"id": "S-2026", "number": "SYNTHETIC 1", "edition": "2026", "status": "current_reported", "source": "synthetic-catalog#2", "access": {"fulltext": "authorized", "authority_evidence": "synthetic-permission", "redistribution": "unknown"}, "replaces": ["S-2020"], "references": []}
+      ],
+      "search_log": [{"id": "search-1", "source": "synthetic-catalog", "query": "SYNTHETIC 1", "status": "complete"}]
+    },
+    "STD-02": {
+      "needs": [{"id": "N-1", "objective": "记录时间并校验时钟", "features": ["timestamp", "clock-validation"], "source": "synthetic-need"}],
+      "existing_scopes": [{"id": "S-1", "features": ["timestamp"], "source": "synthetic-scope"}],
+      "route": {"procedure": "synthetic-group-proposal", "source": "synthetic-procedure-v1"},
+      "maturity_evidence": ["synthetic-prototype-report"], "resources": ["synthetic-reviewer"],
+      "standard_nature": {"value": "voluntary", "source": "synthetic-policy"}
+    },
+    "STD-03": {
+      "participants": [{"id": "P-1", "group": "producer", "authority_evidence": "synthetic-authority", "conflict_of_interest": "owns implementation"}, {"id": "P-2", "group": "user", "authority_evidence": "synthetic-authority-2"}],
+      "statements": [{"id": "O-1", "text": "建议保留维护模式", "category": "opinion", "source": "synthetic-minute-1", "participant_id": "P-1"}, {"id": "O-2", "text": "建议保留维护模式", "category": "opinion", "source": "synthetic-minute-2", "participant_id": "P-2"}, {"id": "F-1", "text": "原型具有维护模式", "category": "fact", "source": "synthetic-report", "participant_id": "P-1", "evidence_id": "synthetic-test"}, {"id": "H-1", "text": "可能降低维护成本", "category": "hypothesis", "source": "synthetic-interview", "participant_id": "P-2"}],
+      "required_groups": ["producer", "user"], "disputes": []
+    },
+    "STD-04": {
+      "sections": [{"id": "SEC-1", "title": "范围", "kind": "normative"}, {"id": "ANN-A", "title": "示例", "kind": "informative"}],
+      "terms": [{"id": "TERM-1", "term": "时间记录", "definition": "包含测量时刻的记录", "source": "synthetic-definition"}],
+      "standard_nature": {"value": "voluntary", "source": "synthetic-policy"},
+      "incorporations": [{"id": "CONTRACT-1", "kind": "contract", "scope": "synthetic-procurement-only", "source": "synthetic-contract"}]
+    },
+    "STD-05": {},
+    "STD-06": {
+      "methods": [{"id": "M-1", "clause_id": "C-1", "kind": "document_review", "source": "synthetic-review-plan", "conditions": ["检查维护模式排除说明"], "required_aspects": [], "methodology": {}, "decision_rule": {"source": "synthetic-review-criterion"}}],
+      "results": []
+    },
+    "STD-07": {
+      "references": [{"id": "R-1", "number": "SYNTHETIC 2", "edition": "2020", "source": "synthetic-catalog", "dated": true, "citation_rule_source": "synthetic-citation-policy"}],
+      "updates": [{"id": "U-1", "reference_id": "R-1", "edition": "2026", "source": "synthetic-new-edition"}],
+      "usages": [{"id": "USE-1", "reference_id": "R-1", "clause_id": "C-1", "products": ["product-1"], "conclusions": ["conclusion-1"]}]
+    },
+    "STD-08": {
+      "contents": [{"id": "CONTENT-1", "clause_id": "C-1", "source": "synthetic-draft", "protection_required": true, "jurisdictions": ["CN", "US"]}],
+      "support_mappings": [{"id": "MAP-1", "content_id": "CONTENT-1", "jurisdiction": "CN", "status": "unknown", "application_number": "SYNTHETIC-NOT-AN-APPLICATION"}],
+      "declarations": [{"id": "DEC-1", "source": "synthetic-declaration", "signer_authority_evidence": "synthetic-authority"}],
+      "release_id": "SYNTHETIC-RELEASE", "package_hash": "synthetic-package-not-sent"
+    },
+    "STD-09": {
+      "comments": [{"id": "COM-1", "clause_id": "C-1", "text": "保留维护模式", "source": "synthetic-comment-1", "participant_id": "P-1", "minority": true}, {"id": "COM-2", "clause_id": "C-1", "text": "保留维护模式", "source": "synthetic-comment-2", "participant_id": "P-2"}],
+      "participants": [{"id": "P-1", "eligible": true, "authority_evidence": "synthetic-authority-1"}, {"id": "P-2", "eligible": true, "authority_evidence": "synthetic-authority-2"}],
+      "decisions": [{"id": "DEC-1", "comment_id": "COM-1", "decision": "retain_for_review", "reason": "需评估安全后果", "source": "synthetic-minute", "reviewer_authority": "synthetic-authority"}, {"id": "DEC-2", "comment_id": "COM-2", "decision": "retain_for_review", "reason": "需评估安全后果", "source": "synthetic-minute", "reviewer_authority": "synthetic-authority"}],
+      "comment_outcomes": [{"comment_id": "COM-1", "outcome": "pending", "unresolved_item": "待评估维护模式安全后果", "owner": "技术组", "reason": "需评估安全后果", "classification": "technical", "major_change": "undetermined"}, {"comment_id": "COM-2", "outcome": "pending", "unresolved_item": "待评估维护模式安全后果", "owner": "技术组", "reason": "需评估安全后果", "classification": "technical", "major_change": "undetermined"}],
+      "votes": [{"id": "V-1", "participant_id": "P-1", "choice": "yes", "evidence_id": "synthetic-vote-1"}],
+      "ballot_rule": {"source": "synthetic-ballot-rule", "min_votes": 2, "min_yes_fraction": "0.5", "denominator": "eligible"},
+      "modifications": [{"id": "MOD-1", "clause_id": "C-1", "source": "synthetic-redline", "major": true}],
+      "major_change_rule": {"source": "synthetic-major-change-rule", "reconsultation": true},
+      "appeals": [{"id": "AP-1", "source": "synthetic-appeal", "status": "pending"}]
+    },
+    "STD-10": {
+      "mappings": [{"id": "MAP-1", "source_id": "C-1", "target_id": "C-1", "source": "synthetic-comparison"}],
+      "translation_permission": {"decision": "allow", "source": "synthetic-translation-permission"},
+      "adoption_rule_source": "synthetic-adoption-policy",
+      "bilingual_terms": [{"id": "TERM-1", "source_term": "时间记录", "target_term": "timestamp record", "source": "synthetic-glossary"}]
+    },
+    "STD-11": {
+      "documents": [{"id": "DOC-1", "role": "draft", "hash": "synthetic-draft-hash", "source": "synthetic-draft"}, {"id": "DOC-2", "role": "internal_risk_report", "hash": "synthetic-risk-hash", "source": "synthetic-risk-report"}],
+      "verification_matrix": [], "reviews": [], "organization_records": []
+    },
+    "STD-12": {
+      "revision_type": "revision", "classification_rule_source": "synthetic-revision-rule",
+      "transition": {"source": "synthetic-transition-rule", "coexistence": "pending_organization_decision", "old_edition": "2020", "new_edition": "2026"},
+      "dependencies": [{"id": "DEP-1", "clause_id": "C-1", "kind": "reference", "source": "synthetic-reference"}, {"id": "DEP-2", "clause_id": "C-1", "kind": "product", "source": "synthetic-product"}, {"id": "DEP-3", "clause_id": "C-1", "kind": "conformity_conclusion", "source": "synthetic-conclusion"}],
+      "feedback": [{"id": "FB-1", "description": "复核试验条件", "source": "synthetic-feedback"}]
+    }
+  }
+}
