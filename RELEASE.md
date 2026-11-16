@@ -10,7 +10,7 @@
 
 ## 发布前必须由维护者填写
 
-唯一机器可读记录为根目录[release.json](release.json)。当前下列值为null，不能由工具虚构：
+唯一机器可读记录为根目录[release.json](release.json)。repository_url已于2026-11-17填为实际创建的公开仓库地址；其余三项当前为null，不能由工具虚构：
 
 | 字段 | 需要的事实 |
 | --- | --- |
