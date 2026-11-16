@@ -962,8 +962,10 @@ if failed:
         for module, command in (('tools.standard_sources', []), ('tools.document_edit', []),
                                 ('tools', ['standard-pdf'])):
             with self.subTest(module=module):
-                process = subprocess.run([base_python, '-E', '-s', '-S', '-B', '-m', module,
-                                          *command, '--help'], cwd=self.package,
+                # -E使环境中的PYTHONUTF8失效；显式-X utf8与文档命令一致，
+                # 否则非中文代码页（如cp1252）输出中文帮助时编码失败。
+                process = subprocess.run([base_python, '-E', '-s', '-S', '-B', '-X', 'utf8',
+                                          '-m', module, *command, '--help'], cwd=self.package,
                                          capture_output=True, timeout=15)
                 self.assertEqual(0, process.returncode, process.stderr)
                 self.assertIn(b'--root', process.stdout)
