@@ -54,8 +54,8 @@ class ProbeSocket:
 class ProbeResponse:
     status = 200
 
-    def __init__(self, connection, mode):
-        self.connection, self.mode = connection, mode
+    def __init__(self, connection, mode, stalled=None):
+        self.connection, self.mode, self.stalled = connection, mode, stalled
         self.lines = [b'data: {"type":"response.created"}\n', b'\n',
                       b'data: {"type":"response.output_text.delta","delta":"LOCAL_PROBE"}\n', b'\n']
         if mode in {"complete", "close_error"}:
@@ -69,6 +69,8 @@ class ProbeResponse:
         if self.lines:
             return self.lines.pop(0)
         if self.mode == "stall":
+            if self.stalled is not None:
+                self.stalled.set()
             if self.connection.event.wait(4):
                 raise ConnectionAbortedError("synthetic cancellation")
             raise TimeoutError("synthetic fallback timeout")
@@ -89,13 +91,14 @@ class TransportTests(unittest.TestCase):
         prepared.write_text(json.dumps({"messages":[{"role":"developer","content":protocol.read_text(encoding="utf-8")},
             {"role":"user","content":"LOCAL_TRANSPORT_PROBE"}]}), encoding="utf-8")
         connections, timing = [], {}
+        stalled = threading.Event()
         class Connection:
             def __init__(self, host, timeout=None, context=None):
                 self.host, self.timeout = host, timeout
                 self.event = threading.Event()
                 self.sock = ProbeSocket(self.event)
                 self.closed = False
-                self.response = ProbeResponse(self, mode)
+                self.response = ProbeResponse(self, mode, stalled)
                 connections.append(self)
 
             def request(self, method, path, body=None, headers=None):
@@ -117,8 +120,18 @@ class TransportTests(unittest.TestCase):
         def spawn(args, **kwargs):
             value = next(arg.split("=",1)[1] for arg in args if arg.startswith("openai_base_url="))
             url = json.loads(value)
+            # In stall mode the client exits only once the relay is blocked reading the upstream
+            # stream (see the thread below), not after a fixed delay: on a slow host the relay may
+            # still be building its TLS context when any fixed timeout expires, and then there is
+            # no registered upstream to cancel. The 30 s client timeout is only a backstop.
             process = real_popen([sys.executable, "-B", "-c", CLIENT, url,
-                "0.2" if mode == "stall" else "2", "cap" if cap else "two" if two else "one"], **kwargs)
+                "30" if mode == "stall" else "2", "cap" if cap else "two" if two else "one"], **kwargs)
+            if mode == "stall":
+                def exit_once_stalled():
+                    stalled.wait(10)
+                    with contextlib.suppress(OSError):
+                        process.kill()
+                threading.Thread(target=exit_once_stalled, daemon=True).start()
             communicate = process.communicate
             def observed(*a, **kw):
                 result = communicate(*a, **kw)
