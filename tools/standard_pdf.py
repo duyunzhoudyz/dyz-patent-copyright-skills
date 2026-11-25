@@ -181,9 +181,9 @@ class _Access:
             require(admission is None, 'standard_pdf_mode_ambiguous')
             self.sensitivity, self.purpose = 'synthetic', None
         else:
-            project = Path(__file__).absolute().parents[1]
-            require(not (base == project or base.is_relative_to(project)
-                         or project.is_relative_to(base)),
+            project = Path(__file__).resolve().parents[1]
+            case = base.resolve(strict=True)
+            require(not (case.is_relative_to(project) or project.is_relative_to(case)),
                     'standard_pdf_case_root_must_be_independent')
             fields = {'root', 'package', 'output', 'manifest_sha256', 'inputs',
                       'sensitivity', 'purpose', 'permissions', 'environment'}
@@ -263,6 +263,9 @@ class _Access:
 
     def pin(self, path):
         for current in (*reversed(path.parents), path):
+            if current != path and is_macos_system_root_symlink(current):
+                # 子路径仍按词法检查系统别名，身份固定到它指向的真实目录。
+                current = current.resolve(strict=True)
             value = self.identity(current)
             require(current not in self.identities or self.identities[current] == value,
                     'standard_pdf_path_changed')

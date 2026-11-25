@@ -1269,6 +1269,58 @@ class StandardPdfAdmissionTests(unittest.TestCase):
         self.assertEqual(report['admission']['inputs'], admission['inputs'])
         self.assertEqual(report['source_manifest_sha256'], admission['manifest_sha256'])
 
+    def test_system_symlink_ancestor_allows_conversion_without_allowing_case_aliases(self):
+        alias = self.root / 'var'
+        physical = self.root / 'private' / 'var'
+        physical.mkdir(parents=True)
+        try:
+            alias.symlink_to(physical.relative_to(alias.parent), target_is_directory=True)
+        except OSError as exc:
+            if os.name != 'nt' or exc.winerror != 1314:
+                raise
+            self.skipTest('Windows symlink privilege unavailable')
+        self.addCleanup(alias.unlink)
+        self.root = physical / 'case'
+        self.root.mkdir()
+        admission = self.authorized_package('public')
+        self.root = alias / 'case'
+        admission['root'] = str(self.root)
+        real_system_alias = pdf.is_macos_system_root_symlink
+
+        def system_alias(path):
+            return path == alias or real_system_alias(path)
+
+        with (patch.object(pdf, 'is_macos_system_root_symlink', system_alias),
+              patch.object(standards_delivery, 'is_macos_system_root_symlink', system_alias),
+              patch.object(tempfile, 'tempdir', str(alias))):
+            with self.assertRaisesRegex(ContractError, '^standard_pdf_link_unsupported$'):
+                pdf.convert(alias, 'case/real-pack', 'case/result', synthetic=True, tool_paths=self.tools)
+            project_module = physical / 'case/tools/standard_pdf.py'
+            with (patch.object(pdf, '__file__', str(project_module)),
+                  patch.object(pdf, '_read_file') as read,
+                  self.assertRaisesRegex(ContractError, '^standard_pdf_case_root_must_be_independent$')):
+                self.real_convert(admission)
+            read.assert_not_called()
+
+            member = self.root / 'real-pack/body/standard.docx'
+            original = self.root / 'original.docx'
+            member.rename(original)
+            member.symlink_to(original)
+            with self.assertRaisesRegex(ContractError, '^standard_pdf_link_unsupported$'):
+                self.real_convert(admission)
+            member.unlink()
+            original.rename(member)
+            os.link(member, original)
+            with self.assertRaisesRegex(ContractError, '^standard_pdf_alias_unsupported$'):
+                self.real_convert(admission)
+            original.unlink()
+            self.assertFalse(self.calls)
+
+            report = self.real_convert(admission)
+            self.assertEqual(('authorized_case', 'public', 5, 10),
+                             (report['mode'], report['sensitivity'],
+                              report['total_documents'], report['total_pages']))
+
     def test_real_public_requires_all_six_environment_paths_before_reads(self):
         admission = self.authorized_package('public')
         admission['environment']['data_paths'].pop()

@@ -505,6 +505,18 @@ class StandardRenderingV2Tests(unittest.TestCase):
         plain_raw = documents.make_docx(plain, [])
         fields_raw = documents.make_docx(fields, [], profile="dyz-standard-internal-v1")
 
+        zip_info_init = zipfile.ZipInfo.__init__
+
+        def posix_zip_info(info, *args, **kwargs):
+            zip_info_init(info, *args, **kwargs)
+            info.create_system = 3
+
+        with patch.object(zipfile.ZipInfo, "__init__", posix_zip_info):
+            self.assertEqual(plain_raw, documents.make_docx(plain, []))
+            self.assertEqual(fields_raw, documents.make_docx(fields, [], profile="dyz-standard-internal-v1"))
+        with zipfile.ZipFile(io.BytesIO(plain_raw)) as archive:
+            self.assertEqual({0}, {info.create_system for info in archive.infolist()})
+
         def member_hashes(raw):
             with zipfile.ZipFile(io.BytesIO(raw)) as archive:
                 return {name: sha256_bytes(archive.read(name)) for name in archive.namelist()}

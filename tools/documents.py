@@ -852,11 +852,13 @@ def _standard_header_footer(layout):
 
 
 def _zip_docx(parts):
-    """固定成员顺序与时间戳，使同一部件集合产生相同字节。"""
+    """固定成员顺序与ZIP元数据，保留既有Windows产物字节。"""
     buffer = io.BytesIO()
     with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as package:
         for name, data in sorted(parts.items()):
             info = zipfile.ZipInfo(name, (1980, 1, 1, 0, 0, 0))
+            info.create_system = 0
+            info.external_attr = 0o600 << 16
             info.compress_type = zipfile.ZIP_DEFLATED
             package.writestr(info, data)
     return buffer.getvalue()
