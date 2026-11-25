@@ -23,10 +23,10 @@ from xml.etree import ElementTree as ET
 import zipfile
 import zlib
 
-from tools import documents, standards_delivery
+from tools import documents, omml, standards_delivery
 from tools.core import (
-    ContractError, canonical_bytes, check_permission, digest, preflight, require,
-    sha256_bytes, strict_json_loads,
+    ContractError, canonical_bytes, check_permission, digest, is_macos_system_root_symlink,
+    is_reserved_windows_name, preflight, require, sha256_bytes, strict_json_loads,
 )
 
 VERSION = '1.5'
@@ -56,6 +56,7 @@ _PACKAGE_FILES = {
     *(f'body/{role}.docx' for role in standards_delivery.ROLES),
 }
 _W = '{http://schemas.openxmlformats.org/wordprocessingml/2006/main}'
+_OMML_ROOTS = {'{' + omml.M + '}oMath', '{' + omml.M + '}oMathPara'}
 
 
 def _plain(path: Path, *, missing=False):
@@ -66,9 +67,15 @@ def _plain(path: Path, *, missing=False):
         except FileNotFoundError:
             require(missing and current == path, 'standard_pdf_path_missing')
             return None
-        require(not stat.S_ISLNK(info.st_mode)
-                and not getattr(info, 'st_file_attributes', 0) & 0x400,
-                'standard_pdf_link_unsupported')
+        is_link = stat.S_ISLNK(info.st_mode) or bool(getattr(info, 'st_file_attributes', 0) & 0x400)
+        if is_link:
+            if current != path and is_macos_system_root_symlink(current):
+                try:
+                    info = current.stat()
+                except OSError:
+                    raise ContractError('standard_pdf_link_unsupported') from None
+            else:
+                require(False, 'standard_pdf_link_unsupported')
         if current != path:
             require(stat.S_ISDIR(info.st_mode), 'standard_pdf_parent_not_directory')
     require(not stat.S_ISREG(info.st_mode) or info.st_nlink == 1,
@@ -90,7 +97,7 @@ def _path(root: Path, relative: str, *, missing=False):
     require(not PureWindowsPath(relative).drive
             and not relative.startswith(('/', '\\'))
             and all(part not in {'', '.', '..'} and part == part.rstrip(' .')
-                    and not PureWindowsPath(part).is_reserved() for part in parts)
+                    and not is_reserved_windows_name(part) for part in parts)
             and not any(c in relative for c in ':\x00'), 'unsafe_path')
     path = root.joinpath(*parts)
     _plain(path, missing=missing)
@@ -901,9 +908,10 @@ def compare_text_blocks(blocks: list[dict], actual: str) -> dict:
 
 
 def _document_state(raw):
-    """读取正文域、缓存及书签；域结果不混入非域正文覆盖证据。"""
+    """读取域、书签及正文直接段落中的有效 OMML 字符与结构摘要。"""
     fields, bookmarks, headings, fragments = [], {}, [], []
     visible_parts, tables, toc_tabs, text_blocks, unsupported = {}, [], [], [], []
+    formulas = []
     sections, even_and_odd = [], False
     with zipfile.ZipFile(io.BytesIO(raw)) as archive:
         names = archive.namelist()
@@ -990,8 +998,19 @@ def _document_state(raw):
                 if not stack:
                     segment.append(value)
 
-            def walk(node, parent=None):
+            def walk(node, parent=None, grandparent=None):
                 tag = node.tag
+                if tag.rsplit('}', 1)[-1] in {'oMath', 'oMathPara'}:
+                    kind = tag.rsplit('}', 1)[-1]
+                    if (tag in _OMML_ROOTS and name == 'word/document.xml' and not stack
+                            and parent == _W + 'p' and grandparent == _W + 'body'):
+                        inspected = omml.inspect_omml(node)
+                        if inspected['valid']:
+                            formulas.append(inspected['structure_sha256'])
+                            text(inspected['extracted_text'])
+                            return
+                    unsupported.append({'part': name, 'kind': kind})
+                    return
                 if tag == _W + 'p':
                     flush()
                     paragraph_start = len(''.join(visible))
@@ -1030,7 +1049,7 @@ def _document_state(raw):
                                              'text_offset': len(_normalize(''.join(visible)))})
                     text('\t' if tag == _W + 'tab' else '\n')
                 for child in node:
-                    walk(child, tag)
+                    walk(child, tag, parent)
                 if tag == _W + 'fldSimple':
                     end_field()
                 elif tag == _W + 'tbl':
@@ -1064,12 +1083,14 @@ def _document_state(raw):
                             headings.append({'text': heading_text, 'anchors': anchors})
                     paragraph_text = ''.join(visible)[paragraph_start:]
                     style = node.find('./' + _W + 'pPr/' + _W + 'pStyle')
+                    formula_paragraph = any(child.tag in _OMML_ROOTS for child in node)
                     anchors = [n.get(_W + 'name') for n in node.iter(_W + 'bookmarkStart')]
                     text_blocks.append({'id': anchors[0] if anchors else
                                         f'{name}#p{len(text_blocks) + 1}', 'part': name,
                                         'text': paragraph_text,
-                                        'kind': 'code' if style is not None and
-                                        style.get(_W + 'val') == 'Code' else 'paragraph',
+                                        'kind': ('formula' if formula_paragraph else 'code' if style is not None and
+                                                 style.get(_W + 'val') == 'Code' else 'paragraph'),
+                                        **({'comparison_kind': 'technical'} if formula_paragraph else {}),
                                         'text_start': paragraph_start,
                                         'text_end': len(''.join(visible))})
                     if stack:
@@ -1077,8 +1098,7 @@ def _document_state(raw):
                     else:
                         visible.append('\n')
                     flush()
-                elif tag.rsplit('}', 1)[-1] in {'drawing', 'pict', 'object', 'txbxContent',
-                                                 'oMath', 'oMathPara'}:
+                elif tag.rsplit('}', 1)[-1] in {'drawing', 'pict', 'object', 'txbxContent'}:
                     unsupported.append({'part': name, 'kind': tag.rsplit('}', 1)[-1]})
 
             walk(document)
@@ -1096,6 +1116,7 @@ def _document_state(raw):
     return {'fields': fields, 'bookmarks': bookmarks, 'headings': headings,
             'nonfield_fragments': fragments, 'visible_parts': visible_parts,
             'tables': tables, 'toc_tabs': toc_tabs, 'text_blocks': text_blocks,
+            'formula_structure_sha256s': formulas,
             'unsupported_objects': unsupported, 'sections': sections,
             'even_and_odd_headers': even_and_odd}
 
@@ -2671,7 +2692,7 @@ def _apply_block_metadata(state, blocks):
     metadata = {row['id']: row for row in blocks if isinstance(row, dict) and 'id' in row}
     for row in state['text_blocks']:
         source = metadata.get(row['id'])
-        if source is not None:
+        if source is not None and row['kind'] != 'formula':
             for name in ('comparison_kind', 'text_type'):
                 if name in source:
                     row[name] = source[name]
@@ -2693,6 +2714,7 @@ def convert(root: str | Path, package_dir: str, output: str, *,
     及local_read/local_process/copy/local_write，不认证声明者身份。
     tool_paths显式列本机soffice/pdfinfo/pdftotext/pdftoppm绝对路径；可提供同安装
     office_python经有界命名管道刷新。失败可留无清单部分产物，不覆盖、不外发。
+    公式仅取正文直接段落中有效 OMML 的字符及结构摘要，PDF 仍要求字面顺序吻合。
     """
     require(type(synthetic) is bool, 'standard_pdf_synthetic_required')
     require(synthetic or isinstance(admission, dict), 'standard_pdf_synthetic_required')
@@ -2711,6 +2733,9 @@ def convert(root: str | Path, package_dir: str, output: str, *,
     require(all(field['kind'] in {'TOC', 'REF', 'SEQ', 'PAGEREF', 'PAGE'}
                 for state in states.values() for field in state['fields']),
             'standard_pdf_source_field_unsupported')
+    require(all(item['kind'] not in {'oMath', 'oMathPara'}
+                for state in states.values() for item in state['unsupported_objects']),
+            'standard_pdf_source_formula_unsupported')
     access.mkdir(target)
     for folder in ('pdf', 'pages', 'derived-docx', 'fields'):
         access.mkdir(target / folder)
@@ -2728,7 +2753,7 @@ def convert(root: str | Path, package_dir: str, output: str, *,
         office = [tools['soffice'], '-env:UserInstallation=' + profile.as_uri(),
                   '--headless', '--nologo', '--nodefault', '--norestore']
         layout_policy = None
-        if rendering['profile_id'] == 'dyz-standard-internal-v2':
+        if rendering['profile_id'] in {'dyz-standard-internal-v2', 'dyz-standard-internal-v3'}:
             for raw in inputs.values():
                 with zipfile.ZipFile(io.BytesIO(raw)) as archive:
                     styles = _safe_xml(archive.read('word/styles.xml'),
@@ -2755,6 +2780,9 @@ def convert(root: str | Path, package_dir: str, output: str, *,
             record, raw = _file_record(target, target / 'derived-docx' / (role + '.docx'),
                                        MAX_FILE_BYTES, access)
             state = _apply_block_metadata(_document_state(raw), maps.get(role, []))
+            require(all(item['kind'] not in {'oMath', 'oMathPara'} for item in state['unsupported_objects'])
+                    and states[role]['formula_structure_sha256s'] == state['formula_structure_sha256s'],
+                    'standard_pdf_derived_formula_changed')
             _text_coverage(states[role]['nonfield_fragments'],
                            '\n'.join(state['nonfield_fragments']),
                            'standard_pdf_derived_body_incomplete')

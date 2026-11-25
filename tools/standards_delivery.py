@@ -12,7 +12,7 @@ import stat
 
 from tools import documents, standards
 from tools.core import (
-    ContractError, VersionLedger, canonical_bytes, check_permission, digest,
+    ContractError, VersionLedger, canonical_bytes, check_permission, digest, is_macos_system_root_symlink,
     parse_time, preflight, require, require_fields, safe_path, sha256_bytes,
 )
 
@@ -35,9 +35,15 @@ def _plain_path(path, *, file=False):
             info = current.lstat()
         except FileNotFoundError:
             continue
-        require(not stat.S_ISLNK(info.st_mode)
-                and not getattr(info, 'st_file_attributes', 0) & 0x400,
-                'standard_path_link_unsupported')
+        is_link = stat.S_ISLNK(info.st_mode) or bool(getattr(info, 'st_file_attributes', 0) & 0x400)
+        if is_link:
+            if current != path and is_macos_system_root_symlink(current):
+                try:
+                    info = current.stat()
+                except OSError:
+                    raise ContractError('standard_path_link_unsupported') from None
+            else:
+                require(False, 'standard_path_link_unsupported')
         if current == path and file:
             require(stat.S_ISREG(info.st_mode) and info.st_nlink == 1,
                     'standard_file_alias_unsupported')
@@ -243,7 +249,9 @@ def _outline(payload, issues):
                 label += ' ' + title
             heading = _block(_identifier('Title', row['id']), label, heading=True,
                              origin='presentation/outline/' + row['id'])
-            supports_depth = payload['profile'].get('rendering') == 'dyz-standard-internal-v2'
+            supports_depth = payload['profile'].get('rendering') in {
+                'dyz-standard-internal-v2', 'dyz-standard-internal-v3',
+            }
             heading['kind'] = 'heading' + str(depth if supports_depth else min(depth, 2))
             heading['outline_level'] = depth
             if supports_depth:
@@ -317,7 +325,7 @@ def _projection_coverage(payload, maps):
 
 def _profile_fields(blocks, rendering):
     """仅原创内部版式写受限域；源映射也保存这些实际块，不冒充刷新。"""
-    if rendering not in {'dyz-standard-internal-v1', 'dyz-standard-internal-v2'}:
+    if rendering not in {'dyz-standard-internal-v1', 'dyz-standard-internal-v2', 'dyz-standard-internal-v3'}:
         return blocks
     result = []
     has_contents = any(block['kind'] in {'heading1', 'heading2'} for block in blocks[1:])

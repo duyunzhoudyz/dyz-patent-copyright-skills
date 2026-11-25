@@ -1,4 +1,4 @@
-<!-- README_SYNC: source=working-tree; updated=2026-11-17 -->
+<!-- README_SYNC: source=working-tree; updated=2026-11-25 -->
 <p><a href="./README.md">简体中文</a> · English</p>
 
 # dyz-patent-copyright-skills
@@ -12,8 +12,8 @@ If this approach is useful to you, give it a [Star](https://github.com/duyunzhou
 [![Issues](https://img.shields.io/github/issues/duyunzhoudyz/dyz-patent-copyright-skills)](https://github.com/duyunzhoudyz/dyz-patent-copyright-skills/issues)
 [![Version](https://img.shields.io/badge/version-0.1.0a1-blue)](CHANGELOG.md)
 [![Status](https://img.shields.io/badge/status-unpublished%20candidate-orange)](RELEASE.md)
-![Python](https://img.shields.io/badge/python-3.11-3776AB)
-![Platform](https://img.shields.io/badge/platform-Windows-0078D6)
+![Python](https://img.shields.io/badge/python-3.11%20%7C%203.13%20%7C%203.14%20(CI%20target%203.11--3.14)-3776AB)
+![Platform](https://img.shields.io/badge/platform-Windows%20verified%20%7C%20Linux%2FmacOS%20CI%20pending-0078D6)
 [![License](https://img.shields.io/badge/license-PolyForm%20Noncommercial%201.0.0-blue)](LICENSE)
 
 [![Stargazers](https://bytecrank.com/nastyox/reporoster/php/stargazersSVG.php?user=duyunzhoudyz&repo=dyz-patent-copyright-skills)](https://github.com/duyunzhoudyz/dyz-patent-copyright-skills/stargazers)
@@ -79,7 +79,7 @@ Both images are synthetic example resources shipped with the repository. They co
 
 ## Quick start
 
-Environment: **Windows + Python 3.11**. The tools use the standard library only, so there is nothing to install with pip. Download the complete source tree or a trusted complete bundle, keep `tools/`, `skills/` and `references/` in their relative positions, and run the commands from the root.
+Environment: **Python 3.11–3.14 standard library**, with zero mandatory pip dependencies for the core tools. The locally verified baseline is Windows with Python 3.11, 3.13 and 3.14; Windows Python 3.12 and Ubuntu / macOS (Python 3.11 / 3.12 / 3.13 / 3.14) have cross-platform guards and CI matrix definitions awaiting live hosted Actions runs. Download the complete source tree or a trusted complete bundle, keep `tools/`, `skills/` and `references/` in their relative positions, and run commands from the root; see the 3-minute playbooks in [quickstarts.md](skills/dyz-workbench/resources/quickstarts.md).
 
 **1. Check the interpreter**
 
@@ -87,16 +87,17 @@ Environment: **Windows + Python 3.11**. The tools use the standard library only,
 python --version
 ```
 
-It should print 3.11.x. If your default interpreter is another version, replace `python` in the commands below with the full path of a 3.11 interpreter.
+It should print 3.11.x through 3.14.x (locally verified on 3.11, 3.13 and 3.14; 3.12 awaits hosted CI).
 
-**2. List the capability catalog and run a synthetic rehearsal**
+**2. View help, list the capability catalog and run a synthetic rehearsal**
 
 ```powershell
+python -B -X utf8 -m tools help
 python -B -X utf8 -m tools list
 python -B -X utf8 -m tools demo --synthetic --root . --output synthetic-demo.json
 ```
 
-The first command prints a JSON catalog with 83 entries. The second prints `result_written`.
+`list` prints a JSON catalog with 83 entries; `demo` prints `result_written`.
 
 **3. Build a synthetic Word review pack and read it back**
 
@@ -107,9 +108,15 @@ python -B -X utf8 -m tools.documents --synthetic --root . --input skills/dyz-ren
 
 They print `document_written_needs_review` and `document_verified_needs_review`. The output targets must not exist beforehand and must be inside `--root`; in the repository root they are ignored by Git. PDF is an explicit optional conversion that needs a local LibreOffice and is not required for a first try.
 
-**4. Load an entry point in your agent**
+**4. Connect an agent host via standard MCP (stdio) or the local installer**
 
-Have an agent that can read files load `skills/dyz-patent/SKILL.md`, then ask for something like "draft an internal working draft from the supplied technical material only, and list source support and gaps item by item". The skills are written in Chinese, and the Chinese version of that prompt is in `README.md`. No JSON has to be filled in for a text task. For software copyright or standards, use the matching entry below.
+```powershell
+# Preview an isolated bundle install and print a client MCP config snippet (never modifies global host config)
+python -B -X utf8 -m tools.install --target D:/dyz-installed --host claude-code --plan
+python -B -X utf8 -m tools.mcp_server --print-config --host claude-code
+```
+
+For pure text drafting, you can also have any file-capable agent load `skills/dyz-patent/SKILL.md` directly and ask for an internal working draft grounded strictly in supplied material. No JSON has to be filled in for a text task. For software copyright or standards, use the matching entry below.
 
 ## Pick an entry point by task
 
@@ -126,12 +133,15 @@ You can start with a small task, for example "fix this one item against the give
 
 ### More local entry points
 
+- [3-minute quickstart playbooks](skills/dyz-workbench/resources/quickstarts.md): copy-paste rehearsals across patent, software, standards and MCP setup.
 - [Complete bundle guide](skills/dyz-workbench/resources/package-use.md): layout, on-demand loading, freezing and recovery.
-- [Local file tools](skills/dyz-workbench/resources/host-bridge.md): bounded chunked reading, hash-bound edit and copy, Word read-back. `python -B -m tools.host_bridge --describe` prints the tool definitions; controller wiring and host registration are verified separately.
-- [Authorised local software material](skills/dyz-software/resources/tools.md#软件成品链与集中采集): central intake, an internal preparation pack, then source, description and field DOCX files with optional PDF. Every artifact is still an internal candidate.
-- [Five-document loop for standards](skills/dyz-standards/resources/tools.md#五文书闭环与本地入口): derives five kinds of Word files from comments, decisions, clauses and notes, and verifies the actual bytes.
+- [Local file tools](skills/dyz-workbench/resources/host-bridge.md) and standard MCP server: `python -B -m tools.host_bridge --describe` or `python -B -m tools.mcp_server --describe`; multi-host local installer via `python -B -m tools.install`.
+- Patent engineering upgrades: claim-fact IR pre-check (`tools/patent_ir.py`), patent gate 2.1 (dependent-claim inheritance, structured anchors, finite English relations and dual-track OA auditing in `tools/patent_gate.py`), three-axis intake (`tools/patent_intake.py`), native Word OMML equations (`tools/omml.py`), US/EP claim analyzers (`tools/jurisdiction_analyzers.py`), and no-go / FTO / SEP hand-over packs (`tools/procedure_strategy.py`).
+- [Authorised local software material](skills/dyz-software/resources/tools.md#软件成品链与集中采集): multi-stack read-only discovery, 3-batch intake (`software_intake.collect_batch`), PNG ancillary metadata stripping & capture manifest validation (`tools/media_prep.py`), plus DOCX generation.
+- [Five-document loop for standards](skills/dyz-standards/resources/tools.md#五文书闭环与本地入口): v3 layout profile (native OMML formulas in DOCX output), declarative external template mapper (`tools/template_mapper.py`), 6-dimension review with circular-definition detection, and terminology standard specimen.
+- Opt-in read-only external data connectors (`tools/connectors/`, default offline with hard budgets), multimodal visual coverage ledger (`tools/visual_ledger.py`), expert trial-pack builder & 3-consecutive-case upgrade gate (`tools/trial_pack.py`), and offline unseen-task blind benchmark harness (`evals/benchmark_harness.py`).
 - [File assembly](skills/dyz-rendering/resources/tools.md) and [read-back of an edited Word file](skills/dyz-rendering/resources/docx-readback.md).
-- [Limited public patent-search appendix](skills/dyz-patent/resources/cn-gateway-search.md): a research resource that lists actual queries, publication versions and document-by-document comparison separately. It does not give the tools a networked search capability.
+- [Limited public patent-search appendix](skills/dyz-patent/resources/cn-gateway-search.md): research resource separating actual queries, publication versions and document-by-document comparison.
 
 ## How it is organised
 
@@ -155,14 +165,14 @@ One project may reuse authorised evidence, but the status, versions, disclosure 
 
 ## What this release does not do
 
-- **Only Windows + Python 3.11 is verified.** Other Python versions, other operating systems and arbitrary agent hosts have not passed full verification for this release; the release check rejects any interpreter that is not 3.11.
-- **The patent final-text gate checks a limited syntax against fixed source text.** When the source contains dependent-claim inheritance, formulas, tables or other unsupported constructs, a well-founded candidate may still be blocked. On `blocked`, keep the original and hand over only an internal working draft marked as not fully checked.
-- **Office-action (OA) responses are not verified separately yet.** The response argument and the technical replacement text currently share the original-application support gate; the basis of legal, procedural and citation arguments is not checked on its own, so a complete OA response cannot be released on this result.
-- **A tool result is not a professional conclusion.** `checked`, zero issues, a generated Word file or a literally identical PDF does not prove that something can be filed, registered or certified, or that an organisation has approved it. The project does not guarantee grant, registration, non-infringement or approval of a standard.
+- **Windows Python 3.12, hosted Linux/macOS CI and cross-platform Office/PDF rendering are not live-verified yet.** Core standard-library tools and release checks are locally verified on Windows with Python 3.11, 3.13 and 3.14 with cross-platform guards; the full Windows / Ubuntu / macOS × Python 3.11 / 3.12 / 3.13 / 3.14 matrix is defined in `.github/workflows/ci.yml` awaiting hosted runs, and physical LibreOffice/Poppler page verification remains Windows-baselined.
+- **Patent gate 2.1 and US/EP analyzers cover finite rule subsets only.** Dependent-claim inheritance, structured anchors, finite English relations, dual-track OA checks and US/EP structural cues are still bounded checks, not full legal examination or equivalence determinations. On `blocked`, keep the original and hand over only an internal working draft marked as not fully checked.
+- **Offline by default; no live external API calls or paid blind benchmarks executed.** `tools/connectors/` stay offline unless explicitly enabled with policy and hard budgets; `evals/benchmark_harness.py` is verified on offline fixtures only and makes no claim of live market leadership.
+- **A tool result is not a professional conclusion.** `checked`, zero issues, a generated Word file or a literally identical PDF does not prove that something can be filed, registered or certified, or that an organisation has approved it. All 83 catalog entries remain `synthetic_helper_only`.
 - **It takes no real-world action for you.** There is no real filing, automatic outbound sending, signing or payment, and no operating-system-level isolation. Formal filing, public consultation, publication, sealing, fee payment and anything requiring a professional licence need their own confirmation of authority and qualification.
 - **Local tools do not make the model offline.** If the model runs in the cloud, your material still enters the host's data path. Confirm that unpublished technology, source code and restricted standards may be handled that way before loading them.
-- **Host integration is experimental.** Loading files explicitly does not guarantee that a host discovers the skills or registers the tools. The experimental [host metadata checker](skills/dyz-workbench/resources/package-use.md#7-当前源码的本地六入口元数据配置工具) is bound to one specific binary and is not a general installer.
-- **Synthetic entry points handle synthetic examples only.** A real case must not be relabelled as synthetic; real software material goes through its own authorised entry point.
+- **Host integration stays opt-in and local.** `tools/mcp_server.py` and `tools/install.py` provide standard stdio MCP transport and printable config snippets without touching global host configuration; real model round-trip stability depends on the specific host and model.
+- **Synthetic entry points handle synthetic examples only.** A real case must not be relabelled as synthetic; real software and patent materials must use their own authorised entry points.
 
 ## Complete local bundle
 
@@ -174,7 +184,7 @@ $dyzManifestSha = (Get-FileHash -LiteralPath D:/dyz-local-bundle/bundle-manifest
 python -B -X utf8 -m tools.bundle --verify D:/dyz-local-bundle --manifest-sha256 $dyzManifestSha
 ```
 
-The build prints `bundle_created`; verification returns JSON with `"status": "matched"`. The destination must not exist and its parent directory must. The current build contains 291 files; the manifest is authoritative for the exact number.
+The build prints `bundle_created`; verification returns JSON with `"status": "matched"`. The destination must not exist and its parent directory must. The current build is the local complete runtime-bundle whitelist of 309 source files, not the Git source repository's total file count (the current source_candidates count is 415). The manifest is authoritative for the exact number.
 
 - Whoever builds the bundle keeps the manifest hash outside the bundle. A downloader verifies against the hash the publisher provides and should not recompute the "expected" value from the bundle under verification.
 - Verification without an external hash proves internal consistency only. Neither form authenticates the source, the licence or professional quality.
@@ -223,7 +233,7 @@ python -B -X utf8 -m unittest discover -s evals -q
 python -B -X utf8 -m compileall -q tools evals skills
 ```
 
-The CI definition in the repository (`.github/workflows/ci.yml`) runs the same three steps on Windows + Python 3.11. Hosted CI has not actually run in a public repository yet. The full test run usually takes a few minutes.
+The CI definition in the repository (`.github/workflows/ci.yml`) configures the same three steps across a 12-job matrix: Windows, Ubuntu and macOS × Python 3.11, 3.12, 3.13 and 3.14. Hosted CI has not run in a public repository yet; only Windows with Python 3.11, 3.13 and 3.14 has been locally verified so far. The full test run usually takes a few minutes.
 
 Sensitive issues follow the [security reporting policy](SECURITY.md). A private reporting channel has not been set up yet, so do not post reproduction payloads, client material or credentials in a public issue.
 

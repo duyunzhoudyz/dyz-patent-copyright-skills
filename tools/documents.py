@@ -20,7 +20,10 @@ from pathlib import Path
 from datetime import datetime, timezone
 from xml.etree import ElementTree as ET
 
-from tools.core import ContractError, canonical_bytes, check_permission, digest, preflight, require, require_fields, safe_path, sha256_bytes, strict_json_loads
+from tools.core import (
+    ContractError, canonical_bytes, check_permission, digest, is_macos_system_root_symlink,
+    preflight, require, require_fields, safe_path, sha256_bytes, strict_json_loads,
+)
 from tools.rendering import _svg
 
 W = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
@@ -68,8 +71,16 @@ def _case_path(root, relative, *, must_exist=True):
         except FileNotFoundError:
             require(not must_exist, "document_case_path_missing")
             continue
-        require(not stat.S_ISLNK(info.st_mode) and not getattr(info, "st_file_attributes", 0)
-                & getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 1024), "document_case_reparse_point")
+        is_link = stat.S_ISLNK(info.st_mode) or bool(
+            getattr(info, "st_file_attributes", 0) & getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 1024))
+        if is_link:
+            if node != nodes[-1] and is_macos_system_root_symlink(node):
+                try:
+                    info = node.stat()
+                except OSError:
+                    raise ContractError("document_case_reparse_point") from None
+            else:
+                require(False, "document_case_reparse_point")
         require(not stat.S_ISREG(info.st_mode) or info.st_nlink == 1, "document_case_material_alias")
     return target
 
@@ -288,6 +299,8 @@ def _check_research_materials(root, spec):
 def resolve_document(root, spec, *, research_example=False, admission=None):
     """按冻结源文件和一基行区间取正文；真实材料须先核明确准入，不借合成声明。"""
     require(isinstance(spec, dict), "document_spec_required")
+    profile = spec.get("profile")
+    require(profile is None or isinstance(profile, str), "document_profile_unsupported")
     if admission is not None:
         _mode(False, research_example, admission)
         check_document_admission(root, spec, admission)
@@ -297,6 +310,9 @@ def resolve_document(root, spec, *, research_example=False, admission=None):
         require(spec.get("sensitivity") == "synthetic" and "research_materials" not in spec, "synthetic_only")
     _identifier(spec["document_id"])
     require(spec["business"] in {"patent", "software", "standard"}, "document_business_invalid")
+    layout = document_profile(profile)
+    formula_allowed = ((profile is None and spec["business"] == "patent")
+                       or "formula" in layout["supported_objects"])
     require(isinstance(spec["version"], str) and bool(spec["version"].strip()), "document_version_required")
     dependencies = spec.get("dependencies", [])
     require(isinstance(dependencies, list) and len(dependencies) <= 100, "document_dependencies_invalid")
@@ -323,8 +339,8 @@ def resolve_document(root, spec, *, research_example=False, admission=None):
         bid = _identifier(block["id"])
         require(bid not in ids, "duplicate_document_block")
         ids.add(bid)
-        kinds = {"paragraph", "heading1", "heading2", "code", "table", "reading_scope"}
-        if spec.get("profile") == "dyz-standard-internal-v2":
+        kinds = {"paragraph", "heading1", "heading2", "code", "table", "reading_scope", "formula"}
+        if layout.get("max_heading_depth") == 4:
             kinds.update({"heading3", "heading4"})
         require(block["kind"] in kinds, "document_block_kind")
         require(block["audience"] in {"body", "internal"}, "document_audience_required")
@@ -345,6 +361,10 @@ def resolve_document(root, spec, *, research_example=False, admission=None):
         entry = {**block, "text": text, "text_sha256": sha256_bytes(text.encode("utf-8"))}
         if block["kind"] == "table":
             entry["cells"] = _table_cells(text)
+        elif block["kind"] == "formula":
+            from tools import omml
+            require(formula_allowed, "document_formula_profile_unsupported")
+            omml.latex_to_omml_element(text)
         resolved.append(entry)
     require(any(b["audience"] == "body" for b in resolved), "document_body_required")
     images = []
@@ -393,8 +413,9 @@ def table_template_profile(profile):
 
 def document_profile(profile=None):
     """只提供原创内部工程版式；profile不是组织规则或GB/T符合性声明。"""
-    if profile == "dyz-standard-internal-v2":
-        value = _layout_resource("rendering-profile.v2.json")
+    if isinstance(profile, str) and profile in {"dyz-standard-internal-v2", "dyz-standard-internal-v3"}:
+        resource_name = "rendering-profile.v3.json" if profile.endswith("-v3") else "rendering-profile.v2.json"
+        value = _layout_resource(resource_name)
         require(value.get("profile_id") == profile and value.get("max_heading_depth") == 4,
                 "document_profile_resource_invalid")
         return {**value, "hash": digest(value)}
@@ -443,8 +464,8 @@ def _standard_blocks(blocks, images, *, layout):
             "document_blocks_required")
     identities, by_id = set(), {}
     depth = layout.get("max_heading_depth", 2)
-    v2 = layout["profile_id"] == "dyz-standard-internal-v2"
-    plain_kinds = {"title", "paragraph", "code", "table", "reading_scope"}
+    v2 = layout["profile_id"] in {"dyz-standard-internal-v2", "dyz-standard-internal-v3"}
+    plain_kinds = {"title", "paragraph", "code", "table", "reading_scope", "formula"}
     plain_kinds.update(f"heading{level}" for level in range(1, depth + 1))
     for block in blocks:
         require(isinstance(block, dict), "document_block_required")
@@ -460,6 +481,8 @@ def _standard_blocks(blocks, images, *, layout):
                     and kind.startswith("heading"), "document_annex_heading_required")
         require(isinstance(kind, str) and kind in plain_kinds | {"field"},
                 "document_block_kind")
+        if kind == "formula":
+            require(kind in layout["supported_objects"], "document_formula_profile_unsupported")
         if "keep_with_next" in block:
             require(type(block["keep_with_next"]) is bool,
                     "document_keep_with_next_invalid")
@@ -647,6 +670,18 @@ def _paragraph(body, block, index, *, standard=False, standard_v2=False):
     _el(p, "{" + W + "}bookmarkEnd", {"{" + W + "}id": str(index)})
 
 
+def _formula_paragraph(body, block, index):
+    from tools import omml
+    p = _el(body, "{" + W + "}p")
+    pr = _el(p, "{" + W + "}pPr")
+    _el(pr, "{" + W + "}pStyle", {"{" + W + "}val": "Normal"})
+    require(type(block.get("keep_with_next", False)) is bool, "document_keep_with_next_invalid")
+    _pagination(pr, block)
+    _el(p, "{" + W + "}bookmarkStart", {"{" + W + "}id": str(index), "{" + W + "}name": block["id"]})
+    p.append(omml.latex_to_omml_element(block["text"], display_para=False))
+    _el(p, "{" + W + "}bookmarkEnd", {"{" + W + "}id": str(index)})
+
+
 def _drawing(body, figure, index, *, page_break=True,
              max_width=8208000, max_height=12600000):
     p = _el(body, "{" + W + "}p")
@@ -682,11 +717,11 @@ def make_docx(blocks, images, *, profile=None):
     v2页脚另有独立PAGE，目录、正文、附录与可选A3图页连续编号，从1开始。
     域以field_type及sequence或target描述，文字放prefix/suffix；不得传入任意
     instruction或cache。引用可指向同件普通块或SEQ，允许前向引用。缓存只是
-    未刷新标记，生成不等于Office刷新或最终交付放行。keep_with_next仅在内部
-    profile启用；短段keepLines不承诺具体物理分页。默认与软件分支字节不变。
+    未刷新标记，生成不等于Office刷新或最终交付放行。keep_with_next可用于
+    公式块和内部profile；短段keepLines不承诺具体物理分页。
     """
     layout = document_profile(profile)
-    standard_v2 = profile == "dyz-standard-internal-v2"
+    standard_v2 = profile in {"dyz-standard-internal-v2", "dyz-standard-internal-v3"}
     if profile is not None:
         _standard_blocks(blocks, images, layout=layout)
     else:
@@ -702,6 +737,8 @@ def make_docx(blocks, images, *, profile=None):
                    layout=layout if standard_v2 else None)
         elif block["kind"] == "field":
             _field_paragraph(body, block, i, max_heading_depth=layout.get("max_heading_depth", 2))
+        elif block["kind"] == "formula":
+            _formula_paragraph(body, block, i)
         else:
             _paragraph(body, block, i, standard=profile is not None, standard_v2=standard_v2)
     if images:
@@ -888,25 +925,43 @@ def inspect_generated_docx(raw, blocks, images, *, profile=None):
         # 逐部件比对包括正文、样式、关系及图片；不会静默忽略新增批注、外链、隐藏或修订。
         require(all(got.read(n) == want.read(n) for n in names), "document_package_content_changed")
         xml = ET.fromstring(got.read("word/document.xml"))
+        from tools import omml
         text = []
+        omml_count = 0
         for paragraph in xml.findall("./{" + W + "}body/{" + W + "}p"):
             if paragraph.find(".//{" + W + "}drawing") is not None:
+                continue
+            math_node = paragraph.find(".//{" + omml.M + "}oMath")
+            if math_node is not None:
+                inspected = omml.inspect_omml(math_node)
+                require(inspected["valid"], "document_omml_invalid")
+                omml_count += 1
+                text.append(inspected["canonical_form"])
                 continue
             text.append("".join(n.text or "" if n.tag == "{" + W + "}t" else "\n" if n.tag == "{" + W + "}br" else "\t" if n.tag == "{" + W + "}tab" else "" for n in paragraph.iter()))
         if blocks[-1]["kind"] == "table" and images:
             require(text[-1] == "", "document_section_paragraph_changed")
             text.pop()
-        require(text == [_field_display(b) if b["kind"] == "field" else b["text"]
-                         for b in blocks if b["kind"] != "table"], "document_text_changed")
+        expected_texts = []
+        for b in blocks:
+            if b["kind"] == "table":
+                continue
+            if b["kind"] == "field":
+                expected_texts.append(_field_display(b))
+            elif b["kind"] == "formula":
+                expected_texts.append(omml.inspect_omml(omml.latex_to_omml_element(b["text"]))["canonical_form"])
+            else:
+                expected_texts.append(b["text"])
+        require(text == expected_texts, "document_text_changed")
         tables = []
         for table in xml.findall("./{" + W + "}body/{" + W + "}tbl"):
             tables.append([["".join(n.text or "" if n.tag == "{" + W + "}t" else "\n" if n.tag == "{" + W + "}br" else "\t" if n.tag == "{" + W + "}tab" else "" for n in cell.iter()) for cell in row.findall("{" + W + "}tc")] for row in table.findall("{" + W + "}tr")])
         require(tables == [b["cells"] for b in blocks if b["kind"] == "table"], "document_table_text_changed")
-    checks = {"paragraphs": sum(b["kind"] != "table" for b in blocks), "tables": sum(b["kind"] == "table" for b in blocks), "figures": len(images), "source_text_equal": True, "generated_package_parts_equal": True}
+    checks = {"paragraphs": sum(b["kind"] != "table" for b in blocks), "tables": sum(b["kind"] == "table" for b in blocks), "figures": len(images), "formulas": omml_count, "source_text_equal": True, "generated_package_parts_equal": True}
     if profile is not None:
         checks.update(_inspect_generated_fields(xml, blocks,
-                      max_heading_depth=4 if profile == "dyz-standard-internal-v2" else 2))
-    if profile == "dyz-standard-internal-v2":
+                      max_heading_depth=4 if profile in {"dyz-standard-internal-v2", "dyz-standard-internal-v3"} else 2))
+    if isinstance(profile, str) and profile in {"dyz-standard-internal-v2", "dyz-standard-internal-v3"}:
         layout = document_profile(profile)
         with zipfile.ZipFile(io.BytesIO(raw)) as package:
             footer = ET.fromstring(package.read("word/footer1.xml"))
@@ -1180,6 +1235,7 @@ def quality_docx(raw, *, stage="draft", business="standard"):
         require(sum(row.file_size for row in members) <= 40_000_000
                 and all(row.file_size <= 8_000_000 and not row.flag_bits & 1 for row in members),
                 "quality_docx_expansion_limit")
+        total_quality_bytes = 0
         for name in sorted(names):
             require(not name.startswith(("/", "\\")) and "\\" not in name
                     and all(part not in {"", ".", ".."} for part in name.split("/")), "quality_docx_member_path")
@@ -1188,18 +1244,34 @@ def quality_docx(raw, *, stage="draft", business="standard"):
                 if name not in {"[Content_Types].xml", "_rels/.rels", "word/styles.xml", "word/_rels/document.xml.rels"}:
                     unsupported.append({"part": name, "reason": "nontext_or_uninterpreted_part"})
                 continue
-            part = package.read(name)
-            require(b"<!DOCTYPE" not in part.upper() and b"<!ENTITY" not in part.upper(), "quality_docx_dtd_unsupported")
+            with package.open(name) as stream:
+                part = stream.read(8_000_001)
+            require(len(part) <= 8_000_000, "quality_docx_expansion_limit")
+            total_quality_bytes += len(part)
+            require(total_quality_bytes <= 40_000_000, "quality_docx_expansion_limit")
+            require(not re.search(br"<!\s*(?:DOCTYPE|ENTITY)\b", part.replace(b"\0", b""), re.I),
+                    "quality_docx_dtd_unsupported")
             try:
                 tree = ET.fromstring(part)
             except ET.ParseError as exc:
                 raise ContractError("quality_docx_xml_invalid") from exc
+            # 迭代校验 XML 嵌套深度与节点数，防深层嵌套触发 RecursionError DoS
+            xml_stack = [(tree, 0)]
+            xml_nodes = 0
+            while xml_stack:
+                cur, depth = xml_stack.pop()
+                xml_nodes += 1
+                require(depth <= 128 and xml_nodes <= 100_000, "quality_docx_xml_complexity_exceeded")
+                for child in cur:
+                    xml_stack.append((child, depth + 1))
             covered.append(name)
             located = set()
-            text_tags = {"{" + W + "}t", "{" + W + "}delText", "{" + W + "}instrText", "{" + A + "}t"}
+            from . import omml
+            math_t = "{" + omml.M + "}t"
+            text_tags = {"{" + W + "}t", "{" + W + "}delText", "{" + W + "}instrText", "{" + A + "}t", math_t}
             for index, paragraph in enumerate(tree.iter("{" + W + "}p"), 1):
                 located.update(id(node) for node in paragraph.iter() if node.tag in text_tags)
-                text = "".join(node.text or "" if node.tag in {"{" + W + "}t", "{" + W + "}delText", "{" + W + "}instrText", "{" + A + "}t"}
+                text = "".join(node.text or "" if node.tag in text_tags
                     else "\n" if node.tag == "{" + W + "}br" else "\t" if node.tag == "{" + W + "}tab" else ""
                     for node in paragraph.iter())
                 if text:
@@ -1210,7 +1282,14 @@ def quality_docx(raw, *, stage="draft", business="standard"):
                     texts[name + "#unlocated" + str(index)] = node.text or ""
                     unsupported.append({"part": name, "object_index": index, "reason": "text_outside_supported_paragraph"})
                 local = node.tag.rsplit("}", 1)[-1]
-                if local in {"object", "oMath", "oMathPara", "altChunk", "txbxContent", "fldSimple", "fldChar", "instrText", "drawing", "pict", "AlternateContent"}:
+                if local in {"oMath", "oMathPara"} and node.tag.startswith("{" + omml.M + "}"):
+                    try:
+                        inspected_math = omml.inspect_omml(node)
+                        if not inspected_math["valid"]:
+                            unsupported.append({"part": name, "object": local, "reason": "omml_invalid_or_unsupported"})
+                    except (ContractError, RecursionError):
+                        unsupported.append({"part": name, "object": local, "reason": "omml_invalid_or_unsupported"})
+                elif local in {"object", "oMath", "oMathPara", "altChunk", "txbxContent", "fldSimple", "fldChar", "instrText", "drawing", "pict", "AlternateContent"}:
                     unsupported.append({"part": name, "object": local, "reason": "object_semantics_not_interpreted"})
                 if local in {"vanish", "webHidden", "ins", "del"}:
                     observations.append({"part": name, "object": local, "text_policy": "included_not_silently_discarded"})
@@ -1316,19 +1395,12 @@ def _patent_final_gate(spec, public):
     if spec["business"] != "patent" or not (spec.get("delivery_stage") == "final"
                                            or "final_text_sources" in spec):
         return None
-    from .patent_gate import HEADINGS, _context, require_final_text
+    from .patent_gate import require_final_document
     sources = spec.get("final_text_sources")
     if sources is None:
         sources = [row for row in spec.get("fidelity", {}).get("payload", {}).get("documents", [])
                    if row.get("role") == "original"]
-    # 纯结构标题只来自固定章节名或原文明确命名的整机，技术陈述仍经过正文检查。
-    headings = set(HEADINGS)
-    if isinstance(sources, list):
-        headings.update(name for source in sources if isinstance(source, dict) and isinstance(source.get("text"), str)
-                        for name in _context(source["text"])["devices"])
-    texts = {block["id"]: block["text"] for block in public
-             if not (block["kind"] in {"heading1", "heading2"} and block["text"].strip() in headings)}
-    return require_final_text(texts, sources)
+    return require_final_document(public, sources)
 
 
 def build(root, spec, output, *, synthetic=False, research_example=False, pdf_tool=None, admission=None):

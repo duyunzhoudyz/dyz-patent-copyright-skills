@@ -493,6 +493,7 @@ class StandardRenderingV2Tests(unittest.TestCase):
             documents.inspect_generated_docx(documents._zip_docx(parts), blocks, [], profile=self.PROFILE)
 
     def test_legacy_and_v1_preserve_preimplementation_bytes(self):
+        import zlib
         plain = [{"id": "Heading", "kind": "heading1", "text": "合成基线"},
                  {"id": "Para", "kind": "paragraph", "text": "仅当A成立才启动；10 ms。"},
                  {"id": "Table", "kind": "table", "text": "表", "cells": [["甲", "乙"], ["A B", "10 ms"]]}]
@@ -501,10 +502,36 @@ class StandardRenderingV2Tests(unittest.TestCase):
                   {"id": "Caption", "kind": "field", "field_type": "SEQ", "sequence": "Table", "prefix": "表 "},
                   {"id": "Ref", "kind": "field", "field_type": "REF", "target": "Heading"},
                   {"id": "PageRef", "kind": "field", "field_type": "PAGEREF", "target": "Heading"}]
-        self.assertEqual("9b3fbce91e9b23cc68a4798d85e2c88ed06a13cd89cd45d5bfa2d5790c239bcf",
-                         sha256_bytes(documents.make_docx(plain, [])))
-        self.assertEqual("fa247b95cf0d5ebdd712378383fec70cb41241efd3f90f55444ce3923b3b4dae",
-                         sha256_bytes(documents.make_docx(fields, [], profile="dyz-standard-internal-v1")))
+        plain_raw = documents.make_docx(plain, [])
+        fields_raw = documents.make_docx(fields, [], profile="dyz-standard-internal-v1")
+
+        def member_hashes(raw):
+            with zipfile.ZipFile(io.BytesIO(raw)) as archive:
+                return {name: sha256_bytes(archive.read(name)) for name in archive.namelist()}
+
+        self.assertEqual(
+            {
+                "[Content_Types].xml": "c650306654e787e904529ecb34546707146c6602104152cffcf9ebca60d40d4e",
+                "_rels/.rels": "41aa7bc5721f91e38ba3f1b9ed5c68e7aef353a61c81fa589ff86d3e3bbc7ca7",
+                "word/_rels/document.xml.rels": "b0a3b5b7d542586e446ae55746455efa196dee4f84912ce2a7060d914882b812",
+                "word/document.xml": "c395958c37adfadb587b2fb88567af97948df08881b3f20a757a33c68359eb9e",
+                "word/styles.xml": "0c54b66d05348d6d2abea356d542c2b41aaa1d4217a53bb646550ad728b9c9a9",
+            },
+            member_hashes(plain_raw),
+        )
+        # Validate exact uncompressed XML member consistency across all zlib implementations.
+        documents.inspect_generated_docx(plain_raw, plain, [])
+        documents.inspect_generated_docx(fields_raw, fields, [], profile="dyz-standard-internal-v1")
+        classic_zlib = (
+            not hasattr(zlib, "ZLIBNG_VERSION")
+            and "zlib-ng" not in getattr(zlib, "ZLIB_VERSION", "").lower()
+            and "zlib-ng" not in getattr(zlib, "ZLIB_RUNTIME_VERSION", "").lower()
+        )
+        if classic_zlib:
+            self.assertEqual("9b3fbce91e9b23cc68a4798d85e2c88ed06a13cd89cd45d5bfa2d5790c239bcf",
+                             sha256_bytes(plain_raw))
+            self.assertEqual("fa247b95cf0d5ebdd712378383fec70cb41241efd3f90f55444ce3923b3b4dae",
+                             sha256_bytes(fields_raw))
 
 
 if __name__ == "__main__":

@@ -1,0 +1,91 @@
+{
+  "schema": "dyz-terminology-standard-example-v1",
+  "project": "SYN-STD-TERM-01",
+  "title": "合成工业数据接口术语（原创合成示范）",
+  "standard_type": "terminology",
+  "sensitivity": "synthetic",
+  "baseline_version": "0.1-synthetic",
+  "concept_system": [
+    {"id": "C-SYS-1", "label": "基础实体", "children": ["T-01", "T-02"]},
+    {"id": "C-SYS-2", "label": "传输状态", "children": ["T-03", "T-04"]}
+  ],
+  "terms": [
+    {
+      "id": "T-01",
+      "term": "数据帧",
+      "preferred": true,
+      "admitted": ["传输帧"],
+      "deprecated": ["报文包"],
+      "definition": "由帧头、负载区和校验尾构成的最小独立传输单元。",
+      "source": "原创合成定义（非正式标准摘录）",
+      "aliases": ["传输帧"]
+    },
+    {
+      "id": "T-02",
+      "term": "校验尾",
+      "preferred": true,
+      "admitted": [],
+      "deprecated": ["尾部签名"],
+      "definition": "附加于负载区末尾、用于接收端检测比特错误的固定长度冗余序列。",
+      "source": "原创合成定义（非正式标准摘录）",
+      "aliases": []
+    },
+    {
+      "id": "T-03",
+      "term": "有效确认",
+      "preferred": true,
+      "admitted": [],
+      "deprecated": ["自动回执"],
+      "definition": "接收端在完成校验尾比对无误后向发送端返回的接收状态标识。",
+      "source": "原创合成定义（非正式标准摘录）",
+      "aliases": []
+    },
+    {
+      "id": "T-04",
+      "term": "静默丢弃",
+      "preferred": true,
+      "admitted": [],
+      "deprecated": [],
+      "definition": "接收端在校验尾比对失败后不向发送端返回有效确认且终止后续解析的处理行为。",
+      "source": "原创合成定义（非正式标准摘录）",
+      "aliases": []
+    }
+  ],
+  "clauses": [
+    {
+      "id": "C-01",
+      "title": "范围",
+      "kind": "normative",
+      "text": "本文件界定了合成工业数据接口中数据帧、校验尾、有效确认和静默丢弃的核心术语与定义。",
+      "strength": "statement",
+      "source": "原创合成范围声明",
+      "conditions": [],
+      "exceptions": [],
+      "method_ids": [],
+      "references": []
+    },
+    {
+      "id": "C-02",
+      "title": "弃用术语规则",
+      "kind": "normative",
+      "text": "在引用本文件的规范性条款中不应使用“报文包”或“自动回执”替代“数据帧”或“有效确认”。",
+      "strength": "requirement",
+      "source": "原创合成弃用术语规则",
+      "conditions": [],
+      "exceptions": [],
+      "method_ids": ["M-01"],
+      "references": ["C-01"]
+    }
+  ],
+  "verification_matrix": [
+    {
+      "id": "M-01",
+      "clause_id": "C-02",
+      "method": "document_inspection",
+      "status": "planned",
+      "criteria": "正文及引用条款不存在已列弃用术语，且定义间无循环引用。"
+    }
+  ],
+  "professional_review": "not_performed",
+  "organization_approval": "not_performed"
+}

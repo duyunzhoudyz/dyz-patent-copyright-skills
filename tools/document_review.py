@@ -180,6 +180,7 @@ class _BodyReader:
         self.block = None
         self.fields = []
         self.drawings, self.image_reference_count = [], 0
+        self.formulas = []
 
     def notice(self, code, locator, **extra):
         require(len(self.notices) < MAX_NOTICES, "docx_notice_limit")
@@ -282,6 +283,32 @@ class _BodyReader:
 
     def walk(self, node, locator):
         local = _local(node.tag)
+        if node.tag in {"{http://schemas.openxmlformats.org/officeDocument/2006/math}oMath",
+                        "{http://schemas.openxmlformats.org/officeDocument/2006/math}oMathPara"}:
+            from tools import omml
+            inspected = omml.inspect_omml(node)
+            formula_context = "unresolved_field" if self.fields else ("outside_block" if self.block is None else "main_body")
+            self.formulas.append({"locator": locator, "context": formula_context, **inspected})
+            if inspected["revision_or_hidden_nodes"]:
+                self.notice("omml_revision_or_hidden_not_resolved", locator,
+                            nodes=inspected["revision_or_hidden_nodes"])
+            if inspected["unsupported_omml_tags"]:
+                self.notice("omml_unsupported_element", locator,
+                            tags=inspected["unsupported_omml_tags"])
+            if not inspected["valid"]:
+                self.notice("omml_structure_invalid", locator, issues=inspected["issues"])
+                self.fragments.append({"kind": "invalid_omml", "locator": locator,
+                                       "text": inspected["canonical_form"]})
+            elif inspected["canonical_form"]:
+                if self.fields:
+                    self.notice("field_not_resolved", locator)
+                    self.fragments.append({"kind": "field_omml", "locator": locator,
+                                           "text": inspected["canonical_form"]})
+                elif self.block is None:
+                    self.notice("omml_outside_paragraph_block", locator)
+                else:
+                    self.emit(inspected["canonical_form"])
+            return
         if node.tag != _w(local):
             self.notice("foreign_markup_not_interpreted", locator, tag=node.tag)
             return
@@ -432,7 +459,7 @@ class _BodyReader:
                 names[anchor][0]["identity_state"] == "paired_unique_name" else "not_verified_in_main_body")
         return {"blocks": self.blocks, "bookmarks": self.bookmarks, "notices": self.notices,
                 "unresolved_fragments": self.fragments, "hyperlinks": self.links,
-                "drawings": self.drawings,
+                "drawings": self.drawings, "formulas": self.formulas,
                 "literal_text_sha256": sha256_bytes(text.encode("utf-8"))}
 
 
@@ -635,6 +662,25 @@ def _compare(before, after):
     baseline_uncovered, baseline_gaps = _coverage(before, [left[name][0] for name in names])
     partial = (unresolved or uncovered or baseline_uncovered or before["readback_state"] == "partial" or
                after["readback_state"] == "partial")
+    before_formulas = before.get("formulas", [])
+    after_formulas = after.get("formulas", [])
+    def _formula_sig(f):
+        return (
+            f.get("locator"),
+            f.get("context"),
+            bool(f.get("valid")),
+            f.get("structure_sha256"),
+            f.get("canonical_form"),
+            tuple(f.get("revision_or_hidden_nodes", ())),
+            tuple(f.get("unsupported_omml_tags", ())),
+        )
+    before_sigs = [_formula_sig(f) for f in before_formulas]
+    after_sigs = [_formula_sig(f) for f in after_formulas]
+    formulas_equal = (
+        before_sigs == after_sigs
+        and all(bool(f.get("valid")) and f.get("context") == "main_body" for f in before_formulas)
+        and all(bool(f.get("valid")) and f.get("context") == "main_body" for f in after_formulas)
+    )
     return {"state": "partial" if partial else "complete_supported_subset",
             "matching_basis": "unique_paired_bookmark_name_not_visible_number_or_numeric_id",
             "paired_bookmarks": paired, "unresolved_bookmarks": unresolved,
@@ -644,6 +690,9 @@ def _compare(before, after):
             "range_offsets": "zero_based_unicode_characters_in_each_main_literal_stream",
             "package_bytes_equal": before["sha256"] == after["sha256"],
             "main_literal_stream_equal": before["literal_text_sha256"] == after["literal_text_sha256"],
+            "formulas_equal": formulas_equal,
+            "baseline_formula_count": len(before_formulas),
+            "current_formula_count": len(after_formulas),
             **_compare_drawings(before["drawings"], after["drawings"]),
             "semantic_equivalence": "not_assessed", "format_equivalence": "not_assessed",
             "prior_review_reuse": "requires_separate_current_version_review"}
@@ -741,6 +790,7 @@ def _review_summary(report):
         "visual_review": report["visual_review"],
         "external_action": report["external_action"],
         "main_literal_stream_equal": comparison.get("main_literal_stream_equal"),
+        "formulas_equal": comparison.get("formulas_equal"),
         "limits": {"items": 32, "item_json_bytes": 24000, "excerpt_characters": 240},
         "groups": [], "items": [],
     }

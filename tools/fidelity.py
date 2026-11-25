@@ -13,7 +13,53 @@ from .core import ContractError, digest, canonical_bytes, require, require_field
 MAX_ATOMS = 16
 MAX_RECORDS = 256
 MAX_INPUT_BYTES = 4_000_000
+MAX_INPUT_NESTING = 128
+MAX_NESTING_NODES = 200_000
 MAX_LOGIC_WORK = 2_000_000
+
+
+def _scalar_weight(item) -> int:
+    if isinstance(item, str):
+        return len(item) + 2
+    if isinstance(item, int) and not isinstance(item, bool):
+        return (item.bit_length() * 30103 // 100000) + 2
+    return 8
+
+
+def _check_nesting(value, code, limit=MAX_INPUT_NESTING, *, max_bytes=MAX_INPUT_BYTES, budget_code=None):
+    """Iterative nesting & DAG-expansion guard independent of CPython recursion limits."""
+    stack = [(value, 0)]
+    visits = 0
+    total_chars = 0 if isinstance(value, (dict, list, tuple)) else _scalar_weight(value)
+    budget_code = budget_code or code
+    require(total_chars <= max_bytes, budget_code)
+    while stack:
+        current, depth = stack.pop()
+        if depth > limit:
+            raise ContractError(code)
+        if isinstance(current, dict):
+            visits += 1 + len(current)
+            if visits > MAX_NESTING_NODES:
+                raise ContractError(code)
+            for key, child in current.items():
+                total_chars += _scalar_weight(key)
+                if isinstance(child, (dict, list, tuple)):
+                    stack.append((child, depth + 1))
+                else:
+                    total_chars += _scalar_weight(child)
+                require(total_chars <= max_bytes, budget_code)
+        elif isinstance(current, (list, tuple)):
+            visits += 1 + len(current)
+            if visits > MAX_NESTING_NODES:
+                raise ContractError(code)
+            for child in current:
+                if isinstance(child, (dict, list, tuple)):
+                    stack.append((child, depth + 1))
+                else:
+                    total_chars += _scalar_weight(child)
+                require(total_chars <= max_bytes, budget_code)
+
+
 FACT_STATES = {"explicit", "inferred", "unknown", "proposal", "conflicting"}
 DOCUMENT_ROLES = {"original", "source", "product", "candidate", "internal"}
 PARAMETER_ASPECTS = ("technical_feasibility", "implementation_coverage", "original_amendment_support")
@@ -228,6 +274,7 @@ def _parameters(requests, assessments, documents, issues):
 def audit(payload: dict) -> dict:
     """反例只属于有限、由调用者解释的模型；checked不证明自然语言或专业支持。"""
     require(isinstance(payload, dict), "fidelity_object_required")
+    _check_nesting(payload, "fidelity_input_nesting_exceeded", budget_code="fidelity_input_budget_exceeded")
     try:
         encoded = canonical_bytes(payload)
     except RecursionError as exc:
@@ -261,8 +308,10 @@ def audit(payload: dict) -> dict:
     regions = _rows(payload, "regions")
     _index(regions, "region")
     issues, checked, remaining = [], [], [MAX_LOGIC_WORK]
+    for row in assertions.values():
+        require(row.get("proof_scope") in {"original_support", "technical_consistency"}, "proof_scope_required")
     # 同一已声明模型内的相反事实不能通过只选其中一条依据而被隐藏。
-    for scope in sorted({row.get("proof_scope", "") for row in assertions.values()}):
+    for scope in sorted({row["proof_scope"] for row in assertions.values()}):
         eligible = [fact["formula"] for fact in facts.values() if fact["state"] == "explicit" and
                     (scope != "original_support" or documents[fact["citation"]["document_id"]]["role"] == "original")]
         if eligible and _compare(eligible, True, atoms, remaining)["relation"] == "inconsistent":
@@ -568,6 +617,7 @@ def audit_reading_scope(payload: dict, *, texts=None, bindings=None) -> dict:
     equal these projections. Unclassified prose remains outside this check.
     """
     require(isinstance(payload, dict), "reading_scope_object_required")
+    _check_nesting(payload, "reading_scope_encoding_or_nesting", budget_code="reading_scope_input_budget")
     try:
         encoded = canonical_bytes(payload)
     except (RecursionError, UnicodeError) as exc:

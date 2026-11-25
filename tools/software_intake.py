@@ -7,7 +7,12 @@
 from __future__ import annotations
 
 import copy
+import fnmatch
+import io
 import json
+import os
+import re
+import stat
 from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Callable
@@ -488,49 +493,158 @@ def _collect_candidates(root: str | Path, output: str, ask: Callable[[str], str]
                                "sensitive_literals": secrets}}
     request = copy.deepcopy(payload.get("request"))
     core.require(isinstance(request, dict), "discovery_request_required")
+    if "inventory_complete" in request:
+        core.require(type(request["inventory_complete"]) is bool, "inventory_complete_bool_required")
     for declared_root in (payload.get("authorized_root"), request.get("authorized_root")):
         if declared_root is not None:
             core.require(Path(declared_root).resolve(strict=True) == base,
                          "discovery_project_mismatch")
     files = payload.get("files", request.get("files"))
     core.require(isinstance(files, list) and bool(files), "file_inventory_required")
-    # 在文件、授权请求或配置读取前，当前 context 和整份清单许可均须成立。
+    # 在文件、授权请求或配置读取前，统一规范化文件与 material_permissions，阻断反斜杠/大小写/硬链接 deny 绕过。
+    normalized_cand_files = []
+    cand_lexicals: dict[str, tuple[Path, Path, os.stat_result]] = {}
+    for index, entry in enumerate(files, start=1):
+        core.require(isinstance(entry, dict) and isinstance(entry.get("path"), str), "source_file_required")
+        fpath, lexical, info, rel = _check_source_file_safety(
+            base, entry["path"], destination, reject_generated=False,
+        )
+        item = copy.deepcopy(entry)
+        item["path"] = rel
+        item.setdefault("id", f"file-{index}")
+        normalized_cand_files.append(item)
+        cand_lexicals[rel] = (fpath, lexical, info)
+    (
+        has_explicit_exclusions,
+        explicit_paths,
+        explicit_dirs,
+        exclude_patterns,
+        extra_excluded_records,
+    ) = _collect_explicit_exclusions(base, payload, request)
+    for key in ("excluded_files", "excluded_paths", "excluded_directories", "exclude_patterns", "excluded_sources"):
+        request.pop(key, None)
     discovery_input = {**payload, "context": context, "authorized_root": str(base),
-                       "request": request, "files": files}
-    software_discovery._file_permissions(discovery_input)
+                       "request": request, "files": normalized_cand_files}
+    if "material_permissions" in payload and payload["material_permissions"] is not None:
+        norm_perms, _allowed, blocked_paths, blocked_ids = _normalize_material_permissions(
+            base, payload["material_permissions"],
+        )
+        discovery_input["material_permissions"] = norm_perms
+        for item in normalized_cand_files:
+            _, _, info = cand_lexicals[item["path"]]
+            core.require(
+                item["path"] not in blocked_paths and (info.st_dev, info.st_ino) not in blocked_ids,
+                "material_permission_not_proven",
+            )
+    for item in normalized_cand_files:
+        _, _, info = cand_lexicals[item["path"]]
+        core.require(info.st_nlink == 1, "source_file_or_link_invalid")
+        _check_file_permission_denial(item)
     secrets = payload.get("sensitive_literals", payload.get("options", {}).get("sensitive_literals", []))
     core.require(isinstance(secrets, list) and all(isinstance(value, str) and value for value in secrets),
                  "sensitive_literals_required")
     discovery_input["sensitive_literals"] = secrets
     core.require(not any(secret in f"{relative_output}/authorization.json" for secret in secrets),
                  "intake_sensitive_output_path")
-    for entry in files:
-        path = core.safe_path(base, entry["path"])
-        core.require(not path.is_relative_to(destination), "source_output_collision")
+    files = normalized_cand_files
     _consent(ask, "是否现在读取上述明确授权清单并生成内部候选供集中核对？输入 yes：")
-    discovery = software_discovery.discover(discovery_input, use_system_time=True)
-    candidate_files = {entry["id"]: entry for entry in discovery["file_candidates"]}
-    normalized = []
-    for index, entry in enumerate(files, start=1):
-        item = candidate_files[entry.get("id", f"file-{index}")]
-        if item["read_status"] != "read" or item["exclusion_reason"]:
-            continue
-        normalized.append({**{key: value for key, value in entry.items()
-                              if key not in {"local_permission", "permission_group"}},
-                           "id": item["id"], "path": item["path"],
-                           "component_id": entry.get("component_id", "main"),
-                           "kind": entry.get("kind", "source" if item["language"] else "other"),
-                           "include": entry.get("include", bool(item["language"])),
-                           "expected_sha256": item["sha256"],
-                           "deposit_context_evidence": entry.get("deposit_context_evidence")
-                           or next((right["evidence_ids"][0] for right in request.get("rights", [])
-                                    if right.get("component_id") == entry.get("component_id", "main")
-                                    and right.get("evidence_ids")), None)})
-    core.require(bool(normalized), "file_inventory_required")
-    request.update(files=normalized, context=context, authorized_root=str(base))
-    group = software_discovery.confirmation_group({"request": request, "discovery": discovery,
-                                                   "options": payload.get("options", {})},
-                                                  use_system_time=True)
+    excluded_sources = []
+    excluded_paths_seen: set[str] = set()
+    if has_explicit_exclusions:
+        request["inventory_complete"] = False
+    probe_targets = []
+    for item in files:
+        fpath, _, _ = cand_lexicals[item["path"]]
+        explicit_hit, explicit_reason = _match_explicit_exclusion(
+            item, fpath, explicit_paths, explicit_dirs, exclude_patterns,
+        )
+        if explicit_hit:
+            request["inventory_complete"] = False
+            excluded_sources.append({
+                "id": item["id"],
+                "path": item["path"],
+                "read_status": "not_read",
+                "exclusion_reason": explicit_reason,
+            })
+            excluded_paths_seen.add(item["path"])
+        else:
+            probe_targets.append(item)
+    _append_unmatched_explicit_exclusions(
+        excluded_sources, excluded_paths_seen, explicit_paths, explicit_dirs, extra_excluded_records,
+    )
+    if excluded_sources:
+        request["inventory_complete"] = False
+    discovery_input["files"] = probe_targets
+    software_discovery._file_permissions(discovery_input)
+    discover_files, unreadable_entries = _probe_readable_for_discovery(
+        probe_targets, cand_lexicals, context,
+    )
+    if unreadable_entries:
+        request["inventory_complete"] = False
+        excluded_sources.extend(unreadable_entries)
+    core.require(bool(discover_files), "file_inventory_required")
+    discovery_input["files"] = discover_files
+    request_file_kinds = {}
+    declared_request_paths: set[str] = set()
+    if isinstance(request.get("files"), list):
+        for r_idx, r_entry in enumerate(request["files"], start=1):
+            if isinstance(r_entry, dict):
+                if "kind" in r_entry:
+                    request_file_kinds[r_entry.get("id", f"file-{r_idx}")] = r_entry["kind"]
+                if isinstance(r_entry.get("path"), str):
+                    try:
+                        r_rel = core.safe_path(base, r_entry["path"], must_exist=False).relative_to(base).as_posix()
+                        declared_request_paths.add(r_rel)
+                        if "kind" in r_entry:
+                            request_file_kinds[r_rel] = r_entry["kind"]
+                    except core.ContractError:
+                        request["inventory_complete"] = False
+    while True:
+        discovery = _discover_with_unreadable_fallback(
+            discovery_input, cand_lexicals, excluded_sources, request, "file_inventory_required",
+        )
+        candidate_files = {entry["id"]: entry for entry in discovery["file_candidates"]}
+        normalized = []
+        discovery_exclusions = []
+        for entry in discover_files:
+            item = candidate_files[entry["id"]]
+            if item["read_status"] != "read" or item["exclusion_reason"]:
+                request["inventory_complete"] = False
+                discovery_exclusions.append({key: item[key] for key in
+                                             ("id", "path", "read_status", "exclusion_reason")})
+                continue
+            kind = entry.get("kind")
+            if kind is None:
+                kind = request_file_kinds.get(item["id"], request_file_kinds.get(item["path"]))
+            if kind is None:
+                kind = "source" if item["language"] else "other"
+            normalized.append({**{key: value for key, value in entry.items()
+                                  if key not in {"local_permission", "permission_group"}},
+                               "id": item["id"], "path": item["path"],
+                               "component_id": entry.get("component_id", "main"),
+                               "kind": kind,
+                               "include": entry.get("include", bool(item["language"])),
+                               "expected_sha256": item["sha256"],
+                               "deposit_context_evidence": entry.get("deposit_context_evidence")
+                               or next((right["evidence_ids"][0] for right in request.get("rights", [])
+                                        if right.get("component_id") == entry.get("component_id", "main")
+                                        and right.get("evidence_ids")), None)})
+        core.require(bool(normalized), "file_inventory_required")
+        if declared_request_paths - {entry["path"] for entry in normalized}:
+            request["inventory_complete"] = False
+        request.update(files=normalized, context=context, authorized_root=str(base))
+        try:
+            group = software_discovery.confirmation_group({"request": request, "discovery": discovery,
+                                                           "options": payload.get("options", {})},
+                                                          use_system_time=True)
+        except core.ContractError as exc:
+            if not _exclude_failed_source_read(
+                exc, discover_files, cand_lexicals, excluded_sources, request, "file_inventory_required",
+            ):
+                raise
+        else:
+            excluded_sources.extend(discovery_exclusions)
+            break
     # 数字只引用当前摘要中的确定候选；不让配置文本成为问答指令。
     listing = []
     for index, row in enumerate(group["rows"], start=1):
@@ -582,13 +696,19 @@ def _collect_candidates(root: str | Path, output: str, ask: Callable[[str], str]
                                for entry in discovery["file_candidates"]
                                if entry["read_status"] == "read" and not entry["exclusion_reason"]],
                      "output": f"{relative_output}/materials"}
+    if excluded_sources:
+        authorization["excluded_sources"] = excluded_sources
     _check_access(context)
     core.require(not destination.exists(), "output_exists")
     destination.mkdir()
     core.write_new_json(base, request_path, request)
     core.write_new_json(base, authorization_path, authorization)
-    return {"status": "collected", "authorization": authorization_path,
-            "authorization_sha256": core.sha256_bytes(core.canonical_bytes(authorization) + b"\n")}
+    summary = {"status": "collected", "authorization": authorization_path,
+               "authorization_sha256": core.sha256_bytes(core.canonical_bytes(authorization) + b"\n"),
+               "inventory_complete": request["inventory_complete"]}
+    if excluded_sources:
+        summary["excluded_sources"] = excluded_sources
+    return summary
 
 
 def collect_candidates(root: str | Path, output: str, *, ask: Callable[[str], str] = input,
@@ -624,5 +744,879 @@ def collect(root: str | Path, output: str, *, ask: Callable[[str], str] = input)
         return _collect(root, output, ask)
     except (EOFError, KeyboardInterrupt):
         raise core.ContractError("intake_cancelled") from None
+    except (OSError, RuntimeError, OverflowError):
+        raise core.ContractError("intake_io_failed") from None
+
+
+def _check_source_file_safety(
+    base: Path,
+    raw_path: str,
+    destination: Path | None,
+    *,
+    reject_generated: bool = True,
+) -> tuple[Path, Path, os.stat_result, str]:
+    """校验源码文件路径边界与词法链，拦截越界、符号链接与目录联接。"""
+    fpath = core.safe_path(base, raw_path)
+    lexical = base.joinpath(*raw_path.replace("\\", "/").split("/"))
+    try:
+        info = core.checked_path(lexical)
+    except (OSError, core.BundleError):
+        raise core.ContractError("source_file_or_link_invalid") from None
+    core.require(stat.S_ISREG(info.st_mode), "source_file_required")
+    if reject_generated:
+        core.require(not _in_generated_directory(fpath, base), "generated_source_forbidden")
+    if destination is not None:
+        core.require(not fpath.is_relative_to(destination), "source_output_collision")
+    return fpath, lexical, info, fpath.relative_to(base).as_posix()
+
+
+def _is_discovery_auto_skipped(relative: str) -> bool:
+    """与 software_discovery 一致：生成目录或敏感密钥文件绝不在预检阶段打开。"""
+    parts = {part.casefold() for part in Path(relative).parts}
+    name = Path(relative).name.casefold()
+    return (
+        bool(parts & software_discovery.GENERATED_PARTS)
+        or name == ".env"
+        or name.startswith(".env.")
+        or Path(relative).suffix.casefold() in {".pem", ".key", ".p12", ".pfx"}
+    )
+
+
+def _collect_explicit_exclusions(
+    base: Path,
+    *containers: dict | None,
+) -> tuple[bool, dict[str, str], list[tuple[Path, str, str]], list[str], list[dict]]:
+    """收集并校验调用方显式声明的排除路径、目录、模式或排除清单。"""
+    has_explicit = False
+    explicit_paths: dict[str, str] = {}
+    explicit_dirs: list[tuple[Path, str, str]] = []
+    exclude_patterns: list[str] = []
+    extra_records: list[dict] = []
+
+    def parse_path_entry(raw_entry: object, default_reason: str) -> tuple[Path, str, str]:
+        if isinstance(raw_entry, str):
+            raw_p, reason = raw_entry, default_reason
+        elif isinstance(raw_entry, dict) and isinstance(raw_entry.get("path"), str):
+            raw_p = raw_entry["path"]
+            raw_r = raw_entry.get("exclusion_reason") or raw_entry.get("reason")
+            core.require(raw_r is None or isinstance(raw_r, str), "excluded_files_invalid")
+            reason = raw_r.strip() if isinstance(raw_r, str) and raw_r.strip() else default_reason
+        else:
+            raise core.ContractError("excluded_files_invalid")
+        resolved = core.safe_path(base, raw_p, must_exist=False)
+        lexical = base.joinpath(*raw_p.replace("\\", "/").split("/"))
+        try:
+            core.checked_path(lexical, missing_leaf=True)
+        except core.BundleError as exc:
+            if str(exc) != "bundle_path_missing":
+                raise core.ContractError("source_file_or_link_invalid") from None
+        return resolved, resolved.relative_to(base).as_posix(), reason
+
+    for container in containers:
+        if not isinstance(container, dict):
+            continue
+        for key in ("excluded_files", "excluded_paths"):
+            if key not in container or container[key] is None:
+                continue
+            entries = container[key]
+            core.require(isinstance(entries, list), "excluded_files_invalid")
+            if entries:
+                has_explicit = True
+            for raw_entry in entries:
+                _, rel, reason = parse_path_entry(raw_entry, "caller_excluded")
+                explicit_paths.setdefault(rel, reason)
+        if "excluded_directories" in container and container["excluded_directories"] is not None:
+            entries = container["excluded_directories"]
+            core.require(isinstance(entries, list), "excluded_files_invalid")
+            if entries:
+                has_explicit = True
+            for raw_entry in entries:
+                dpath, rel, reason = parse_path_entry(raw_entry, "caller_excluded_directory")
+                explicit_dirs.append((dpath, rel, reason))
+        if "exclude_patterns" in container and container["exclude_patterns"] is not None:
+            patterns = container["exclude_patterns"]
+            core.require(
+                isinstance(patterns, list)
+                and all(isinstance(pat, str) and bool(pat.strip()) for pat in patterns),
+                "excluded_files_invalid",
+            )
+            if patterns:
+                has_explicit = True
+                exclude_patterns.extend(pat.strip() for pat in patterns)
+        if "excluded_sources" in container and container["excluded_sources"] is not None:
+            entries = container["excluded_sources"]
+            core.require(isinstance(entries, list), "excluded_files_invalid")
+            if entries:
+                has_explicit = True
+            for idx, raw_entry in enumerate(entries, start=1):
+                _, rel, reason = parse_path_entry(raw_entry, "caller_excluded")
+                explicit_paths.setdefault(rel, reason)
+                entry_id = (
+                    raw_entry["id"]
+                    if isinstance(raw_entry, dict) and isinstance(raw_entry.get("id"), str) and raw_entry["id"].strip()
+                    else f"excluded-source-{idx}"
+                )
+                extra_records.append({
+                    "id": entry_id,
+                    "path": rel,
+                    "read_status": "not_read",
+                    "exclusion_reason": reason,
+                })
+    return has_explicit, explicit_paths, explicit_dirs, exclude_patterns, extra_records
+
+
+def _match_explicit_exclusion(
+    item: dict,
+    fpath: Path,
+    explicit_paths: dict[str, str],
+    explicit_dirs: list[tuple[Path, str, str]],
+    exclude_patterns: list[str],
+) -> tuple[bool, str]:
+    rel = item["path"]
+    raw_reason = item.get("exclusion_reason")
+    core.require(raw_reason is None or isinstance(raw_reason, str), "excluded_files_invalid")
+    item_reason = raw_reason.strip() if isinstance(raw_reason, str) and raw_reason.strip() else ""
+    if "excluded" in item:
+        core.require(type(item["excluded"]) is bool, "excluded_files_invalid")
+    if item.get("excluded") is True:
+        return True, item_reason or "caller_excluded"
+    if item.get("include") is False or item_reason:
+        return True, item_reason or "caller_excluded"
+    if rel in explicit_paths:
+        return True, item_reason or explicit_paths[rel]
+    for dpath, _, dir_reason in explicit_dirs:
+        if fpath.is_relative_to(dpath):
+            return True, item_reason or dir_reason
+    name = Path(rel).name
+    for pat in exclude_patterns:
+        if fnmatch.fnmatchcase(rel, pat) or fnmatch.fnmatchcase(name, pat):
+            return True, item_reason or "caller_excluded_pattern"
+    return False, ""
+
+
+def _append_unmatched_explicit_exclusions(
+    excluded_sources: list[dict],
+    seen_paths: set[str],
+    explicit_paths: dict[str, str],
+    explicit_dirs: list[tuple[Path, str, str]],
+    extra_records: list[dict],
+) -> None:
+    for rec in extra_records:
+        if rec["path"] not in seen_paths:
+            excluded_sources.append(rec)
+            seen_paths.add(rec["path"])
+    for rel, reason in explicit_paths.items():
+        if rel not in seen_paths:
+            excluded_sources.append({
+                "id": f"excluded-{len(excluded_sources) + 1}",
+                "path": rel,
+                "read_status": "not_read",
+                "exclusion_reason": reason,
+            })
+            seen_paths.add(rel)
+    for _, rel_dir, reason in explicit_dirs:
+        if rel_dir not in seen_paths and not any(
+            p == rel_dir or p.startswith(rel_dir + "/") for p in seen_paths
+        ):
+            excluded_sources.append({
+                "id": f"excluded-dir-{len(excluded_sources) + 1}",
+                "path": rel_dir,
+                "read_status": "not_read",
+                "exclusion_reason": reason,
+            })
+            seen_paths.add(rel_dir)
+
+
+def _recheck_unreadable_source(lexical: Path, expected: os.stat_result) -> None:
+    try:
+        info = core.checked_path(lexical)
+    except core.BundleError as exc:
+        if str(exc) != "bundle_path_missing":
+            raise core.ContractError("source_file_or_link_invalid") from None
+    except OSError:
+        pass
+    else:
+        core.require(stat.S_ISREG(info.st_mode) and info.st_nlink == 1, "source_file_or_link_invalid")
+        core.require(os.path.samestat(expected, info), "source_file_changed")
+
+
+def _probe_readable_for_discovery(
+    items: list[dict],
+    lexicals: dict[str, tuple[Path, Path, os.stat_result]],
+    context: dict,
+) -> tuple[list[dict], list[dict]]:
+    """逐文件核验普通可读性：普通 OSError 记为不可读排除项，符号链接/硬链接/TOCTOU 违约立即抛 ContractError。"""
+    readable: list[dict] = []
+    unreadable: list[dict] = []
+    for item in items:
+        rel = item["path"]
+        if _is_discovery_auto_skipped(rel):
+            readable.append(item)
+            continue
+        fpath, lexical, info = lexicals[rel]
+        _check_access(context)
+        try:
+            with fpath.open("rb") as stream:
+                fileno = getattr(stream, "fileno", None)
+                if callable(fileno):
+                    try:
+                        fd = fileno()
+                    except (OSError, io.UnsupportedOperation):
+                        fd = None
+                    if isinstance(fd, int):
+                        opened = os.fstat(fd)
+                        core.require(
+                            stat.S_ISREG(opened.st_mode)
+                            and opened.st_nlink == 1
+                            and os.path.samestat(info, opened),
+                            "source_file_changed",
+                        )
+                stream.read(1)
+        except OSError:
+            _recheck_unreadable_source(lexical, info)
+            unreadable.append({
+                "id": item["id"],
+                "path": rel,
+                "read_status": "not_read",
+                "exclusion_reason": "unreadable",
+            })
+            continue
+        readable.append(item)
+    return readable, unreadable
+
+
+def _exclude_failed_source_read(
+    exc: core.ContractError,
+    files: list[dict],
+    lexicals: dict[str, tuple[Path, Path, os.stat_result]],
+    excluded_sources: list[dict],
+    request: dict,
+    empty_code: str,
+) -> bool:
+    # 下游用固定诊断码隐藏本机路径。只从实际失败的源码读取帧恢复条目身份。
+    error = exc.__context__
+    if not isinstance(error, OSError):
+        return False
+    relative = None
+    trace = error.__traceback__
+    while trace is not None:
+        frame = trace.tb_frame
+        if str(exc) == "discovery_io_failed" and frame.f_code is software_discovery.discover.__code__:
+            record = frame.f_locals.get("record")
+            if record and record["read_status"] == "not_read" and record["exclusion_reason"] is None:
+                relative = record["path"]
+            break
+        if str(exc) == "source_read_failed" and frame.f_code is software._source.__code__:
+            relative = frame.f_locals["entry"]["path"]
+            break
+        trace = trace.tb_next
+    for index, item in enumerate(files):
+        if item["path"] == relative:
+            _, lexical, expected = lexicals[relative]
+            _recheck_unreadable_source(lexical, expected)
+            excluded_sources.append({"id": item["id"], "path": relative, "read_status": "not_read",
+                                     "exclusion_reason": "unreadable"})
+            del files[index]
+            core.require(bool(files), empty_code)
+            request["inventory_complete"] = False
+            return True
+    return False
+
+
+def _discover_with_unreadable_fallback(discovery_input, lexicals, excluded_sources, request, empty_code):
+    while True:
+        try:
+            return software_discovery.discover(discovery_input, use_system_time=True)
+        except core.ContractError as exc:
+            if not _exclude_failed_source_read(
+                exc, discovery_input["files"], lexicals, excluded_sources, request, empty_code,
+            ):
+                raise
+
+
+def _normalize_material_permissions(
+    base: Path,
+    raw_permissions: list,
+) -> tuple[list[dict], set[str], set[str], set]:
+    """统一规范化 material_permissions 中的路径并收集 deny 路径与 (st_dev, st_ino) 身份集合。"""
+    core.require(isinstance(raw_permissions, list), "material_permission_invalid")
+    normalized_perms: list[dict] = []
+    allowed_perm_paths: set[str] = set()
+    blocked_perm_paths: set[str] = set()
+    blocked_perm_identities: set = set()
+    for perm in raw_permissions:
+        core.require(isinstance(perm, dict), "material_permission_invalid")
+        raw_perm_paths = perm.get("paths")
+        core.require(
+            isinstance(raw_perm_paths, list) and bool(raw_perm_paths)
+            and all(isinstance(p, str) and bool(p.strip()) for p in raw_perm_paths),
+            "material_permission_invalid",
+        )
+        p_copy = copy.deepcopy(perm)
+        canonical_paths: list[str] = []
+        decision = p_copy.get("decision")
+        ev = p_copy.get("evidence_id")
+        is_allowed = (decision == "allow" and isinstance(ev, str) and bool(ev.strip()))
+        for raw_p in raw_perm_paths:
+            resolved_p = core.safe_path(base, raw_p, must_exist=False)
+            rel_p = resolved_p.relative_to(base).as_posix()
+            canonical_paths.append(rel_p)
+            if is_allowed:
+                allowed_perm_paths.add(rel_p)
+            else:
+                blocked_perm_paths.add(rel_p)
+                if resolved_p.exists():
+                    st_b = resolved_p.stat()
+                    blocked_perm_identities.add((st_b.st_dev, st_b.st_ino))
+        p_copy["paths"] = canonical_paths
+        normalized_perms.append(p_copy)
+    return normalized_perms, allowed_perm_paths, blocked_perm_paths, blocked_perm_identities
+
+
+def _check_sensitive(value: object, secrets: list[str], code: str) -> None:
+    if not secrets:
+        return
+    pending = [value]
+    while pending:
+        item = pending.pop()
+        if isinstance(item, str):
+            core.require(not any(secret in item for secret in secrets), code)
+        elif isinstance(item, dict):
+            pending.extend(item.keys())
+            pending.extend(item.values())
+        elif isinstance(item, list):
+            pending.extend(item)
+
+
+def _check_file_permission_denial(item):
+    permission = item.get("local_permission")
+    if permission is not None:
+        core.require(isinstance(permission, dict) and permission.get("decision") == "allow",
+                     "material_permission_not_proven")
+
+
+def _batch_screenshots(base, destination, far, files, request, delivery, permissions, exclusions):
+    allowed, denied, denied_identities = permissions
+    shots = delivery.setdefault("screenshots", [])
+    core.require(isinstance(shots, list) and len(shots) <= 100, "screenshots_list_required")
+    if not shots:
+        return []
+    paths = {item["path"] for item in files}
+    identities = set()
+    for relative in paths:
+        st = core.safe_path(base, relative).stat()
+        identities.add((st.st_dev, st.st_ino))
+    checked = []
+    for shot in shots:
+        core.require(isinstance(shot, dict) and isinstance(shot.get("path"), str), "screenshot_entry_invalid")
+        path, _, st, relative = _check_source_file_safety(base, shot["path"], destination, reject_generated=False)
+        core.require(path.suffix.lower() == ".png", "screenshot_png_required")
+        core.require(not _in_generated_directory(path, base), "artifact_screenshot_forbidden")
+        identity = (st.st_dev, st.st_ino)
+        core.require(relative not in denied and identity not in denied_identities, "screenshot_permission_required")
+        core.require(st.st_nlink == 1, "source_file_or_link_invalid")
+        excluded, reason = _match_explicit_exclusion({"path": relative}, path, *exclusions)
+        if excluded:
+            exclusions[0].setdefault(relative, reason)
+            continue
+        core.require(relative in allowed, "screenshot_permission_required")
+        core.require(relative not in paths and identity not in identities, "screenshot_duplicate_path")
+        core.require(st.st_size <= software_delivery.MAX_IMAGE_BYTES, "screenshot_too_large")
+        shot["path"] = relative
+        paths.add(relative)
+        identities.add(identity)
+        checked.append((shot, path, identity))
+    delivery["screenshots"] = [shot for shot, _, _ in checked]
+    if not checked:
+        return []
+
+    manual = request.get("manual_input")
+    core.require(
+        manual is not None
+        and manual.get("mode") == "GUI"
+        and far.get("manual_mode", "GUI") == "GUI",
+        "screenshots_require_gui",
+    )
+    operations = software._items(manual.get("operations", []), "operations_required")
+    operation_ids = software._ids(operations)
+    runtime = software._items(manual.setdefault("runtime_evidence", []), "runtime_evidence_list_required", nonempty=False)
+    existing_ids = software._ids(runtime)
+    anchored_operations = {block.get("operation_id") for block in manual.get("blocks", [])}
+    version = far["scope"]["metadata"]["version"]
+    for shot in delivery["screenshots"]:
+        core.require_fields(shot, ("id", "version", "operation_id", "capture_evidence",
+                                  "local_use_evidence", "visible_state"))
+        shot_id = shot["id"]
+        core.require(isinstance(shot_id, str) and re.fullmatch(r"[A-Za-z][A-Za-z0-9_]{0,30}", shot_id)
+                     and shot_id not in existing_ids, "screenshot_id_invalid")
+        operation_id = shot["operation_id"]
+        core.require(isinstance(operation_id, str) and operation_id in operation_ids,
+                     "screenshot_operation_mismatch")
+        core.require("blocks" not in manual or operation_id in anchored_operations, "manual_screenshot_unmatched")
+        core.require(shot["version"] == version, "screenshot_version_mismatch")
+        core.require(all(isinstance(shot[key], str) and shot[key].strip()
+                         for key in ("capture_evidence", "local_use_evidence", "visible_state")),
+                     "screenshot_evidence_required")
+        core.require(isinstance(shot.get("visual_review", {}), dict), "screenshot_entry_invalid")
+        for key in ("sha256", "build_binding"):
+            if key in shot:
+                core.require(isinstance(shot[key], str) and re.fullmatch(r"[0-9a-f]{64}", shot[key]),
+                             "screenshot_entry_invalid")
+        existing_ids.add(shot_id)
+        runtime.append({"id": shot_id, "version": version, "kind": "screenshot",
+                        "evidence_id": shot["capture_evidence"]})
+    return checked
+
+
+def _prepare_batch_state(
+    base: Path,
+    batch_input: dict,
+    *,
+    destination: Path | None = None,
+    manual_markdown_path: str | None = None,
+) -> tuple[dict, dict, dict, list[str], bool, list]:
+    """校验三批次输入、权限、敏感词与可选 Markdown 手册，并计算一致的 discovery 与 confirmation_group。"""
+    from . import software_revision
+
+    core.require(isinstance(batch_input, dict), "batch_input_required")
+    core.require_fields(batch_input, ("context_and_permissions", "files_and_rights"))
+    context = copy.deepcopy(batch_input["context_and_permissions"])
+    _check_access(context)
+
+    far = batch_input["files_and_rights"]
+    core.require(isinstance(far, dict), "files_and_rights_required")
+    core.require_fields(far, ("scope", "rights", "files", "material_permissions"))
+    core.require(isinstance(far["scope"], dict), "scope_object_required")
+    core.require(isinstance(far["rights"], list), "rights_list_required")
+    core.require(isinstance(far["files"], list) and bool(far["files"]), "file_inventory_required")
+    core.require(isinstance(far["material_permissions"], list), "material_permission_invalid")
+
+    raw_far_secrets = far.get("sensitive_literals", [])
+    core.require(
+        isinstance(raw_far_secrets, list) and all(isinstance(s, str) and bool(s) for s in raw_far_secrets),
+        "invalid_sensitive_literals",
+    )
+    raw_delivery = far.get("delivery")
+    if raw_delivery is not None:
+        core.require(isinstance(raw_delivery, dict), "delivery_object_required")
+        raw_del_secrets = raw_delivery.get("sensitive_literals", [])
+        core.require(
+            isinstance(raw_del_secrets, list) and all(isinstance(s, str) and bool(s) for s in raw_del_secrets),
+            "invalid_sensitive_literals",
+        )
+    else:
+        raw_del_secrets = []
+    secrets = list(dict.fromkeys([*raw_far_secrets, *raw_del_secrets]))
+
+    # 校验 SW-01 / SW-07 组件材料权限，拒绝未授权或禁止处理的组件（传入 deepcopy 避免就地改写 context.now）
+    scoped = software.run("SW-01", {"context": copy.deepcopy(context), **copy.deepcopy(far["scope"])}, use_system_time=True)
+    entitled = software.run(
+        "SW-07", {"context": copy.deepcopy(context), "scope": scoped["artifacts"], "rights": copy.deepcopy(far["rights"])},
+        use_system_time=True,
+    )
+    core.require(
+        all(item["decision"] not in {"prohibit", "needs_permission"} for item in entitled["artifacts"]["decisions"]),
+        "material_permission_not_proven",
+    )
+
+    # 规范化文件路径、拦截生成目录/输出目录碰撞与符号链接/目录联接
+    normalized_files: list[dict] = []
+    file_lexicals: dict[str, tuple[Path, Path, os.stat_result]] = {}
+    seen_paths: set[str] = set()
+    for idx, entry in enumerate(far["files"], start=1):
+        core.require(isinstance(entry, dict) and isinstance(entry.get("path"), str), "source_file_required")
+        fpath, lexical, info, rel = _check_source_file_safety(base, entry["path"], destination)
+        core.require(rel not in seen_paths, "duplicate_source_path")
+        seen_paths.add(rel)
+        item = copy.deepcopy(entry)
+        item["path"] = rel
+        item.setdefault("id", f"file-{idx}")
+        item.setdefault("component_id", "main")
+        item.setdefault("kind", "source")
+        item.setdefault("include", True)
+        core.require(type(item["include"]) is bool, "include_boolean_required")
+        normalized_files.append(item)
+        file_lexicals[rel] = (fpath, lexical, info)
+
+    (
+        has_explicit_exclusions,
+        explicit_paths,
+        explicit_dirs,
+        exclude_patterns,
+        extra_excluded_records,
+    ) = _collect_explicit_exclusions(base, far, batch_input)
+
+    # 严格规范化 material_permissions 中的路径（经 core.safe_path 防 ./、大小写变体与硬链接绕过 deny）
+    (
+        normalized_perms,
+        allowed_perm_paths,
+        blocked_perm_paths,
+        blocked_perm_identities,
+    ) = _normalize_material_permissions(base, far["material_permissions"])
+
+    # 在任何发现或文件读取前，对全部源码文件强制执行 deny 路径与 (st_dev, st_ino) 硬链接/大小写别名拦截，并拒绝硬链接逃逸！
+    for item in normalized_files:
+        _, _, info = file_lexicals[item["path"]]
+        core.require(
+            item["path"] not in blocked_perm_paths
+            and (info.st_dev, info.st_ino) not in blocked_perm_identities,
+            "material_permission_not_proven",
+        )
+        core.require(info.st_nlink == 1, "source_file_or_link_invalid")
+        _check_file_permission_denial(item)
+
+    exclusions = (explicit_paths, explicit_dirs, exclude_patterns)
+    excluded_sources: list[dict] = []
+    excluded_paths_seen: set[str] = set()
+    discover_candidates: list[dict] = []
+    for item in normalized_files:
+        fpath, _, _ = file_lexicals[item["path"]]
+        excluded, reason = _match_explicit_exclusion(item, fpath, *exclusions)
+        if excluded:
+            explicit_paths.setdefault(item["path"], reason)
+            excluded_sources.append({"id": item["id"], "path": item["path"], "read_status": "not_read",
+                                     "exclusion_reason": reason})
+            excluded_paths_seen.add(item["path"])
+        else:
+            discover_candidates.append(item)
+    core.require(bool(discover_candidates), "no_readable_source_files")
+
+    # 若提供 Markdown 手册，必须在 confirmation_group 之前完成权限、秘密扫描与挂载，防止 input_binding 漂移！
+    if "manual_mode" in far:
+        core.require(isinstance(far["manual_mode"], str) and far["manual_mode"] in MODES,
+                     "manual_mode_invalid")
+    manual_input = copy.deepcopy(far.get("manual_input"))
+    if manual_input is not None:
+        core.require(isinstance(manual_input, dict), "manual_input_object_required")
+        if "manual_mode" in far:
+            core.require(manual_input.setdefault("mode", far["manual_mode"]) == far["manual_mode"],
+                         "manual_mode_mismatch")
+    manual_imported = False
+    if manual_markdown_path is not None:
+        core.require(isinstance(manual_markdown_path, str) and bool(manual_markdown_path.strip()),
+                     "manual_markdown_invalid")
+        md_file, _, md_st, md_rel = _check_source_file_safety(base, manual_markdown_path, destination)
+        core.require(md_st.st_size <= MAX_FILE_BYTES, "manual_markdown_invalid")
+        core.require(md_st.st_nlink == 1, "source_file_or_link_invalid")
+        core.require(md_rel not in blocked_perm_paths and (md_st.st_dev, md_st.st_ino) not in blocked_perm_identities,
+                     "manual_markdown_permission_required")
+        excluded, reason = _match_explicit_exclusion({"path": md_rel}, md_file, *exclusions)
+        if excluded:
+            explicit_paths.setdefault(md_rel, reason)
+            manual_markdown_path = None
+    if manual_markdown_path is not None:
+        core.require(md_rel in allowed_perm_paths, "manual_markdown_permission_required")
+        core.require(not any(secret in md_rel for secret in secrets), "sensitive_literal_in_manual_path")
+        try:
+            _check_access(context)
+            with md_file.open("rb") as stream:
+                md_raw = stream.read(MAX_FILE_BYTES + 1)
+            core.require(len(md_raw) <= MAX_FILE_BYTES, "manual_markdown_invalid")
+            md_text = md_raw.decode("utf-8")
+        except (OSError, UnicodeError):
+            raise core.ContractError("manual_markdown_unreadable") from None
+        core.require(not any(secret in md_text for secret in secrets), "sensitive_literal_in_manual")
+        parsed = software_revision.parse_markdown(md_text)
+        _check_sensitive(parsed, secrets, "sensitive_literal_in_manual")
+        # Markdown 内嵌图片须走带逐图授权的 software_import，不得静默注入未授权 image_id
+        core.require(not parsed.get("images"), "manual_markdown_images_require_import")
+        blocks = copy.deepcopy(parsed["blocks"])
+        for block in blocks:
+            block["status"] = "needs_review"
+        manual_input = {
+            "mode": far.get("manual_mode", "CLI"),
+            "facts": [],
+            "operations": [],
+            "runtime_evidence": [],
+            **(manual_input or {}),
+            "blocks": blocks,
+            "revision": {
+                "input": {
+                    "path": md_rel,
+                    "sha256": core.sha256_bytes(md_raw),
+                    "format": "markdown",
+                },
+                "parser_metadata": parsed["metadata"],
+                "confirmations": "needs_review",
+            },
+        }
+        manual_imported = True
+
+    pagination = copy.deepcopy(far.get("pagination") or {
+        "selection": "all",
+        "lines_per_page": 50,
+        "wrap_columns": 78,
+        "basis": "internal_candidate_not_verified_registration_rule",
+    })
+    core.require(isinstance(pagination, dict) and pagination.get("selection") == "all",
+                 "pagination_selection_must_be_all")
+
+    inventory_complete = far.get("inventory_complete", False)
+    core.require(type(inventory_complete) is bool, "inventory_complete_bool_required")
+    request = {
+        "context": context,
+        "authorized_root": str(base),
+        "scope_input": copy.deepcopy(far["scope"]),
+        "rights": copy.deepcopy(far["rights"]),
+        "files": discover_candidates,
+        "inventory_complete": inventory_complete,
+        "pagination": pagination,
+    }
+    if manual_input is not None:
+        request["manual_input"] = manual_input
+    _check_sensitive(request, secrets, "intake_sensitive_request")
+    delivery = copy.deepcopy(raw_delivery or {})
+    delivery.pop("sensitive_literals", None)
+    core.require(set(delivery) <= {"selection", "screenshots"}, "delivery_options_invalid")
+    delivery.setdefault("selection", "all")
+    software_delivery.select_pages([], delivery["selection"])
+    shots = _batch_screenshots(base, destination, far, normalized_files, request, delivery,
+                              (allowed_perm_paths, blocked_perm_paths, blocked_perm_identities), exclusions)
+    _check_sensitive(delivery, secrets, "intake_sensitive_request")
+
+    _append_unmatched_explicit_exclusions(
+        excluded_sources, excluded_paths_seen, explicit_paths, explicit_dirs, extra_excluded_records,
+    )
+    if excluded_sources or has_explicit_exclusions:
+        request["inventory_complete"] = False
+    _check_sensitive(excluded_sources, secrets, "intake_sensitive_request")
+
+    # 在打开任何源码文件前先校验整份待发现清单的读取许可；再逐文件隔离普通 OSError 不可读文件。
+    discovery_input = {
+        "context": context,
+        "authorized_root": str(base),
+        "files": discover_candidates,
+        "material_permissions": normalized_perms,
+        "request": request,
+        "sensitive_literals": secrets,
+    }
+    software_discovery._file_permissions(discovery_input)
+    discover_files, unreadable_entries = _probe_readable_for_discovery(
+        discover_candidates, file_lexicals, context,
+    )
+    if unreadable_entries:
+        request["inventory_complete"] = False
+        excluded_sources.extend(unreadable_entries)
+    core.require(bool(discover_files), "no_readable_source_files")
+    discovery_input["files"] = discover_files
+
+    while True:
+        discovery = _discover_with_unreadable_fallback(
+            discovery_input, file_lexicals, excluded_sources, request, "no_readable_source_files",
+        )
+        candidates_by_path = {row["path"]: row for row in discovery["file_candidates"]}
+        active_files = []
+        discovery_exclusions = []
+        for item in discover_files:
+            cand = candidates_by_path.get(item["path"])
+            if cand is not None and cand["read_status"] == "read" and not cand["exclusion_reason"]:
+                active_files.append({**item, "expected_sha256": cand["sha256"]})
+            else:
+                request["inventory_complete"] = False
+                discovery_exclusions.append({
+                    "id": item["id"],
+                    "path": item["path"],
+                    "read_status": cand["read_status"] if cand is not None else "not_read",
+                    "exclusion_reason": cand["exclusion_reason"] if cand is not None else "not_discovered",
+                })
+        core.require(bool(active_files), "no_readable_source_files")
+        request["files"] = active_files
+        try:
+            group = software_discovery.confirmation_group(
+                {"request": request, "discovery": discovery, "options": delivery}, use_system_time=True,
+            )
+        except core.ContractError as exc:
+            if not _exclude_failed_source_read(
+                exc, discover_files, file_lexicals, excluded_sources, request, "no_readable_source_files",
+            ):
+                raise
+        else:
+            excluded_sources.extend(discovery_exclusions)
+            break
+    _check_sensitive(group["request"], secrets, "intake_sensitive_request")
+    return context, discovery, group, secrets, manual_imported, shots, excluded_sources
+
+
+def _plan_binding(discovery: dict, group: dict) -> str:
+    """绑定发现摘要、候选表摘要与输入绑定（不含瞬时墙钟微秒，便于操作者审阅后跨秒提交）。"""
+    return core.digest({
+        "discovery_binding": discovery["binding"],
+        "summary_digest": group["summary_digest"],
+        "input_binding": group["input_binding"],
+        "delivery": group["options"],
+    })
+
+
+def plan_batch(
+    root: str | Path,
+    *,
+    batch_input: dict,
+    manual_markdown_path: str | None = None,
+) -> dict:
+    """只读批次计划：执行权限核验、多栈发现与 confirmation_group 摘要生成，供操作者审阅后再确认。"""
+    try:
+        base = Path(root).resolve(strict=True)
+        core.require(base.is_dir(), "authorized_root_required")
+        _, discovery, group, _, manual_imported, _, excluded_sources = _prepare_batch_state(
+            base, batch_input, manual_markdown_path=manual_markdown_path,
+        )
+    except (OSError, RuntimeError, OverflowError):
+        raise core.ContractError("intake_io_failed") from None
+    result = {
+        "status": "needs_confirm",
+        "group_binding": _plan_binding(discovery, group),
+        "summary_digest": group["summary_digest"],
+        "input_binding": group["input_binding"],
+        "eligible_candidates": list(group["eligible_candidates"]),
+        "rows": copy.deepcopy(group["rows"]),
+        "discovered_field_candidates": sum(1 for row in discovery["field_candidates"] if row["status"] != "unknown"),
+        "manual_blocks_imported": manual_imported,
+        "inventory_complete": group["request"]["inventory_complete"],
+        "professional_review": "not_performed",
+    }
+    if excluded_sources:
+        result["excluded_sources"] = excluded_sources
+    return result
+
+
+def _collect_batch(
+    root: str | Path,
+    output: str,
+    *,
+    batch_input: dict,
+    manual_markdown_path: str | None = None,
+) -> dict:
+    """Phase D1: 低摩擦三批次集中采集入口，产出可直接喂入 build-software 的授权与请求包。
+
+    安全红线：
+    - 严禁在同一调用内自动盲选确认（confirm_eligible=True 无人工审阅摘要绑定直接拒绝）；
+    - 若提交 field_confirmation，必须携带由 plan_batch 返回并经操作者实际核对的
+      group_binding、summary_digest、input_binding 与显式 candidate_digests；
+    - manual_markdown_path 在 confirmation_group 之前挂载并完成权限与敏感词扫描，确保确认永不陈旧。
+    """
+    base = Path(root).resolve(strict=True)
+    core.require(base.is_dir(), "authorized_root_required")
+    destination = core.safe_path(base, output, must_exist=False)
+    core.require(not destination.exists(), "output_exists")
+    core.require(destination.parent.is_dir(), "output_parent_missing")
+    relative_output = destination.relative_to(base).as_posix()
+
+    context, discovery, group, secrets, manual_imported, shots, excluded_sources = _prepare_batch_state(
+        base, batch_input, destination=destination, manual_markdown_path=manual_markdown_path,
+    )
+    core.require(not any(secret in f"{relative_output}/authorization.json" for secret in secrets),
+                 "intake_sensitive_output_path")
+
+    final_request = copy.deepcopy(group["request"])
+    confirm_meta = batch_input.get("field_confirmation")
+    confirmed_count = 0
+    if confirm_meta is not None:
+        core.require(isinstance(confirm_meta, dict), "field_confirmation_object_required")
+        # 严禁盲目全选：必须显式提供经 plan_batch 审阅的绑定摘要与候选列表
+        required_confirm_keys = (
+            "group_binding", "summary_digest", "input_binding",
+            "actor", "role", "evidence_id", "candidate_digests",
+        )
+        core.require(
+            all(key in confirm_meta for key in required_confirm_keys),
+            "blind_batch_confirmation_forbidden",
+        )
+        core.require(isinstance(confirm_meta["candidate_digests"], list), "candidate_digests_list_required")
+        expected_plan_binding = _plan_binding(discovery, group)
+        core.require(
+            confirm_meta["group_binding"] in {expected_plan_binding, group["binding"]}
+            and confirm_meta["summary_digest"] == group["summary_digest"]
+            and confirm_meta["input_binding"] == group["input_binding"],
+            "confirmation_group_stale",
+        )
+        confirmed = software_discovery.confirm_group(
+            group,
+            {
+                "group_binding": group["binding"],
+                "summary_digest": confirm_meta["summary_digest"],
+                "input_binding": confirm_meta["input_binding"],
+                "status": "confirmed",
+                "actor": confirm_meta["actor"],
+                "role": confirm_meta["role"],
+                "evidence_id": confirm_meta["evidence_id"],
+                "candidate_digests": list(confirm_meta["candidate_digests"]),
+            },
+        )
+        final_request = confirmed["request"]
+        confirmed_count = len(confirmed["request"].get("confirmations", []))
+
+    _check_sensitive(final_request, secrets, "intake_sensitive_request")
+    delivery = copy.deepcopy(group["options"])
+    auth_files = [{"path": item["path"], "sha256": item["expected_sha256"]}
+                  for item in final_request["files"]]
+    if shots:
+        preparation = software.prepare(final_request, use_system_time=True)["artifacts"]
+        binding = software_delivery.build_binding(preparation)
+        for shot in delivery["screenshots"]:
+            core.require(shot.get("build_binding", binding) == binding, "screenshot_build_changed")
+        for shot, (_, path, identity) in zip(delivery["screenshots"], shots):
+            _check_access(context)
+            with path.open("rb") as stream:
+                st = os.fstat(stream.fileno())
+                core.require((st.st_dev, st.st_ino) == identity, "screenshot_file_changed")
+                raw = stream.read(software_delivery.MAX_IMAGE_BYTES + 1)
+            core.require(len(raw) <= software_delivery.MAX_IMAGE_BYTES, "screenshot_too_large")
+            software_delivery._png(raw)
+            sha256 = core.sha256_bytes(raw)
+            core.require(shot.get("sha256", sha256) == sha256, "screenshot_hash_changed")
+            shot.update(sha256=sha256, build_binding=binding)
+            auth_files.append({"path": shot["path"], "sha256": sha256})
+    _check_sensitive(delivery, secrets, "intake_sensitive_request")
+    delivery["sensitive_literals"] = list(secrets)
+    final_request.pop("context", None)
+    final_request.pop("authorized_root", None)
+    final_request["delivery"] = delivery
+
+    request_path = f"{relative_output}/request.json"
+    authorization_path = f"{relative_output}/authorization.json"
+    authorization = {
+        "kind": "software_local_authorization",
+        "authorized_root": str(base),
+        "context": context,
+        "request": {
+            "path": request_path,
+            "sha256": core.sha256_bytes(core.canonical_bytes(final_request) + b"\n"),
+        },
+        "files": auth_files,
+        "output": f"{relative_output}/materials",
+    }
+    if excluded_sources:
+        authorization["excluded_sources"] = excluded_sources
+    _check_access(context)
+    destination.mkdir()
+    core.write_new_json(base, request_path, final_request)
+    core.write_new_json(base, authorization_path, authorization)
+    discovered_non_unknown = sum(1 for row in discovery["field_candidates"] if row["status"] != "unknown")
+    summary = {
+        "status": "collected_batch",
+        "batches_consumed": 3 if confirm_meta else 2,
+        "discovered_field_candidates": discovered_non_unknown,
+        "confirmed_candidates": confirmed_count,
+        "manual_blocks_imported": manual_imported,
+        "inventory_complete": final_request["inventory_complete"],
+        "authorization": authorization_path,
+        "authorization_sha256": core.sha256_bytes(core.canonical_bytes(authorization) + b"\n"),
+        "professional_review": "not_performed",
+    }
+    if excluded_sources:
+        summary["excluded_sources"] = excluded_sources
+    return summary
+
+
+def collect_batch(
+    root: str | Path,
+    output: str,
+    *,
+    batch_input: dict,
+    manual_markdown_path: str | None = None,
+) -> dict:
+    """收集显式授权的材料与截图，产出 build-software 所需授权包。"""
+    try:
+        return _collect_batch(root, output, batch_input=batch_input, manual_markdown_path=manual_markdown_path)
     except (OSError, RuntimeError, OverflowError):
         raise core.ContractError("intake_io_failed") from None

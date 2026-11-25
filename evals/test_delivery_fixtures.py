@@ -5,11 +5,18 @@ from pathlib import Path
 import shutil
 import tempfile
 import unittest
+import zipfile
+import zlib
 
 from tools import documents
 from tools.core import ContractError
 
 ROOT = Path(__file__).resolve().parents[1]
+CLASSIC_ZLIB = (
+    not hasattr(zlib, "ZLIBNG_VERSION")
+    and "zlib-ng" not in getattr(zlib, "ZLIB_VERSION", "").lower()
+    and "zlib-ng" not in getattr(zlib, "ZLIB_RUNTIME_VERSION", "").lower()
+)
 
 
 class DeliveryFixtureTests(unittest.TestCase):
@@ -51,7 +58,11 @@ class DeliveryFixtureTests(unittest.TestCase):
         spec=json.loads((folder/'standard-input.json').read_text(encoding='utf-8'))
         binding=json.loads((folder/'comment-bindings.json').read_text(encoding='utf-8'))
         blocks,images=documents.resolve_document(ROOT,spec)
-        self.assertEqual(binding['normative_docx_sha256'],hashlib.sha256(documents.make_docx(blocks,images)).hexdigest())
+        raw_docx = documents.make_docx(blocks,images)
+        checked = documents.inspect_generated_docx(raw_docx, blocks, images)
+        self.assertTrue(checked['source_text_equal'])
+        if CLASSIC_ZLIB:
+            self.assertEqual(binding['normative_docx_sha256'],hashlib.sha256(raw_docx).hexdigest())
         ids={b['id'] for b in blocks}
         self.assertTrue(set(binding['stable_clause_bookmarks']).issubset(ids))
         for comment in binding['comments']:

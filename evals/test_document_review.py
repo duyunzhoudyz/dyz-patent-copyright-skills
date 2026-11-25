@@ -10,6 +10,7 @@ import warnings
 import zipfile
 from xml.etree import ElementTree as ET
 
+from tools import omml
 from tools import document_review as review
 from tools.core import ContractError, sha256_bytes
 from tools.documents import make_docx
@@ -630,6 +631,124 @@ class DocumentReviewTests(unittest.TestCase):
             self.assertEqual("unsafe_path", json.loads(escape.stdout)["error"])
             overwrite = run(base + ["--synthetic", "--output", "edited.docx"])
             self.assertEqual("docx_report_json_required", json.loads(overwrite.stdout)["error"])
+
+
+class OmmlReadbackTests(unittest.TestCase):
+    def test_rejects_ambiguous_unbraced_formula_arguments(self):
+        for expr in (r"\sqrt -x", r"\sqrt +x", r"\sqrt (x+1)", r"\frac -1 2",
+                     r"\frac 1 [x]", r"x_(a+b)", r"x^[2]", r"\sum_{i=1} -x"):
+            with self.subTest(expr=expr), self.assertRaises(ContractError):
+                omml.latex_to_omml_element(expr)
+        for expr in (r"\sqrt{-x}", r"\frac{-1}{2}", r"x_{(a+b)}", r"\sqrt[3]{x}", r"\frac 12 34"):
+            with self.subTest(expr=expr):
+                self.assertTrue(omml.inspect_omml(omml.latex_to_omml_element(expr))["valid"])
+
+    def test_formula_token_boundaries_survive_xml_roundtrip(self):
+        for expr, display, collision in (
+            ("12 34", "12 34", "1234"),
+            ("12 {34}", "12 34", "1234"),
+            (r"\sin x", "sin x", "sinx"),
+            (r"\sin{x}", "sin x", "sinx"),
+            (r"x\sin y", "x sin y", "x siny"),
+            (r"\log 10", "log 10", "log10"),
+        ):
+            with self.subTest(expr=expr):
+                result = omml.inspect_omml(ET.fromstring(omml.latex_to_omml_xml(expr)))
+                other = omml.inspect_omml(omml.latex_to_omml_element(collision))
+                self.assertTrue(result["valid"])
+                self.assertEqual(display, result["extracted_text"])
+                self.assertNotEqual(other["structure_sha256"], result["structure_sha256"])
+
+    def test_formula_boundaries_survive_separate_space_runs(self):
+        m = "{" + omml.M + "}"
+        for expr, runs in (("12 34", ("12", " ", "34")), (r"\sin x", ("sin", " ", "x"))):
+            with self.subTest(expr=expr):
+                original = omml.inspect_omml(omml.latex_to_omml_element(expr))
+                split = ET.Element(m + "oMath")
+                for text in runs:
+                    ET.SubElement(ET.SubElement(split, m + "r"), m + "t").text = text
+                inspected = omml.inspect_omml(ET.fromstring(ET.tostring(split)))
+                self.assertTrue(inspected["valid"])
+                self.assertEqual("".join(runs), inspected["extracted_text"])
+                self.assertEqual(original["structure_sha256"], inspected["structure_sha256"])
+
+    def test_invalid_omml_is_not_in_main_body_or_bookmark(self):
+        m = "{" + omml.M + "}"
+        raw = fixture()
+        baseline = review.review_docx(raw)["current"]
+        for kind in ("ins", "del", "moveTo", "moveFrom", "fldSimple", "instrText", "fldChar", "hidden",
+                     "math_text", "run_text", "run_tail", "text_tail"):
+            with self.subTest(kind=kind):
+                def inject(tree):
+                    paragraph = tree.find(".//" + tag("p"))
+                    math = omml.latex_to_omml_element("x+1")
+                    paragraph.insert(len(paragraph) - 1, math)
+                    if kind == "hidden":
+                        run = ET.SubElement(math, m + "r")
+                        props = ET.SubElement(run, tag("rPr"))
+                        ET.SubElement(props, tag("vanish"), {tag("val"): "On"})
+                        ET.SubElement(run, m + "t").text = "+999"
+                    elif kind == "math_text":
+                        math.text = "+999"
+                    elif kind == "run_text":
+                        math[0].text = "+999"
+                    elif kind == "run_tail":
+                        math[0].tail = "+999"
+                    elif kind == "text_tail":
+                        math[0][0].tail = "+999"
+                    elif kind == "fldChar":
+                        ET.SubElement(math, tag("fldChar"), {tag("fldCharType"): "begin"})
+                        math.append(omml.latex_to_omml_element("+999")[0])
+                        ET.SubElement(math, tag("fldChar"), {tag("fldCharType"): "end"})
+                    else:
+                        wrapper = ET.SubElement(math, tag(kind))
+                        wrapper.append(omml.latex_to_omml_element("+999")[0])
+
+                current = review.review_docx(edited(raw, inject))["current"]
+                formula, = current["formulas"]
+                self.assertFalse(formula["valid"])
+                self.assertEqual("" if kind == "fldChar" else "x+1", formula["extracted_text"])
+                self.assertNotIn("999", formula["canonical_form"])
+                self.assertEqual(baseline["blocks"][0]["text"], current["blocks"][0]["text"])
+                self.assertEqual(baseline["bookmarks"][0]["text"], current["bookmarks"][0]["text"])
+                self.assertEqual(baseline["literal_text_sha256"], current["literal_text_sha256"])
+                self.assertTrue(any(f["locator"] == formula["locator"] for f in current["unresolved_fragments"]))
+
+    def test_formula_in_external_revision_or_field_does_not_enter_body(self):
+        raw = fixture()
+        expected = review.review_docx(raw)["current"]["literal_text_sha256"]
+        for kind in ("ins", "moveTo", "fldSimple", "complex_field"):
+            with self.subTest(kind=kind):
+                def inject(tree):
+                    paragraph = tree.find(".//" + tag("p"))
+                    index = len(paragraph) - 1
+                    math = omml.latex_to_omml_element("x+999")
+                    if kind == "complex_field":
+                        for offset, value in enumerate(("begin", "separate")):
+                            paragraph.insert(index + offset, ET.Element(tag("fldChar"), {tag("fldCharType"): value}))
+                        paragraph.insert(index + 2, math)
+                        paragraph.insert(index + 3, ET.Element(tag("fldChar"), {tag("fldCharType"): "end"}))
+                    else:
+                        wrapper = ET.Element(tag(kind))
+                        wrapper.append(math)
+                        paragraph.insert(index, wrapper)
+
+                current = review.review_docx(edited(raw, inject))["current"]
+                self.assertEqual(expected, current["literal_text_sha256"])
+                self.assertTrue(current["unresolved_fragments"])
+
+    def test_disabled_word_hidden_properties_leave_formula_visible(self):
+        for prop in ("vanish", "specVanish", "webHidden"):
+            for value in ("off", "OFF", "False", "0"):
+                with self.subTest(prop=prop, value=value):
+                    el = omml.latex_to_omml_element("x+1")
+                    props = ET.Element(tag("rPr"))
+                    ET.SubElement(props, tag(prop), {tag("val"): value})
+                    el[0].insert(0, props)
+                    inspection = omml.inspect_omml(el)
+                    self.assertTrue(inspection["valid"], inspection)
+                    self.assertEqual([], inspection["revision_or_hidden_nodes"])
+                    self.assertEqual("x+1", inspection["extracted_text"])
 
 
 if __name__ == "__main__":

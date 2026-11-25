@@ -1,7 +1,9 @@
 """软件候选逻辑页的内存DOCX装配；不冒充渲染后的物理页验收。"""
+import base64
 import copy
 import io
 import struct
+import sys
 import unittest
 import warnings
 import zipfile
@@ -16,6 +18,14 @@ from tools.core import ContractError, sha256_bytes
 W = "{" + documents.W + "}"
 NS = {"w": documents.W, "r": documents.R, "wp": documents.WP,
       "a": documents.A, "rel": documents.REL}
+
+
+def legacy_docx_hash(*, windows, unix):
+    """同一 3.11 基准包保留成员和元数据，仅替换压缩器及 ZIP 宿主标记。"""
+    classic, ng = windows if sys.platform == "win32" else unix
+    if hasattr(zlib, "ZLIBNG_VERSION") or "zlib-ng" in zlib.ZLIB_RUNTIME_VERSION:
+        return ng
+    return classic
 
 
 def png(width=120, height=80):
@@ -314,12 +324,26 @@ class SoftwareDocumentTests(unittest.TestCase):
     def test_legacy_fixture_bytes_are_unchanged_by_new_shared_helpers(self):
         block = [{"id": "Legacy", "kind": "paragraph", "text": "旧合成入口，不改门禁。"}]
         raw = documents.make_docx(block, [])
-        self.assertEqual(sha256_bytes(raw),
-                         "b36db6eccf78fbf82b861d11c2b82d5e2758d2aa1431cd67c4e051dfd3c7b4e8")
-        images = [{"id": "Figure", "png": png(), "width": 120, "height": 80}]
+        self.assertEqual(sha256_bytes(raw), legacy_docx_hash(
+            windows=("b36db6eccf78fbf82b861d11c2b82d5e2758d2aa1431cd67c4e051dfd3c7b4e8",
+                     "62c6ad5b4dc6004cbfc9c91b5765d62c6ebda90901b0dd1a1615edd4ab61a22a"),
+            unix=("46a5299651ab14b6353619721197d5497127ac863d13cf28e8869e158a1ea4cf",
+                  "faeaa88546ca1d9977acffbff39d48e766e956b132d9ed697ab3e24ae3a9b5d8")))
+        # 原 3.11 png(120, 80) 的完整字节；IDAT 不能随外层 ZIP 压缩器变化。
+        image = base64.b64decode(
+            "iVBORw0KGgoAAAANSUhEUgAAAHgAAABQCAIAAABd+SbeAAAAxUlEQVR4nO3QQREAMAjA"
+            "MPybHi6yB42CXueFmN8BVzQaaTTSaKTRSKORRiONRhqNNBppNNJopNFIo5FGI41GGo00"
+            "Gmk00mik0UijkUYjjUYajTQaaTTSaKTRSKORRiONRhqNNBppNNJopNFIo5FGI41GGo00"
+            "Gmk00mik0UijkUYjjUYajTQaaTTSaKTRSKORRiONRhqNNBppNNJopNFIo5FGI41GGo00"
+            "Gmk00mik0UijkUYjjUYajTQaaTTSaKTRSKORRiMLMEMWEfUbSmoAAAAASUVORK5CYII=",
+            validate=True)
+        images = [{"id": "Figure", "png": image, "width": 120, "height": 80}]
         with_image = documents.make_docx(block, images)
-        self.assertEqual(sha256_bytes(with_image),
-                         "4dde00772315c433c80ddb8e0e6191a6eb38bcf8b2e1d2e75ca05ee34aae8cef")
+        self.assertEqual(sha256_bytes(with_image), legacy_docx_hash(
+            windows=("4dde00772315c433c80ddb8e0e6191a6eb38bcf8b2e1d2e75ca05ee34aae8cef",
+                     "685c6d79ca3d84c0e5792653cbff02292a602818a73b43ad3e4ab6eb8f098453"),
+            unix=("3c63c5e24a1ccd84d353d1a78de568d780999f4856f960fee50cc5e31435e027",
+                  "2e8a106b8f20852177288c71b50b4f98c50b301599fc4518c8c9436f9f977cd8")))
         self.assertTrue(documents.inspect_generated_docx(raw, block, [])["source_text_equal"])
         self.assertTrue(documents.inspect_generated_docx(with_image, block, images)["source_text_equal"])
 

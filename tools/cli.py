@@ -1,7 +1,8 @@
-"""合成能力入口与获准本地软件准备；不打印材料或补造权限、适配事实。"""
+"""合成能力与获准本地辅助入口；错误诊断不打印材料或路径。"""
 from __future__ import annotations
 
 import argparse
+import errno
 import importlib
 import json
 import sqlite3
@@ -337,6 +338,21 @@ def _read_bound_json(root: Path, relative: str, expected: str, limit: int) -> di
     return output
 
 
+def _read_json(root: Path, relative: str) -> dict:
+    """读取根内普通单链接文件；不把解析后的路径当作无别名证明。"""
+    core.safe_path(root, relative)
+    path = root.joinpath(*relative.replace("\\", "/").split("/"))
+    info = core.checked_path(path)
+    core.require(stat.S_ISREG(info.st_mode) and info.st_nlink == 1, "input_file_required")
+    limit = 5_000_000
+    with path.open("rb") as stream:
+        raw = stream.read(limit + 1)
+    core.require(len(raw) <= limit, "input_too_large")
+    payload = core.strict_json_loads(raw.decode("utf-8"))
+    core.require(isinstance(payload, dict), "object_required")
+    return payload
+
+
 def _prepare_software(args: argparse.Namespace, *, document_output: bool = False) -> dict:
     """授权控制文件先读，任务正文后读；该路径不开放通用dispatch。"""
     root = Path(args.root).resolve(strict=True)
@@ -493,24 +509,36 @@ def _read_standard_input(args: argparse.Namespace) -> tuple[Path, dict, dict | N
     output_path = core.safe_path(root, args.output, must_exist=False)
     core.require(input_path != output_path and not input_path.is_relative_to(output_path),
                  "standard_source_output_collision")
-    paths = [root, root / args.input, root / args.output]
+    def _lex_join(rel: str) -> Path:
+        return root.joinpath(*rel.replace("\\", "/").split("/"))
+
+    lex_input = _lex_join(args.input)
+    lex_output = _lex_join(args.output)
+    paths = [root, lex_input, lex_output]
     if args.authorization is not None:
         authorization_path = core.safe_path(root, args.authorization)
         core.require(authorization_path != input_path and authorization_path != output_path
                      and not authorization_path.is_relative_to(output_path),
                      "standard_authorization_path_collision")
-        paths.append(root / args.authorization)
+        paths.append(_lex_join(args.authorization))
     # 解析根内路径后仍检查词法父链，不让resolve掩去根内链接或别名原件。
     for path in paths:
         for item in reversed((path, *path.parents)):
             try:
                 info = item.lstat()
             except FileNotFoundError:
-                core.require(item == path and path == root / args.output, "standard_path_missing")
+                core.require(item == path and path == lex_output, "standard_path_missing")
                 continue
-            core.require(not stat.S_ISLNK(info.st_mode) and not (
-                getattr(info, "st_file_attributes", 0) & stat.FILE_ATTRIBUTE_REPARSE_POINT),
-                "standard_link_rejected")
+            is_link = stat.S_ISLNK(info.st_mode) or bool(
+                getattr(info, "st_file_attributes", 0) & getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0))
+            if is_link:
+                if item != path and core.is_macos_system_root_symlink(item):
+                    try:
+                        info = item.stat()
+                    except OSError:
+                        raise core.ContractError("standard_link_rejected") from None
+                else:
+                    core.require(False, "standard_link_rejected")
             core.require(stat.S_ISDIR(info.st_mode) or (item == path and
                          stat.S_ISREG(info.st_mode) and info.st_nlink == 1),
                          "standard_nonregular_or_aliased_file")
@@ -616,7 +644,7 @@ def _convert_standard_pdf(args: argparse.Namespace) -> dict:
     from .standards_delivery import _plain_path
     _plain_path(root)
     authorization_path = core.safe_path(root, args.authorization)
-    _plain_path(root / args.authorization, file=True)
+    _plain_path(root.joinpath(*args.authorization.replace("\\", "/").split("/")), file=True)
     package_path = core.safe_path(root, args.input, must_exist=False)
     output_path = core.safe_path(root, args.output, must_exist=False)
     core.require(not authorization_path.is_relative_to(package_path)
@@ -646,9 +674,150 @@ def _migrate_standard_comments(args: argparse.Namespace) -> None:
     core.write_new_json(root, args.output, output)
 
 
+def _connector_status() -> dict:
+    from dataclasses import asdict
+    from . import connectors
+
+    policy = asdict(connectors.ConnectorPolicy())
+    del policy["authority_evidence"]
+    return {
+        "status": "offline_by_default",
+        "default_policy": policy,
+        "network_requests": 0,
+        "supported_sources": {
+            "uspto_odp": {"host": connectors.UsptoOdpConnector.HOST, "coverage": "bibliographic_metadata_only"},
+            "epo_ops": {"host": connectors.EpoOpsConnector.HOST, "coverage": "bibliographic_metadata_only"},
+            "samr": {"host": connectors.SamrLiveConnector.HOST, "coverage": "public_catalog_only"},
+            "iso_iec_itu": {"coverage": "caller_catalog_snapshot_only"},
+            "external_mcp": {"providers": sorted(connectors.ExternalMcpBridge.SUPPORTED_PROVIDERS),
+                             "coverage": "caller_supplied_records_only"},
+        },
+        "live_access_requires": ["explicit_network_opt_in", "allowed_host", "exact_request_disclosure_approval",
+                                 "request_byte_and_cost_limits"],
+    }
+
+
+def _dump_json(payload, *, indent=None) -> str:
+    return json.dumps(payload, ensure_ascii=False, allow_nan=False, indent=indent)
+
+
+def _local_root(raw: str) -> Path:
+    """拒绝空白、NUL、盘符相对路径和父段；合法绝对路径交给下游。"""
+    if not isinstance(raw, str) or not raw.strip() or "\x00" in raw:
+        raise core.ContractError("local_root_rejected")
+    if len(raw) >= 2 and raw[1] == ":" and (len(raw) == 2 or raw[2] not in ("/", "\\")):
+        raise core.ContractError("local_root_rejected")
+    lexical_root = Path(raw)
+    # 词法拒绝父目录段后再解析，避免 absolute() 先折叠 .. 绕过模板/截图根检查。
+    if ".." in lexical_root.parts:
+        raise core.ContractError("local_root_parent_segment_rejected")
+    return lexical_root.absolute()
+
+
+def _run_local_command(args: argparse.Namespace) -> dict:
+    command = args.command
+    if command == "connector-status":
+        return _connector_status()
+    root = _local_root(args.root)
+    if command == "inspect-template":
+        from . import template_mapper
+        return template_mapper.inspect_template(root, args.input)
+    payload = _read_json(root, args.input)
+    if command == "check-patent-ir":
+        from . import patent_ir
+        return (patent_ir.project_draft_skeleton if args.skeleton else patent_ir.validate_ir)(payload)
+    if command in {"build-patent-pack", "verify-patent-pack"}:
+        from . import patent_intake
+        build = command == "build-patent-pack"
+        fields = ("document_spec", "intake_payload") if build else ("document_spec",)
+        core.require_fields(payload, fields)
+        core.require(set(payload) <= {"document_spec", "intake_payload", "ir_payload"},
+                     "patent_pack_input_fields_invalid")
+        if build:
+            return patent_intake.build_patent_pack(root, output=args.output, synthetic=args.synthetic, **payload)
+        return patent_intake.verify_patent_pack(root, output=args.output, synthetic=args.synthetic,
+                                                expected_summary_sha256=args.expected_summary_sha256, **payload)
+    if command == "check-jurisdiction":
+        from . import jurisdiction_analyzers
+        core.require_fields(payload, ("claims",))
+        if args.jurisdiction == "us":
+            allowed = {"claims", "mpep_rule_version"}
+            analyze = jurisdiction_analyzers.analyze_us_claims
+        else:
+            allowed = {"claims", "original_embodiments", "epc_rule_version"}
+            analyze = jurisdiction_analyzers.analyze_ep_claims
+        core.require(set(payload) <= allowed, "jurisdiction_fields_invalid")
+        return analyze(**payload)
+    if command == "check-strategy":
+        from . import procedure_strategy
+        return {
+            "non-filing": procedure_strategy.evaluate_no_go_and_narrowing,
+            "fto": procedure_strategy.build_fto_four_track_matrix,
+            "sep": procedure_strategy.build_sep_handoff_pack,
+        }[args.kind](payload)
+    if command == "check-visual-ledger":
+        from . import visual_ledger
+        return visual_ledger.build_visual_coverage_ledger(payload)
+    if command == "check-capture-manifest":
+        from . import media_prep
+        return media_prep.validate_capture_manifest(root, payload)
+    if command == "check-trial-upgrade":
+        from . import trial_pack
+        core.require_fields(payload, ("combination_id", "trial_records"))
+        core.require(set(payload) <= {
+            "combination_id", "trial_records", "current_artifact_hashes",
+            "expected_expert_role", "min_consecutive", "registered_packs",
+        }, "trial_upgrade_fields_invalid")
+        return trial_pack.evaluate_combination_upgrade(**payload)
+    raise core.ContractError("local_command_unknown")
+
+
+class _CommandParser(argparse.ArgumentParser):
+    def error(self, message):
+        if self.get_default("local_command"):
+            raise core.ContractError("local_arguments_invalid")
+        super().error(message)
+
+
+def _add_local_commands(sub) -> dict[str, argparse.ArgumentParser]:
+    descriptions = {
+        "check-patent-ir": "校验权项-事实 IR；可输出内部起草骨架",
+        "build-patent-pack": "从合成交底与文档规格生成专利内部包",
+        "verify-patent-pack": "回验合成专利内部包；可绑定包外摘要哈希",
+        "check-jurisdiction": "核对 US/EP 权项结构子集；JSON 含 claims",
+        "check-strategy": "分轨核对不建议申请、FTO 或 SEP；不是法律结论",
+        "check-visual-ledger": "汇总页面实看、跳过与观察者；不代替人工观察",
+        "check-capture-manifest": "回查截图清单与本地 PNG；不运行浏览器",
+        "inspect-template": "只读检查 DOCX/DOTX 模板安全边界；不运行 Office",
+        "check-trial-upgrade": "核对 combination_id、trial_records 与版本及角色绑定；不升级支持",
+        "connector-status": "只读显示默认离线策略、支持来源和限制；不联网",
+    }
+    commands = {}
+    for name, description in descriptions.items():
+        parser = sub.add_parser(name, help=description, description=description, allow_abbrev=False)
+        parser.set_defaults(command=name, local_command=True)
+        commands[name] = parser
+        if name != "connector-status":
+            parser.add_argument("--root", default=".", help="调用者获准使用的本地根目录（默认当前目录）")
+            parser.add_argument("--input", required=True, help=("根内 DOCX/DOTX 相对路径" if name == "inspect-template"
+                                                               else "根内 JSON 相对路径；报告输出到标准输出"))
+    commands["check-patent-ir"].add_argument("--skeleton", action="store_true", help="输出含原文依据的内部骨架")
+    commands["check-jurisdiction"].add_argument("--jurisdiction", choices=("us", "ep"), required=True)
+    commands["check-strategy"].add_argument("--kind", choices=("non-filing", "fto", "sep"), required=True)
+    for name in ("build-patent-pack", "verify-patent-pack"):
+        parser = commands[name]
+        parser.epilog = "输入对象：document_spec、intake_payload（生成必填）、ir_payload（可选）。"
+        parser.add_argument("--synthetic", action="store_true", required=True, help="显式声明仅用合成材料")
+        parser.add_argument("--output", required=True, help="根内专利包目录相对路径")
+    commands["verify-patent-pack"].add_argument("--expected-summary-sha256", help="独立保管的摘要原始字节 SHA-256")
+    return commands
+
+
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(prog="python -m tools", description="合成辅助与获准本地软件准备；不证明宿主离线")
+    parser = _CommandParser(prog="python -m tools", description="合成辅助与获准本地准备；不证明宿主离线")
     sub = parser.add_subparsers(dest="command", required=True)
+    help_parser = sub.add_parser("help", help="显示总帮助或指定子命令帮助")
+    help_parser.add_argument("topic", nargs="?", help="可选子命令名称")
     sub.add_parser("list", help="列出83项能力的实际模块可用性")
     software_parser = sub.add_parser("prepare-software", help="按固定授权及清单生成内部软件准备JSON；不外发")
     software_parser.add_argument("--root", required=True)
@@ -729,11 +898,36 @@ def main(argv: list[str] | None = None) -> int:
         command.add_argument("--root", default=".")
         command.add_argument("--output", required=True)
     run_parser.add_argument("--input", required=True)
-    args = parser.parse_args(argv)
+    local_commands = _add_local_commands(sub)
+    arguments = sys.argv[1:] if argv is None else argv
+    try:
+        # 新命令的未知参数也须脱敏；旧命令继续由原总解析器处理。
+        args = (local_commands[arguments[0]].parse_args(arguments[1:])
+                if arguments and arguments[0] in local_commands else parser.parse_args(arguments))
+    except core.ContractError:
+        print("contract_rejected", file=sys.stderr)
+        return 2
     preview_html_written = False
     try:
+        if args.command == "help":
+            if args.topic:
+                target = sub.choices.get(args.topic)
+                if target is None:
+                    print("unknown_help_topic", file=sys.stderr)
+                    return 2
+                target.print_help()
+            else:
+                parser.print_help()
+            return 0
         if args.command == "list":
-            print(json.dumps(catalog(), ensure_ascii=False, indent=2))
+            print(_dump_json(catalog(), indent=2))
+            return 0
+        if args.command in local_commands:
+            try:
+                report = _run_local_command(args)
+            except (core.BundleError, RuntimeError, OverflowError):
+                raise core.ContractError("local_check_boundary_invalid") from None
+            print(_dump_json(report))
             return 0
         if args.command == "software-batch":
             root = Path(args.root).resolve(strict=True)
@@ -744,18 +938,18 @@ def main(argv: list[str] | None = None) -> int:
             from .software_batch import run_batch
             report = run_batch(control["projects"])
             core.write_new_json(root, args.output, report)
-            print(json.dumps({"status": report["status"]}, ensure_ascii=False))
+            print(_dump_json({"status": report["status"]}))
             return 0 if report["status"] == "completed" else 4
         if args.command == "software-intake":
             from .software_intake import collect, collect_candidates
             operation = collect_candidates if args.candidates else collect
             summary = operation(args.root, args.output)
-            print(json.dumps(summary, ensure_ascii=False))
+            print(_dump_json(summary))
             return 0
         if args.command == "standard-intake":
             from .standard_intake import collect
             summary = collect(args.root, args.output, synthetic=args.synthetic)
-            print(json.dumps(summary, ensure_ascii=False))
+            print(_dump_json(summary))
             return 0
         if args.command == "standard-pdf":
             report = _convert_standard_pdf(args)
@@ -764,7 +958,7 @@ def main(argv: list[str] | None = None) -> int:
                         "professional_review", "external_action")}
             if "field_refresh" in report:
                 summary["field_refresh"] = report["field_refresh"]
-            print(json.dumps(summary, ensure_ascii=False))
+            print(_dump_json(summary))
             return 0
         if args.command == "migrate-standard-comments":
             try:
@@ -778,8 +972,8 @@ def main(argv: list[str] | None = None) -> int:
                 report = _prepare_standard(args)
             except (RuntimeError, OverflowError):
                 raise core.ContractError("standard_preparation_boundary_invalid") from None
-            print(json.dumps({key: report[key] for key in
-                              ("status", "professional_review", "external_action")}, ensure_ascii=False))
+            print(_dump_json({key: report[key] for key in
+                              ("status", "professional_review", "external_action")}))
             return 0
         if args.command in {"prepare-software", "build-software", "import-software-manual", "discover-software", "export-software"}:
             build_output = args.command in {"build-software", "export-software"} or bool(getattr(args, "build", False))
@@ -838,7 +1032,12 @@ def main(argv: list[str] | None = None) -> int:
         print("standard_authorized_case_unsupported" if args.command == "prepare-standard" and
               str(error) == "standard_authorized_case_unsupported" else "contract_rejected", file=sys.stderr)
         return 2
-    except (OSError, sqlite3.Error):
+    except (OSError, sqlite3.Error) as error:
+        # Strict path resolution on 3.13+ reports ELOOP or Windows ERROR_CANT_RESOLVE_FILENAME.
+        if not preview_html_written and isinstance(error, OSError) and (
+                error.errno == errno.ELOOP or getattr(error, "winerror", None) == 1921):
+            print("contract_rejected", file=sys.stderr)
+            return 2
         print("preview_html_retained_json_failed" if preview_html_written else "local_io_failed",
               file=sys.stderr)
         return 3

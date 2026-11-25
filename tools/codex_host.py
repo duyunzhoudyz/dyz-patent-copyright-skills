@@ -73,13 +73,13 @@ def native_process_counters(process):
         api.GetProcessHandleCount.restype = wintypes.BOOL
         actual_pid = api.GetProcessId(handle)
         if not actual_pid:
-            return {"status": "unavailable", "reason": "native_pid_unavailable", "winerror": ctypes.get_last_error()}
+            return {"status": "unavailable", "reason": "native_pid_unavailable", "winerror": getattr(ctypes, "get_last_error", lambda: 0)()}
         if actual_pid != process.pid:
             return {"status": "unavailable", "reason": "native_handle_pid_mismatch"}
         exited_before_query = process.poll() is not None
         times = [wintypes.FILETIME() for _ in range(4)]
         if not api.GetProcessTimes(handle, *[ctypes.byref(item) for item in times]):
-            return {"status": "unavailable", "reason": "native_times_unavailable", "winerror": ctypes.get_last_error()}
+            return {"status": "unavailable", "reason": "native_times_unavailable", "winerror": getattr(ctypes, "get_last_error", lambda: 0)()}
         values = [(item.dwHighDateTime << 32) | item.dwLowDateTime for item in times]
         result = {"status": "observed_owned_handle", "pid": actual_pid, "creation_filetime_100ns": values[0],
             "kernel_cpu_100ns": values[2], "user_cpu_100ns": values[3]}
@@ -90,7 +90,7 @@ def native_process_counters(process):
         if api.GetProcessHandleCount(handle, ctypes.byref(count)):
             result["handle_count"] = count.value
         else:
-            result.update(handle_count_status="unavailable", handle_count_winerror=ctypes.get_last_error())
+            result.update(handle_count_status="unavailable", handle_count_winerror=getattr(ctypes, "get_last_error", lambda: 0)())
         return result
     except (OSError, TypeError, ValueError, AttributeError):
         return {"status": "unavailable", "reason": "native_counter_observation_failed"}
@@ -115,7 +115,7 @@ def digest(path):
 
 def regular(path, *, directory=False, missing=False):
     path = bundle._absolute(path)
-    info = bundle._checked_path(path, missing_leaf=missing)
+    info = core.checked_path(path, missing_leaf=missing)
     if info is None:
         require(missing, "host_path_missing")
     else:
@@ -452,6 +452,112 @@ def create_profile(package, manifest_sha256, executable, workspace):
         "model_visibility_and_routing": "not_checked", "business_tools": "host_supplied_not_injected_by_profile",
         "professional_review": "not_performed", "installation": "not_performed",
         "scope": "Only local Skill process metadata with plugins disabled, actual remote-control startup Disabled observed and an owned synthetic static model catalog. Bootstrap environment is for the metadata probe; selection arguments are not a complete model host launch. Synthetic catalog is never suitable for model tasks. Not thread/model, OS/network isolation, business tools, or a default-global fix. Generated selectors contain local Skill inventory names; keep this profile local."}
+
+
+def _probe_environment():
+    keep = {"SYSTEMROOT", "WINDIR", "TEMP", "TMP", "TMPDIR", "SYSTEMDRIVE", "HOME", "LANG", "LC_ALL"}
+    env = {k: v for k, v in os.environ.items() if k.upper() in keep}
+    env["PYTHONUTF8"] = "1"
+    env["PYTHONDONTWRITEBYTECODE"] = "1"
+    return env
+
+
+def probe_host_capabilities(executable, *, allow_unpinned=False):
+    """非破坏性宿主二进制版本与能力探测；不启动模型推理，不将未钉死版本冒充已核验。"""
+    require(type(allow_unpinned) is bool, "allow_unpinned_bool_required")
+    raw_path = bundle._absolute(executable)
+    require(raw_path.suffix.casefold() not in {".bat", ".cmd", ".ps1", ".psm1", ".sh", ".bash", ".zsh", ".fish",
+                                              ".py", ".pyw", ".pl", ".rb", ".js", ".vbs", ".wsf"},
+            "host_executable_script_rejected")
+    exe = regular(raw_path).resolve(strict=True)
+    actual_sha = digest(exe)
+    pinned = actual_sha == CLI_SHA256
+    if not pinned and not allow_unpinned:
+        raise HostError("host_cli_not_verified")
+    try:
+        with tempfile.TemporaryDirectory(prefix="dyz-host-probe-") as probe_directory:
+            version_exit, version_text = _probe_version(exe, probe_directory)
+    except OSError:
+        version_exit, version_text = -1, ""
+    try:
+        unchanged = regular(raw_path).resolve(strict=True) == exe and digest(exe) == actual_sha
+    except (bundle.BundleError, HostError, OSError):
+        unchanged = False
+    require(unchanged, "host_executable_changed")
+    return {
+        "kind": "host_capability_probe",
+        "platform": sys.platform,
+        "executable": str(exe),
+        "executable_sha256": actual_sha,
+        "pinned_match": pinned,
+        "pinned_version": CLI_VERSION,
+        "observed_version": version_text,
+        "version_exit_code": version_exit,
+        "qualification": "pinned_metadata_binary" if pinned else "unpinned_runtime_capability_probe_only",
+        "model_inference_requested": False,
+        "installation": "not_performed",
+    }
+
+
+def _probe_version(exe, cwd):
+    try:
+        proc = subprocess.Popen(
+            [str(exe), "--version"],
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            cwd=cwd,
+            env=_probe_environment(),
+            creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
+        )
+        chunks: list[bytes] = []
+        captured = 0
+
+        def _drain() -> None:
+            nonlocal captured
+            stream = proc.stdout
+            if stream is None:
+                return
+            try:
+                while True:
+                    block = stream.read(4096)
+                    if not block:
+                        break
+                    if captured < 8192:
+                        take = block[: 8192 - captured]
+                        chunks.append(take)
+                        captured += len(take)
+            except OSError:
+                pass
+            finally:
+                try:
+                    stream.close()
+                except OSError:
+                    pass
+
+        reader = threading.Thread(target=_drain, daemon=True)
+        reader.start()
+        timed_out = False
+        try:
+            proc.wait(timeout=10)
+            version_exit = proc.returncode
+        except subprocess.TimeoutExpired:
+            timed_out = True
+            proc.kill()
+            try:
+                proc.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                pass
+            version_exit = -1
+        finally:
+            reader.join(timeout=1)
+        raw_out = b"" if timed_out else b"".join(chunks)
+        first_line = raw_out.decode("utf-8", errors="replace").strip().splitlines()
+        version_text = first_line[0][:200] if first_line else ""
+    except OSError:
+        version_exit = -1
+        version_text = ""
+    return version_exit, version_text
 
 
 def main(argv=None):

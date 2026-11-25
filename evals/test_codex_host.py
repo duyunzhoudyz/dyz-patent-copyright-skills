@@ -2,7 +2,9 @@
 import copy
 import io
 import json
+import os
 from pathlib import Path
+import stat
 import subprocess
 import sys
 import tempfile
@@ -72,6 +74,44 @@ class ProfileSelectionTests(unittest.TestCase):
         path.write_text("---\nname: wrong\ndescription: >\n hidden\n---\n", encoding="utf-8")
         with self.assertRaises(host.HostError):
             host.skill_metadata(self.package)
+
+    def test_capability_probe_rejects_nonbool_script_and_lexical_link_before_execution(self):
+        with patch.object(host, '_probe_version') as launch:
+            with self.assertRaisesRegex(host.HostError, 'allow_unpinned_bool_required'):
+                host.probe_host_capabilities(self.executable, allow_unpinned='yes')
+            for suffix in ('.bat', '.cmd', '.PS1', '.sh', '.py'):
+                with self.subTest(suffix=suffix), self.assertRaisesRegex(host.HostError, 'host_executable_script_rejected'):
+                    host.probe_host_capabilities(self.executable.with_suffix(suffix), allow_unpinned=True)
+            lexical = self.executable
+            orig = Path.lstat
+
+            def linked(path):
+                info = orig(path)
+                return os.stat_result((stat.S_IFLNK, *tuple(info)[1:])) if path == lexical else info
+
+            with patch.object(Path, 'lstat', linked), self.assertRaisesRegex(host.bundle.BundleError, 'bundle_link_rejected'):
+                host.probe_host_capabilities(lexical, allow_unpinned=True)
+            launch.assert_not_called()
+
+    def test_capability_probe_uses_empty_cwd_omits_loader_env_and_rehashes_after_launch(self):
+        observed = []
+
+        def launched(executable, cwd):
+            self.assertEqual(self.executable.resolve(), executable)
+            safe_cwd = Path(cwd)
+            self.assertEqual([], list(safe_cwd.iterdir()))
+            observed.append(safe_cwd)
+            environment = host._probe_environment()
+            self.assertNotIn('LD_LIBRARY_PATH', environment)
+            self.assertNotIn('DYLD_LIBRARY_PATH', environment)
+            executable.write_bytes(b'changed synthetic binary fixture')
+            return 0, 'synthetic version'
+
+        with patch.dict(os.environ, {'LD_LIBRARY_PATH': 'synthetic', 'DYLD_LIBRARY_PATH': 'synthetic'}), \
+                patch.object(host, '_probe_version', side_effect=launched), \
+                self.assertRaisesRegex(host.HostError, 'host_executable_changed'):
+            host.probe_host_capabilities(self.executable, allow_unpinned=True)
+        self.assertFalse(observed[0].exists())
 
     def _create(self, inventories):
         life = {"fixture": "synthetic_unit_metadata_only", "exit_code": 0}

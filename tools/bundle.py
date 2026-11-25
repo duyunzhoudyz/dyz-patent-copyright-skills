@@ -12,6 +12,12 @@ import stat
 import sys
 import tempfile
 
+if __package__ in {None, ""}:
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+    from tools import core
+else:
+    from . import core
+
 
 # 逐文件纳入，不能仅按后缀递归：新凭据、私人JSON或上游文件不应自动入包。
 BUNDLE_FILES = (
@@ -288,40 +294,47 @@ BUNDLE_FILES = (*BUNDLE_FILES, "tools/standard_intake.py", "tools/standard_revie
 BUNDLE_FILES = (*BUNDLE_FILES, "release.json", "RELEASE.md", "CHANGELOG.md",
                 "CONTRIBUTING.md", "CONTRIBUTOR-LICENSE.md", "SECURITY.md")
 
+# 阶段 A—F 新增跨平台 MCP、安装器、专利 IR/OMML/三轴接入、媒体清洗、外部模板映射、
+# 可选外联数据连接器、美欧法域及程序策略分析、视觉覆盖台账与专业试审包；不改历史布局。
+BUNDLE_FILES = (
+    *BUNDLE_FILES,
+    "tools/mcp_server.py",
+    "tools/install.py",
+    "tools/patent_ir.py",
+    "tools/omml.py",
+    "tools/patent_intake.py",
+    "tools/media_prep.py",
+    "tools/template_mapper.py",
+    "tools/connectors/__init__.py",
+    "tools/connectors/base.py",
+    "tools/connectors/patent_sources.py",
+    "tools/connectors/standard_sources_live.py",
+    "tools/jurisdiction_analyzers.py",
+    "tools/procedure_strategy.py",
+    "tools/visual_ledger.py",
+    "tools/trial_pack.py",
+    "skills/dyz-standards/resources/lifecycle/rendering-profile.v3.json",
+    "skills/dyz-standards/resources/terminology-example/terminology-standard.json",
+    "skills/dyz-workbench/resources/quickstarts.md",
+)
+
 MANIFEST_NAME = "bundle-manifest.json"
 MAX_MANIFEST_BYTES = 1_000_000
 
 
-class BundleError(ValueError):
-    """输入路径或本地包清单不满足复制／校验契约。"""
+BundleError = core.BundleError
+_is_macos_system_root_symlink = core.is_macos_system_root_symlink
+_checked_path = core.checked_path
 
 
 def _absolute(path: str | Path) -> Path:
+    if "\x00" in str(path):
+        raise BundleError("bundle_path_invalid")
     path = Path(path)
     if (".." in path.parts or (path.drive and not path.is_absolute())
             or any(":" in part for part in path.parts if part != path.anchor)):
         raise BundleError("bundle_path_invalid")
     return path.absolute()
-
-
-def _checked_path(path: Path, *, missing_leaf: bool = False) -> os.stat_result | None:
-    """先lstat各层，拒绝全部链接/reparse point；不先resolve消除链接证据。"""
-    parts = [*reversed(path.parents), path]
-    info = None
-    for entry in parts:
-        try:
-            info = entry.lstat()
-        except FileNotFoundError:
-            if missing_leaf and entry == path:
-                return None
-            raise BundleError("bundle_path_missing") from None
-        if stat.S_ISLNK(info.st_mode) or (
-            getattr(info, "st_file_attributes", 0) & stat.FILE_ATTRIBUTE_REPARSE_POINT
-        ):
-            raise BundleError("bundle_link_rejected")
-        if entry != path and not stat.S_ISDIR(info.st_mode):
-            raise BundleError("bundle_parent_not_directory")
-    return info
 
 
 def _copy_new(source: Path, target: Path) -> None:

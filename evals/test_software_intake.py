@@ -277,6 +277,45 @@ class SoftwareIntakeTests(unittest.TestCase):
         self.assertEqual((self.root / "counter.py").read_bytes(), self.source)
         self.assertEqual((self.root / "screen.png").read_bytes(), original_png)
 
+    def test_batch_excluded_screenshot_never_becomes_runtime_evidence(self):
+        seed = self.collect(self.answers(mode="GUI"), output="batch-seed")
+        seed_auth = self.load(seed["authorization"])
+        seed_request = self.load(seed_auth["request"]["path"])
+        kept_path, excluded_path = "screen.png", "excluded.png"
+        for name in (kept_path, excluded_path):
+            (self.root / name).write_bytes(png())
+        shot = {"id": "shot1", "path": kept_path, "version": "1.0", "operation_id": "operation-1",
+                "capture_evidence": "EV-CAP", "local_use_evidence": "EV-USE", "visible_state": "Synthetic image"}
+        far = {
+            "scope": seed_request["scope_input"], "rights": seed_request["rights"],
+            "files": seed_request["files"], "manual_input": seed_request["manual_input"],
+            "material_permissions": [{"paths": ["counter.py", kept_path], "decision": "allow", "evidence_id": "EV"}],
+            "excluded_sources": [{"path": excluded_path}],
+        }
+        original_open = Path.open
+
+        def forbid_excluded_open(path, *args, **kwargs):
+            self.assertNotEqual(path.name, excluded_path, "excluded screenshot opened")
+            return original_open(path, *args, **kwargs)
+
+        excluded = dict(shot, id="shot2", path=excluded_path, capture_evidence="EV-EXCLUDED")
+        for idx, other in enumerate((excluded, dict(excluded, version="2.0"), {"path": excluded_path})):
+            with self.subTest(excluded=other):
+                batch = {
+                    "context_and_permissions": seed_auth["context"],
+                    "files_and_rights": {**far, "delivery": {"screenshots": [shot, other]}},
+                }
+                with patch.object(Path, "open", forbid_excluded_open):
+                    result = software_intake.collect_batch(self.root, f"batch-{idx}", batch_input=batch)
+                authorization = self.load(result["authorization"])
+                request = self.load(authorization["request"]["path"])
+                self.assertEqual([(excluded_path, "not_read")],
+                                 [(row["path"], row["read_status"]) for row in result["excluded_sources"]])
+                self.assertEqual(["counter.py", kept_path], [row["path"] for row in authorization["files"]])
+                self.assertEqual([kept_path], [row["path"] for row in request["delivery"]["screenshots"]])
+                self.assertEqual([{"id": "shot1", "version": "1.0", "kind": "screenshot", "evidence_id": "EV-CAP"}],
+                                 request["manual_input"]["runtime_evidence"])
+
     def test_screenshot_denied_unknown_or_missing_evidence_prevents_all_reads(self):
         (self.root / "screen.png").write_bytes(png())
         cases = [{action: decision} for action in ("capture", "local_use")
@@ -707,6 +746,288 @@ class SoftwareIntakeTests(unittest.TestCase):
         self.assertNotIn("合成权利人", process.stdout)
         authorization = self.root / "console-intake/authorization.json"
         self.assertIn("COLLECTED:" + core.sha256_bytes(authorization.read_bytes()), process.stdout)
+
+    def test_collect_candidates_downgrades_inventory_complete_when_source_excluded_and_rejects_nonbool(self):
+        from tools import software_discovery
+
+        (self.root / "unreadable.py").write_bytes(b"\xff\xfe\x80")
+        context = {
+            "environment": {
+                "assessment_evidence": "synthetic-assessment",
+                "data_paths": [
+                    {"id": pid, "mode": "local", "verified": True, "evidence": "synthetic-measured-" + pid}
+                    for pid in software_intake.DATA_PATHS
+                ],
+            },
+            "permissions": [
+                {
+                    "action": act,
+                    "purpose": software_intake.PURPOSE,
+                    "recipient": "local_tool",
+                    "decision": "allow",
+                    "authority_evidence": "synthetic-authority",
+                    "valid_from": (self.now - timedelta(hours=1)).isoformat(),
+                    "valid_until": (self.now + timedelta(hours=1)).isoformat(),
+                }
+                for act in ("local_read", "local_write")
+            ],
+            "sensitivity": "synthetic",
+            "purpose": software_intake.PURPOSE,
+            "now": self.now.isoformat(),
+        }
+        files = [
+            {"id": "file-1", "path": "counter.py", "component_id": "main", "kind": "source", "include": True},
+            {"id": "file-2", "path": "unreadable.py", "component_id": "main", "kind": "source", "include": True},
+        ]
+        base_payload = {
+            "context": context,
+            "files": files,
+            "material_permissions": [{"paths": ["counter.py", "unreadable.py"], "decision": "allow", "evidence_id": "EV"}],
+            "request": {
+                "scope_input": {
+                    "metadata": {"software_id": "demo", "name": "合成软件", "version": "1.0",
+                                 "completed_date": None, "published_date": None, "runtime_environment": None},
+                    "components": [{"id": "main", "kind": "standalone", "version": "1.0",
+                                    "origin": "own", "origin_evidence": "EV-O", "claim": ["计数表达"],
+                                    "exclusions": [], "subjects": []}],
+                },
+                "rights": [{"component_id": "main", "requested_decision": "claim", "evidence_ids": ["EV"],
+                            "permissions": {"local_process": "allow", "deposit": "allow", "public": "deny", "cloud": "deny"}}],
+                "files": files,
+                "inventory_complete": True,
+                "pagination": {"selection": "all", "lines_per_page": 50, "wrap_columns": 78, "basis": "synthetic"},
+            },
+        }
+        # Non-bool inventory_complete MUST be rejected
+        bad_payload = core.strict_json_loads(core.canonical_bytes(base_payload).decode("utf-8"))
+        bad_payload["request"]["inventory_complete"] = "false"
+        with self.assertRaisesRegex(core.ContractError, "inventory_complete_bool_required"):
+            software_intake.collect_candidates(self.root, "bad-inv", payload=bad_payload, ask=lambda p: "" if "一次选择" in p else "yes")
+        self.assertFalse((self.root / "bad-inv").exists())
+
+        # Excluded source file MUST downgrade inventory_complete to False and record excluded_sources
+        summary = software_intake.collect_candidates(
+            self.root, "excluded-cand", payload=base_payload,
+            ask=lambda p: "" if "一次选择" in p else "yes",
+        )
+        self.assertFalse(summary["inventory_complete"])
+        self.assertEqual([{"id": "file-2", "path": "unreadable.py", "read_status": "read",
+                           "exclusion_reason": "undecodable"}], summary["excluded_sources"])
+        authorization = self.load(summary["authorization"])
+        self.assertEqual(summary["excluded_sources"], authorization["excluded_sources"])
+        request = self.load(authorization["request"]["path"])
+        self.assertFalse(request["inventory_complete"])
+        prepared = self.prepare(summary)
+        self.assertIn("source_coverage_incomplete", {issue["code"] for issue in prepared["issues"]})
+
+        # confirmation_group OSError on missing authorized_root MUST be sanitized to discovery_io_failed
+        disc = software_discovery.discover({
+            "context": context, "authorized_root": str(self.root),
+            "files": [{"id": "file-1", "path": "counter.py", "component_id": "main"}],
+            "material_permissions": [{"paths": ["counter.py"], "decision": "allow", "evidence_id": "EV"}],
+        })
+        broken_req = {**request, "context": context, "authorized_root": str(self.root / "nonexistent-root")}
+        broken_req.pop("delivery", None)
+        with self.assertRaisesRegex(core.ContractError, "^discovery_io_failed$"):
+            software_discovery.confirmation_group({"request": broken_req, "discovery": disc})
+
+    def test_collect_candidates_downgrades_inventory_complete_for_non_source_kind_excluded_files(self):
+        (self.root / "bad_code.py").write_bytes(b"\xff\xfe\x80")
+        (self.root / "bin_mod.c").write_bytes(b"int main(){\x00return 0;}\n")
+        (self.root / "secret_code.py").write_text("TOKEN = 'TOP_SECRET_MARKER'\n", encoding="utf-8")
+        (self.root / ".env").write_text("KEY=1\n", encoding="utf-8")
+        context = {
+            "environment": {
+                "assessment_evidence": "synthetic-assessment",
+                "data_paths": [
+                    {"id": pid, "mode": "local", "verified": True, "evidence": "synthetic-measured-" + pid}
+                    for pid in software_intake.DATA_PATHS
+                ],
+            },
+            "permissions": [
+                {
+                    "action": act,
+                    "purpose": software_intake.PURPOSE,
+                    "recipient": "local_tool",
+                    "decision": "allow",
+                    "authority_evidence": "synthetic-authority",
+                    "valid_from": (self.now - timedelta(hours=1)).isoformat(),
+                    "valid_until": (self.now + timedelta(hours=1)).isoformat(),
+                }
+                for act in ("local_read", "local_write")
+            ],
+            "sensitivity": "synthetic",
+            "purpose": software_intake.PURPOSE,
+            "now": self.now.isoformat(),
+        }
+
+        def make_payload(extra_entry, *, secrets=()):
+            files = [
+                {"id": "file-1", "path": "counter.py", "component_id": "main", "kind": "source", "include": True},
+                *([] if extra_entry is None else [extra_entry]),
+            ]
+            return {
+                "context": context,
+                "files": files,
+                "sensitive_literals": list(secrets),
+                "material_permissions": [{"paths": [f["path"] for f in files], "decision": "allow", "evidence_id": "EV"}],
+                "request": {
+                    "scope_input": {
+                        "metadata": {"software_id": "demo", "name": "合成软件", "version": "1.0",
+                                     "completed_date": None, "published_date": None, "runtime_environment": None},
+                        "components": [{"id": "main", "kind": "standalone", "version": "1.0",
+                                        "origin": "own", "origin_evidence": "EV-O", "claim": ["计数表达"],
+                                        "exclusions": [], "subjects": []}],
+                    },
+                    "rights": [{"component_id": "main", "requested_decision": "claim", "evidence_ids": ["EV"],
+                                "permissions": {"local_process": "allow", "deposit": "allow", "public": "deny", "cloud": "deny"}}],
+                    "files": files,
+                    "inventory_complete": True,
+                    "pagination": {"selection": "all", "lines_per_page": 50, "wrap_columns": 78, "basis": "synthetic"},
+                },
+            }
+
+        ask = lambda p: "" if "一次选择" in p else "yes"
+
+        # Clean complete inventory MUST remain inventory_complete=True
+        clean_summary = software_intake.collect_candidates(
+            self.root, "clean-complete", payload=make_payload(None), ask=ask,
+        )
+        self.assertTrue(clean_summary["inventory_complete"])
+        self.assertNotIn("excluded_sources", clean_summary)
+
+        # Any excluded/unreadable file with non-"source" kind variant MUST force inventory_complete=False
+        bypass_cases = [
+            ("other_py_undecodable", {"id": "file-2", "path": "bad_code.py", "component_id": "main", "kind": "other", "include": False}, ()),
+            ("upper_SOURCE_py", {"id": "file-2", "path": "bad_code.py", "component_id": "main", "kind": "SOURCE", "include": True}, ()),
+            ("program_kind_py", {"id": "file-2", "path": "bad_code.py", "component_id": "main", "kind": "program", "include": True}, ()),
+            ("code_kind_binary", {"id": "file-2", "path": "bin_mod.c", "component_id": "main", "kind": "code", "include": True}, ()),
+            ("generated_kind_sensitive", {"id": "file-2", "path": "secret_code.py", "component_id": "main", "kind": "generated", "include": False}, ("TOP_SECRET_MARKER",)),
+            ("other_kind_env", {"id": "file-2", "path": ".env", "component_id": "main", "kind": "other", "include": False}, ()),
+        ]
+        for idx, (label, extra, secrets) in enumerate(bypass_cases):
+            with self.subTest(case=label):
+                summary = software_intake.collect_candidates(
+                    self.root, f"bypass-{idx}", payload=make_payload(extra, secrets=secrets), ask=ask,
+                )
+                self.assertFalse(summary["inventory_complete"])
+                self.assertEqual(1, len(summary["excluded_sources"]))
+                self.assertEqual(extra["path"], summary["excluded_sources"][0]["path"])
+                req = self.load(self.request_path(summary))
+                self.assertFalse(req["inventory_complete"])
+                prepared = self.prepare(summary)
+                self.assertIn("source_coverage_incomplete", {issue["code"] for issue in prepared["issues"]})
+
+    def test_collect_candidates_isolates_single_file_open_failure_and_explicit_exclusions(self):
+        (self.root / "locked.py").write_text("x = 1\n", encoding="utf-8")
+        (self.root / "helper.py").write_text("y = 2\n", encoding="utf-8")
+        context = {
+            "environment": {
+                "assessment_evidence": "synthetic-assessment",
+                "data_paths": [
+                    {"id": pid, "mode": "local", "verified": True, "evidence": "synthetic-measured-" + pid}
+                    for pid in software_intake.DATA_PATHS
+                ],
+            },
+            "permissions": [
+                {
+                    "action": act,
+                    "purpose": software_intake.PURPOSE,
+                    "recipient": "local_tool",
+                    "decision": "allow",
+                    "authority_evidence": "synthetic-authority",
+                    "valid_from": (self.now - timedelta(hours=1)).isoformat(),
+                    "valid_until": (self.now + timedelta(hours=1)).isoformat(),
+                }
+                for act in ("local_read", "local_write")
+            ],
+            "sensitivity": "synthetic",
+            "purpose": software_intake.PURPOSE,
+            "now": self.now.isoformat(),
+        }
+        ask = lambda p: "" if "一次选择" in p else "yes"
+
+        def make_payload(file_entries, **extra_top):
+            return {
+                "context": context,
+                "files": file_entries,
+                "material_permissions": [
+                    {"paths": [f["path"] for f in file_entries], "decision": "allow", "evidence_id": "EV"}
+                ],
+                "request": {
+                    "scope_input": {
+                        "metadata": {"software_id": "demo", "name": "合成软件", "version": "1.0",
+                                     "completed_date": None, "published_date": None, "runtime_environment": None},
+                        "components": [{"id": "main", "kind": "standalone", "version": "1.0",
+                                        "origin": "own", "origin_evidence": "EV-O", "claim": ["计数表达"],
+                                        "exclusions": [], "subjects": []}],
+                    },
+                    "rights": [{"component_id": "main", "requested_decision": "claim", "evidence_ids": ["EV"],
+                                "permissions": {"local_process": "allow", "deposit": "allow", "public": "deny", "cloud": "deny"}}],
+                    "files": file_entries,
+                    "inventory_complete": True,
+                    "pagination": {"selection": "all", "lines_per_page": 50, "wrap_columns": 78, "basis": "synthetic"},
+                },
+                **extra_top,
+            }
+
+        # 1) Single-file PermissionError on open() MUST record unreadable exclusion and downgrade inventory_complete
+        original_open = Path.open
+
+        def deny_locked_open(path, *args, **kwargs):
+            if path.name == "locked.py":
+                raise PermissionError("simulated file lock")
+            return original_open(path, *args, **kwargs)
+
+        files = [
+            {"id": "file-1", "path": "counter.py", "component_id": "main", "kind": "source", "include": True},
+            {"id": "file-2", "path": "locked.py", "component_id": "main", "kind": "source", "include": True},
+        ]
+        with patch.object(Path, "open", deny_locked_open):
+            summary = software_intake.collect_candidates(
+                self.root, "cand-open-err", payload=make_payload(files), ask=ask,
+            )
+        self.assertFalse(summary["inventory_complete"])
+        self.assertEqual([{"id": "file-2", "path": "locked.py", "read_status": "not_read",
+                           "exclusion_reason": "unreadable"}], summary["excluded_sources"])
+
+        listed = {"id": "file-2", "path": "helper.py", "component_id": "main", "kind": "source", "include": True}
+        explicit_files = [files[0], listed]
+        exp_payload = make_payload(explicit_files)
+        exp_payload["request"]["excluded_sources"] = [{"id": "X1", "path": "helper.py", "reason": "out_of_scope"}]
+
+        def forbid_helper_open(path, *args, **kwargs):
+            if path.name == "helper.py":
+                self.fail("excluded helper.py opened")
+            return original_open(path, *args, **kwargs)
+
+        with patch.object(Path, "open", forbid_helper_open):
+            exp_summary = software_intake.collect_candidates(
+                self.root, "cand-explicit-excl", payload=exp_payload, ask=ask,
+            )
+        self.assertFalse(exp_summary["inventory_complete"])
+        self.assertEqual("helper.py", exp_summary["excluded_sources"][0]["path"])
+        self.assertEqual("not_read", exp_summary["excluded_sources"][0]["read_status"])
+        auth = self.load(exp_summary["authorization"])
+        self.assertEqual(["counter.py"], [row["path"] for row in auth["files"]])
+        request = self.load(auth["request"]["path"])
+        self.assertEqual(["counter.py"], [row["path"] for row in request["files"]])
+
+        # 3) Security violation: outside hardlink MUST be rejected immediately (never swallowed)
+        with tempfile.TemporaryDirectory(prefix="dyz-cand-outside-") as outside:
+            outside_file = Path(outside) / "secret.py"
+            outside_file.write_text("SECRET = 1\n", encoding="utf-8")
+            os.link(outside_file, self.root / "escaped.py")
+            bad_files = [
+                {"id": "file-1", "path": "counter.py", "component_id": "main", "kind": "source", "include": True},
+                {"id": "file-2", "path": "escaped.py", "component_id": "main", "kind": "source", "include": True},
+            ]
+            with self.assertRaisesRegex(core.ContractError, "source_file_or_link_invalid"):
+                software_intake.collect_candidates(
+                    self.root, "cand-hardlink-reject", payload=make_payload(bad_files), ask=ask,
+                )
+            self.assertFalse((self.root / "cand-hardlink-reject").exists())
+            (self.root / "escaped.py").unlink()
 
 
 if __name__ == "__main__":

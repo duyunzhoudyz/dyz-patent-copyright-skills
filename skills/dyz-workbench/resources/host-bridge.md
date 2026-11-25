@@ -4,7 +4,7 @@
 
 ## 已实现的接口
 
-Python 3.11标准库：`tools.host_bridge.HostToolBridge`、`dynamic_tools()`；也可从完整包根运行`python -B -m tools.host_bridge --describe`。从其他目录可运行完整包中`tools/host_bridge.py`的绝对路径；使用`-I -S -B -X utf8`可关闭用户站点、环境搜索路径及字节码写入。这里只启动本地文件工具，不启动模型、账户RPC、浏览器或办公转换器。
+Python 3.11—3.14标准库（已加入跨平台路径守护；当前本机已实测基线为Windows Python 3.11 / 3.13 / 3.14，Windows Python 3.12及Linux／macOS待托管CI实跑）：`tools.host_bridge.HostToolBridge`、`dynamic_tools()`；也可从完整包根运行`python -B -m tools.host_bridge --describe`。从其他目录可运行完整包中`tools/host_bridge.py`的绝对路径；使用`-I -S -B -X utf8`可关闭用户站点、环境搜索路径及字节码写入。这里只启动本地文件工具，不启动模型、账户RPC、浏览器或办公转换器。
 
 | 接口 | 用途与限制 |
 | --- | --- |

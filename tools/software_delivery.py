@@ -8,7 +8,9 @@ from __future__ import annotations
 import copy
 import json
 import math
+import os
 import re
+import stat
 import struct
 import subprocess
 import tempfile
@@ -22,6 +24,24 @@ from . import core, documents, fidelity, software
 VERSION = '1.2'
 LEGACY_VERSION = '1.1'
 MAX_IMAGE_BYTES = 20_000_000
+MAX_IMAGE_DECOMPRESSED_BYTES = 64_000_000
+_PNG_CHANNELS = {0: 1, 2: 3, 3: 1, 4: 2, 6: 4}
+_PNG_BIT_DEPTHS = {
+    0: frozenset({1, 2, 4, 8, 16}),
+    2: frozenset({8, 16}),
+    3: frozenset({1, 2, 4, 8}),
+    4: frozenset({8, 16}),
+    6: frozenset({8, 16}),
+}
+_PNG_ADAM7_PASSES = (
+    (0, 0, 8, 8),
+    (4, 0, 8, 8),
+    (0, 4, 4, 8),
+    (2, 0, 4, 4),
+    (0, 2, 2, 4),
+    (1, 0, 2, 2),
+    (0, 1, 1, 2),
+)
 
 
 def _access(context):
@@ -81,9 +101,51 @@ def select_pages(pages, selection):
             list(range(30)) + list(range(count - 30, count)))
 
 
+def _png_scanline_layout(width, height, bit_depth, color_type, interlace):
+    bpp_bits = _PNG_CHANNELS[color_type] * bit_depth
+    if interlace == 0:
+        return [(height, 1 + (width * bpp_bits + 7) // 8)]
+    passes = []
+    for x0, y0, dx, dy in _PNG_ADAM7_PASSES:
+        pass_w = (width - x0 + dx - 1) // dx if width > x0 else 0
+        pass_h = (height - y0 + dy - 1) // dy if height > y0 else 0
+        if pass_w > 0 and pass_h > 0:
+            passes.append((pass_h, 1 + (pass_w * bpp_bits + 7) // 8))
+    return passes
+
+
+def _verify_png_idat(idat_stream, width, height, bit_depth, color_type, interlace):
+    if not isinstance(idat_stream, (bytes, bytearray)):
+        idat_stream = b''.join(idat_stream)
+    core.require(len(idat_stream) > 0, 'screenshot_png_idat_empty')
+    passes = _png_scanline_layout(width, height, bit_depth, color_type, interlace)
+    expected_bytes = sum(pass_h * stride for pass_h, stride in passes)
+    core.require(0 < expected_bytes <= MAX_IMAGE_DECOMPRESSED_BYTES, 'screenshot_png_dimensions')
+    decomp = zlib.decompressobj()
+    try:
+        raw_pixels = decomp.decompress(idat_stream, expected_bytes + 1)
+        core.require(len(raw_pixels) <= expected_bytes and not decomp.unconsumed_tail,
+                     'screenshot_png_idat_size_mismatch')
+        core.require(not decomp.unused_data, 'screenshot_png_idat_corrupt')
+        tail = decomp.flush()
+        if tail:
+            raw_pixels += tail
+    except zlib.error:
+        raise core.ContractError('screenshot_png_idat_corrupt') from None
+    core.require(decomp.eof and not decomp.unused_data, 'screenshot_png_idat_corrupt')
+    core.require(len(raw_pixels) == expected_bytes, 'screenshot_png_idat_size_mismatch')
+    pos = 0
+    for pass_h, stride in passes:
+        for _ in range(pass_h):
+            core.require(raw_pixels[pos] <= 4, 'screenshot_png_idat_corrupt')
+            pos += stride
+
+
 def _png(raw):
-    core.require(raw.startswith(b'\x89PNG\r\n\x1a\n'), 'screenshot_png_required')
-    offset, dimensions, data_seen, ended = 8, None, False, False
+    core.require(isinstance(raw, bytes) and raw.startswith(b'\x89PNG\r\n\x1a\n'), 'screenshot_png_required')
+    offset, dimensions, ihdr_meta = 8, None, None
+    saw_plte, data_seen, idat_ended, ended = False, False, False, False
+    idat_parts = []
     while offset + 12 <= len(raw):
         length = struct.unpack('>I', raw[offset:offset + 4])[0]
         kind = raw[offset + 4:offset + 8]
@@ -91,17 +153,31 @@ def _png(raw):
         core.require(end <= len(raw), 'screenshot_png_truncated')
         data = raw[offset + 8:offset + 8 + length]
         crc = struct.unpack('>I', raw[offset + 8 + length:end])[0]
-        core.require(zlib.crc32(kind + data) == crc, 'screenshot_png_crc')
+        core.require((zlib.crc32(kind + data) & 0xFFFFFFFF) == crc, 'screenshot_png_crc')
         if dimensions is None:
             core.require(kind == b'IHDR' and length == 13, 'screenshot_png_header')
-            width, height = struct.unpack('>II', data[:8])
+            width, height, bit_depth, color_type, compression, filtering, interlace = struct.unpack('>IIBBBBB', data)
             core.require(0 < width <= 10000 and 0 < height <= 10000 and width * height <= 40_000_000,
                          'screenshot_png_dimensions')
+            core.require(bit_depth in _PNG_BIT_DEPTHS.get(color_type, frozenset()) and compression == 0
+                         and filtering == 0 and interlace in {0, 1}, 'screenshot_png_header')
+            passes = _png_scanline_layout(width, height, bit_depth, color_type, interlace)
+            core.require(sum(pass_h * stride for pass_h, stride in passes) <= MAX_IMAGE_DECOMPRESSED_BYTES,
+                         'screenshot_png_dimensions')
             dimensions = (width, height)
+            ihdr_meta = (width, height, bit_depth, color_type, interlace)
         elif kind == b'IHDR':
             raise core.ContractError('screenshot_png_duplicate_header')
+        if kind == b'PLTE':
+            core.require(not saw_plte and not data_seen and 3 <= length <= 768 and length % 3 == 0,
+                         'screenshot_png_palette')
+            saw_plte = True
         if kind == b'IDAT':
+            core.require(not idat_ended, 'screenshot_png_idat_corrupt')
             data_seen = True
+            idat_parts.append(data)
+        elif data_seen and kind != b'IEND':
+            idat_ended = True
         if kind == b'IEND':
             core.require(length == 0 and end == len(raw), 'screenshot_png_trailing_data')
             ended = True
@@ -111,6 +187,12 @@ def _png(raw):
                      'screenshot_png_metadata_unsupported')
         offset = end
     core.require(dimensions is not None and data_seen and ended, 'screenshot_png_incomplete')
+    width, height, bit_depth, color_type, interlace = ihdr_meta
+    if color_type == 3:
+        core.require(saw_plte, 'screenshot_png_palette')
+    idat_stream = b''.join(idat_parts)
+    core.require(len(idat_stream) > 0, 'screenshot_png_idat_empty')
+    _verify_png_idat(idat_stream, width, height, bit_depth, color_type, interlace)
     return dimensions
 
 
@@ -122,7 +204,8 @@ def _screenshots(root, preparation, options, context):
     operations = {row['id'] for row in manual['operations']} if manual else set()
     runtime = {row['id'] for row in manual['runtime_evidence'] if row['kind'] == 'screenshot'} if manual else set()
     version = preparation['scope']['metadata']['version']
-    images, mappings, issues, ids, paths = [], [], [], set(), set()
+    base = Path(root).resolve(strict=True)
+    images, mappings, issues, ids, paths, identities = [], [], [], set(), set(), set()
     for item in items:
         core.require_fields(item, ('id', 'path', 'sha256', 'version', 'operation_id', 'build_binding',
                                    'capture_evidence', 'local_use_evidence', 'visible_state'))
@@ -134,12 +217,28 @@ def _screenshots(root, preparation, options, context):
         core.require(item['build_binding'] == build_binding(preparation), 'screenshot_build_changed')
         for key in ('capture_evidence', 'local_use_evidence', 'visible_state'):
             core.require(isinstance(item[key], str) and bool(item[key].strip()), 'screenshot_evidence_required')
-        path = core.safe_path(root, item['path'])
-        core.require(path not in paths, 'screenshot_duplicate_path')
+        path = core.safe_path(base, item['path'])
+        lexical = base.joinpath(*item['path'].replace('\\', '/').split('/'))
+        try:
+            info = core.checked_path(lexical)
+        except (OSError, core.BundleError):
+            raise core.ContractError('screenshot_file_or_link_invalid') from None
+        core.require(stat.S_ISREG(info.st_mode) and info.st_nlink == 1, 'screenshot_file_or_link_invalid')
+        core.require(info.st_size <= MAX_IMAGE_BYTES, 'screenshot_too_large')
+        identity = (info.st_dev, info.st_ino)
+        core.require(path not in paths and identity not in identities, 'screenshot_duplicate_path')
         paths.add(path)
+        identities.add(identity)
         _access(context)
-        with path.open('rb') as stream:
-            raw = stream.read(MAX_IMAGE_BYTES + 1)
+        flags = os.O_RDONLY | getattr(os, 'O_BINARY', 0) | getattr(os, 'O_NOFOLLOW', 0)
+        try:
+            with os.fdopen(os.open(lexical, flags), 'rb') as stream:
+                opened = os.fstat(stream.fileno())
+                core.require(stat.S_ISREG(opened.st_mode) and opened.st_nlink == 1
+                             and os.path.samestat(info, opened), 'screenshot_file_changed')
+                raw = stream.read(MAX_IMAGE_BYTES + 1)
+        except OSError:
+            raise core.ContractError('screenshot_read_failed') from None
         core.require(len(raw) <= MAX_IMAGE_BYTES, 'screenshot_too_large')
         core.require(core.sha256_bytes(raw) == item['sha256'], 'screenshot_hash_changed')
         width, height = _png(raw)

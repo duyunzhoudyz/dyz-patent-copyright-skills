@@ -9,7 +9,11 @@ from __future__ import annotations
 import copy
 import hashlib
 import json
+import ntpath
+import os
 import re
+import stat
+import sys
 from datetime import datetime, timezone
 from pathlib import Path, PureWindowsPath
 from typing import Any
@@ -24,6 +28,10 @@ STATUSES = {
 
 class ContractError(ValueError):
     """错误消息只包含结构诊断，不复制材料正文。"""
+
+
+class BundleError(ValueError):
+    """路径或包契约失败；bundle 保留原异常类型和诊断码。"""
 
 
 def require(condition: bool, code: str) -> None:
@@ -87,6 +95,48 @@ def parse_time(value: str) -> datetime:
         raise ContractError("invalid_timestamp") from exc
     require(stamp.tzinfo is not None, "timezone_required")
     return stamp.astimezone(timezone.utc)
+
+
+def is_macos_system_root_symlink(entry: Path) -> bool:
+    """只允许 macOS 自带的 /var、/tmp、/etc 指向各自的 /private 目录。"""
+    if sys.platform != "darwin" or entry not in (Path("/var"), Path("/tmp"), Path("/etc")):
+        return False
+    try:
+        target = os.readlink(entry)
+    except OSError:
+        return False
+    return target in (f"private/{entry.name}", f"/private/{entry.name}")
+
+
+def checked_path(path: Path, *, missing_leaf: bool = False) -> os.stat_result | None:
+    """先 lstat 词法父链，不先 resolve；只允许显式缺失的叶节点。"""
+    info = None
+    for entry in (*reversed(path.parents), path):
+        try:
+            info = entry.lstat()
+        except FileNotFoundError:
+            if missing_leaf and entry == path:
+                return None
+            raise BundleError("bundle_path_missing") from None
+        if stat.S_ISLNK(info.st_mode) or (
+            getattr(info, "st_file_attributes", 0) & getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0)
+        ):
+            if entry != path and is_macos_system_root_symlink(entry):
+                try:
+                    info = entry.stat()
+                except OSError:
+                    raise BundleError("bundle_link_rejected") from None
+            else:
+                raise BundleError("bundle_link_rejected")
+        if entry != path and not stat.S_ISDIR(info.st_mode):
+            raise BundleError("bundle_parent_not_directory")
+    return info
+
+
+def is_reserved_windows_name(name: str) -> bool:
+    """无论宿主平台如何，都按 Windows 的保留名称规则判断。"""
+    checker = getattr(os.path, "isreserved", None) or getattr(ntpath, "isreserved", None)
+    return checker(name) if checker is not None else PureWindowsPath(name).is_reserved()
 
 
 def safe_path(root: str | Path, relative: str, *, must_exist: bool = True) -> Path:

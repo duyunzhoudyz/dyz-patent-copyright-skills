@@ -6,7 +6,7 @@
 
 实现接口为 `tools.standards.run(capability: str, payload: dict) -> dict`，可用ID见 `tools.standards.CAPABILITIES`。对应 WP-07、WP-09 及 WP-10 的国际采用差异辅助；对应 AC-STD-01 至 AC-STD-12。共享依赖为 `tools/core.py` 与 `tools/__init__.py`；**必须与本仓库tools同包部署并从包根目录运行**。仅复制SKILL不构成可运行工具包；安装和发现证据按具体包及运行时记录，不能继承为当前任务通过。
 
-运行环境：Python 3.11，标准库，无第三方运行依赖。确定性处理调用者给定JSON，不联网、不读取材料文件、不创建输出文件、不启动子进程、不发送、不投票、不签署、不批准。宿主模型、索引、日志、遥测仍须按CORE预检；本地函数不代表整个宿主离线或受控。
+运行环境：Python 3.11—3.14 标准库（已加入跨平台代码守护，无第三方运行依赖；当前本机已实测基线为 Windows Python 3.11 / 3.13 / 3.14，Windows Python 3.12 及 Linux／macOS 待托管 CI 实跑）。确定性处理调用者给定JSON，不联网、不读取材料文件、不创建输出文件、不启动子进程、不发送、不投票、不签署、不批准。宿主模型、索引、日志、遥测仍须按CORE预检；本地函数不代表整个宿主离线或受控。
 
 ### 调用步骤
 
@@ -55,7 +55,7 @@
 
 `standards_delivery.VERSION`为`1.7`，新清单绑定生成版本及检查版本；五件共享同一事实源。配套文书按相同待审原因合并阅读摘要，保留每项原序号、目标、来源绑定及完整理由；完整证据保留在`internal/checks.json`。来源附件兼容单页旧格式与有序segments，按有序引文、页号、零基半开字符范围和原文呈现；不同上下文完整保留，与原文相同的上下文不重复打印，完整机器字段及字节绑定保留在`internal/source-trace.json`。意见实际落实显示状态和逐项修改，完整散列绑定保留在`internal/realizations.json`。`internal/projection-coverage.json`记录核心条款／意见／决定／验证／未决到读者文书块及内部叶子的覆盖，`internal/source-map.json`中的`clause_locations`连接稳定ID、显示号、书签和实际块位置。原始输入与扩展字段仍保存；覆盖证明不能替代完整成员集合及实际字节回验。1.1／1.2／1.3／1.4／1.5／1.6生成包在本轮verify返回`standard_generator_version_unsupported_use_frozen_tool_or_new_directory`；保留原包，用对应冻结工具复验，或在新目录重建并重新确认，不修改旧清单hash假称兼容。
 
-原创渲染profile为`dyz-standard-internal-v2`，业务profile、渲染profile及规则profile分别绑定。PAGE负责物理页码，TOC／SEQ／REF／PAGEREF负责其各自导航或编号；字段存在、结构检查、实际刷新和页面观察分别记录。组织目录须有明确语义映射和来源，不把内部11节强加给所有组织。
+原创渲染 profile 须显式写 `dyz-standard-internal-v2`，或选用 `dyz-standard-internal-v3`（`lifecycle/rendering-profile.v3.json`）；省略 `profile.rendering` 退回 `dyz-legacy-a4-v1`，不把 v2 当缺省。业务、渲染与规则 profile 分别绑定。PAGE 负责物理页码，TOC／SEQ／REF／PAGEREF 分别负责导航或编号，字段结构、实际刷新与页面观察单独记录。v3 采用更紧凑的内部阅读字号与页边距，DOCX 可将有限 LaTeX 子集写成原生 OMML（`kind: "formula"`）并回读；该 OMML 生成只在 `tools/documents.py`，`standards_delivery.prepare` 暂不自动从条款文本投影公式块。`tools/standard_pdf.py` 对正文直接段落中的有效 `m:oMath`／`m:oMathPara` 提取按序字符，刷新前后核对 OMML 结构摘要，仍要求 PDF 抽取的字符顺序吻合。其余位置的 OMML、隐藏或修订公式以及不支持的结构均阻断，公式二维排版、分页及实际物理页码仍需逐页视觉核验。v3 属原创内部版式，`official_format` 为 `not_asserted`。套用用户自有且获准许可的外部组织模板时，通过 `tools/template_mapper.py` 显式声明映射，组织目录须提供语义映射和来源。
 
 ### 集中材料采集
 
@@ -113,7 +113,7 @@ python -m tools migrate-standard-comments --synthetic --root D:/synthetic-standa
 
 - `comments`保留原文、稳定ID、来源、提出者及所针对版本，使用条款定位或文档级scope。
 - `comment_outcomes`每条原意见恰一当前处置，含结果、分类、理由、建议/确认状态、重大变更和逐项影响。增删改使用`changes[{operation,clause_id,proposed_text?}]`；replace/add同时给目标和拟文，delete另核依赖。仅采纳/部分采纳允许changes；部分采纳另须`accepted_part/rejected_part/rejected_reason/reason_source`。v2的`unresolved_item`不是自由字符串，须为含`question/owner/blocks/recovery`的对象；blocks限`submission/approval/publication/none`，pending必须提供。决定与派生`comment_realizations`分开，禁止反填落地hash造成循环。
-- 内部业务profile以既有11语义节为工程整理示例，原创渲染选择`rendering: "dyz-standard-internal-v2"`；组织profile须有来源与章节语义映射，不宣称GB/T或官方格式符合。旧`dyz-standard-internal-v1`保留其身份，不原地改写旧版含义；生成1.1包按上文冻结／重建处理。显示号和目录来自`presentation.outline`及派生位置，不改稳定ID。动态域写入、真实刷新、PDF对应及视觉观察分别记录，初始缓存未刷新不能当作已更新。
+- 内部业务profile以既有11语义节为工程整理示例，原创渲染须显式指定`rendering: "dyz-standard-internal-v2"`，或`"dyz-standard-internal-v3"`（省略`profile.rendering`退回`dyz-legacy-a4-v1`，不把v2当缺省；v3更紧凑，DOCX侧有限OMML公式仅由`tools/documents.py`生成，`standards_delivery.prepare`暂不自动从条款文本投影公式块，不含独立窄列软换行引擎，PDF侧对正文直接段落中的有效`m:oMath`／`m:oMathPara`提取按序字符，刷新前后核对OMML结构摘要，并要求PDF抽取的字符顺序吻合；畸形、修订、隐藏、表格内及其他位置的OMML仍阻断。`m:naryPr`／`m:chr`等二维视觉符号不在纯文本字符核对内，仍需视觉复核，且不宣称GB/T或官方格式符合）；外部获准模板另走`tools/template_mapper.py`声明式映射。组织profile须有来源与章节语义映射，不宣称GB/T或官方格式符合。旧`dyz-standard-internal-v1`与`dyz-standard-internal-v2`保留各自身份，不原地改写旧版含义；生成1.1包按上文冻结／重建处理。显示号和目录来自`presentation.outline`及派生位置，不改稳定ID。动态域写入、真实刷新、PDF对应及视觉观察分别记录，初始缓存未刷新不能当作已更新。
 - 说明含实质`body`、来源/状态/责任、当前条款digest及profile ID/hash。统计、验证摘要和未决由本版真源派生；未知内容、缺件和矛盾不因成件而消失。
 
 已准备原创合成任务JSON后，在完整包根运行：
@@ -242,7 +242,7 @@ python -m tools standard-pdf --root D:/authorized-standard-case --input intake-0
 
 敏感XML／代码／标识等片段保留空白、大小写、兼容字符、符号及顺序，不以全局NFKC或删除空白抹平`A B`与`AB`。普通排版换行只按已声明规则比较并留映射。词级提取遗漏的行末U+0020，只有实际PDF字码与字体ToUnicode映射、页号、字符坐标及物理换行共同给出精确见证时才能逐字消费；不按源文补空格、不由词间宽缝推断。未支持的字体／内容语法或无法唯一绑定的位置不补见证，技术字面差异仍拒绝；未知对象保持partial。几何检查记录页号、bbox、版心越界／错序／重叠及覆盖，逐页PNG观察另记观察者与实际范围；自动几何、视觉与专业结论分开，图像文字或未解释对象不得升为完整。缺本机可选工具时保留Word及离线审稿，PDF／几何写明未执行。
 
-有动态域且希望实际更新时，另加`--office-python <同一LibreOffice安装随附python.exe绝对路径>`；未提供时普通另存/转换仍可取证，但不能推定DOCX缓存已经刷新。此可选路径只使用独立profile、唯一命名pipe及单次有界子进程，禁宏、不使用TCP、不安装依赖、不留下常驻Office，也不启动用户的Office会话。对`dyz-standard-internal-v2`，先核源OOXML样式明确关闭中西文自动间距和标点悬挂，再在Office导入后及派生DOCX重开后恢复对应UNO属性并刷新、导出；这是保持源版式策略的适配，设前／设后值另留证，不能用于默改任意稿件或忽略PDF新增空白。未提供Office Python时不推定已完成这项兼容恢复。
+有动态域且希望实际更新时，另加`--office-python <同一LibreOffice安装随附python.exe绝对路径>`；未提供时普通另存/转换仍可取证，但不能推定DOCX缓存已经刷新。此可选路径只使用独立profile、唯一命名pipe及单次有界子进程，禁宏、不使用TCP、不安装依赖、不留下常驻Office，也不启动用户的Office会话。对`dyz-standard-internal-v2`与`dyz-standard-internal-v3`，先核源OOXML样式明确关闭中西文自动间距和标点悬挂，再在Office导入后及派生DOCX重开后恢复对应UNO属性并刷新、导出；这是保持源版式策略的适配，设前／设后值另留证，不能用于默改任意稿件或忽略PDF新增空白。未提供Office Python时不推定已完成这项兼容恢复；此外`standard_pdf.py`对正文直接段落中的有效`m:oMath`／`m:oMathPara`提取按序字符，刷新前后核对OMML结构摘要，并要求PDF抽取的字符顺序吻合；畸形、修订、隐藏、表格内及其他位置的OMML仍记入`unsupported_objects`并阻断。`m:naryPr`／`m:chr`等二维视觉符号不在纯文本字符核对内，v3含公式文档的PDF公式呈现仍须单独逐页视觉核验。
 
 输出五件派生DOCX、五件PDF、独立总页数、每页TXT/PNG及字节清单，原Word包只读不覆盖。每件记录原件与派生件hash、非域正文保留、前后域指令/缓存及PDF目标页证据；缓存未变、域丢失/指令变化、目标/页码或PDF文字不符仍needs_review。CLI回传field_refresh，实际刷新证据与结构成功分开。结构成功仍返回`structure_checked_needs_visual_review`，`visual_review/professional_review`均为`not_performed`；必须检查每页实际图像，再在外置证据中绑定本次清单记录观察范围。不得改原manifest或报告伪造转换时已经视觉审阅，不能由文字覆盖推定排版或组织格式合格。
 

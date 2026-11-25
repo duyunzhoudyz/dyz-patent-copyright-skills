@@ -777,16 +777,18 @@ def assess(payload: dict, *, actual_texts=None, source_verification=None, actual
     by_term = {}
     for term in terms:
         word = term.get("term")
-        require(isinstance(word, str) and bool(word), "review_term_text_required")
-        by_term.setdefault(word, []).append(term)
-    for word, rows in by_term.items():
+        require(isinstance(word, str) and bool(word.strip()), "review_term_text_required")
+        by_term.setdefault(word.strip().casefold(), []).append(term)
+    for _key, rows in by_term.items():
+        word = rows[0]["term"].strip()
         if len({row.get("definition") for row in rows if isinstance(row.get("definition"), str)}) > 1:
             issues.append({"code": "review_term_definition_conflict", "record_id": rows[0].get("id", word),
                            "term": word, "rule_id": rules["term_consistency"]})
         for row in rows:
+            row_word = row["term"].strip()
             if not row.get("definition") or not row.get("source"):
-                pending.append({"code": "review_term_declaration_incomplete", "record_id": row.get("id", word),
-                                "term": word, "rule_id": rules["term_consistency"],
+                pending.append({"code": "review_term_declaration_incomplete", "record_id": row.get("id", row_word),
+                                "term": row_word, "rule_id": rules["term_consistency"],
                                 "reason": "术语声明缺定义或依据，不能推断同一性。"})
             aliases = row.get("aliases", [])
             require(isinstance(aliases, list) and all(isinstance(alias, str) and alias for alias in aliases),
@@ -800,9 +802,13 @@ def assess(payload: dict, *, actual_texts=None, source_verification=None, actual
                 if used:
                     base = next(r for r in checks if r["target_id"] == identity)
                     checks.append({**base, "limitation_type": "term_usage", "rule_id": rules["term_consistency"],
-                        "source_sha256": digest(row), "source_range": {"term_id": row.get("id"), "term": word},
-                        "actual_range": _find_span(actual, used[0]), "source_value": word,
+                        "source_sha256": digest(row), "source_range": {"term_id": row.get("id"), "term": row_word},
+                        "actual_range": _find_span(actual, used[0]), "source_value": row_word,
                         "actual_value": used, "judgment": "supports", "reason": "只使用显式声明的同一术语别名。"})
+    for circ in detect_circular_definitions(terms):
+        reason = (f"术语定义存在循环引用：{' -> '.join(circ['cycle'])}。"
+                  if "cycle" in circ else "存在重复术语定义记录，需核对术语唯一性与定义一致性。")
+        issues.append({**circ, "rule_id": rules["term_consistency"], "reason": reason})
     review_records = _review_records(payload, checks, actual_texts, rules_hash, pending)
     pending = list({digest(row): row for row in pending}.values())
     return {"tool": "tools.standard_review", "tool_version": VERSION,
@@ -826,3 +832,260 @@ def assess(payload: dict, *, actual_texts=None, source_verification=None, actual
             "nonclause_scope": "provided_unique_business_field_spans_and_verified_complete_citations"},
         "automatic_text_changes": "not_performed", "professional_review": "not_performed",
         "organization_compliance": "not_asserted"}
+
+
+_TRIE_END = object()
+_ASCII_WORD = frozenset("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_")
+
+
+def _term_references(text, trie):
+    """从左向右取最长术语（大小写不敏感），ASCII 标识首尾须对齐单词边界。"""
+    folded = text.casefold()
+    start = 0
+    while start < len(folded):
+        node, end = trie, start
+        best = None
+        if not (start and folded[start] in _ASCII_WORD and folded[start - 1] in _ASCII_WORD):
+            while end < len(folded) and folded[end] in node:
+                node = node[folded[end]]
+                end += 1
+                if _TRIE_END in node and not (end < len(folded) and folded[end - 1] in _ASCII_WORD
+                                               and folded[end] in _ASCII_WORD):
+                    best = end, node[_TRIE_END]
+        if best is None:
+            start += 1
+        else:
+            start, owners = best
+            yield from owners
+
+
+def _strong_components(graph):
+    """迭代 Tarjan。每条边只访问一次，定义链长度不受 Python 递归限制。"""
+    indices, low, active, on_stack = {}, {}, [], set()
+
+    def push(vertex):
+        indices[vertex] = low[vertex] = len(indices)
+        active.append(vertex)
+        on_stack.add(vertex)
+        return vertex, iter(graph[vertex])
+
+    for start in graph:
+        if start in indices:
+            continue
+        frames = [push(start)]
+        while frames:
+            vertex, edges = frames[-1]
+            target = next(edges, None)
+            if target is not None:
+                if target not in indices:
+                    frames.append(push(target))
+                elif target in on_stack:
+                    low[vertex] = min(low[vertex], indices[target])
+                continue
+            frames.pop()
+            if frames:
+                parent = frames[-1][0]
+                low[parent] = min(low[parent], low[vertex])
+            if low[vertex] == indices[vertex]:
+                component = []
+                while True:
+                    member = active.pop()
+                    on_stack.remove(member)
+                    component.append(member)
+                    if member == vertex:
+                        break
+                yield component
+
+
+def _representative_cycle(graph, members, start):
+    """为强连通分量取一条真实首尾闭合链，并单列全部受影响术语。"""
+    allowed = set(members)
+    previous = {start: None}
+    queue = [start]
+    for vertex in queue:
+        for target in graph[vertex]:
+            if target == start and vertex != start:
+                path = [start, vertex]
+                while previous[path[-1]] is not None:
+                    path.append(previous[path[-1]])
+                return list(reversed(path))
+            if target in allowed and target not in previous:
+                previous[target] = vertex
+                queue.append(target)
+    raise AssertionError("strong_component_cycle_missing")
+
+
+def detect_circular_definitions(terms: list[dict]) -> list[dict]:
+    """核对同名术语、别名自引用及任意长度的定义循环（大小写不敏感，报告保留原展示名）。"""
+    require(isinstance(terms, list), "review_terms_list_required")
+    by_key, display_name, trie, findings = {}, {}, {}, []
+    for row in terms:
+        if not isinstance(row, dict) or not isinstance(row.get("term"), str) or not row["term"].strip():
+            continue
+        name = row["term"].strip()
+        key = name.casefold()
+        by_key.setdefault(key, []).append(row)
+        display_name.setdefault(key, name)
+        spellings = [name]
+        for field in ("aliases", "admitted"):
+            if field in row:
+                raw_values = row[field]
+                require(
+                    isinstance(raw_values, list)
+                    and all(isinstance(alias, str) and bool(alias.strip()) for alias in raw_values),
+                    f"review_term_{field}_required",
+                )
+                spellings.extend(alias.strip() for alias in raw_values)
+        for spelling in spellings:
+            node = trie
+            for char in spelling.casefold():
+                node = node.setdefault(char, {})
+            node.setdefault(_TRIE_END, {})[key] = None
+
+    graph = {key: {} for key in by_key}
+    for key, rows in by_key.items():
+        name = display_name[key]
+        if len(rows) > 1:
+            findings.append({"code": "review_duplicate_term_name", "term": name,
+                             "record_id": rows[0].get("id", name),
+                             "record_ids": [row.get("id", row["term"].strip()) for row in rows]})
+        for row in rows:
+            definition = row.get("definition")
+            if not isinstance(definition, str):
+                continue
+            row_name = row["term"].strip()
+            refs = dict.fromkeys(_term_references(definition, trie))
+            if key in refs:
+                findings.append({"code": "review_term_self_circular_definition", "term": row_name,
+                                 "record_id": row.get("id", row_name), "cycle": [row_name, row_name]})
+            graph[key].update(refs)
+
+    for component in _strong_components(graph):
+        if len(component) > 1:
+            members_keys = list(reversed(component))
+            start_key = members_keys[0]
+            start_name = display_name[start_key]
+            cycle_keys = _representative_cycle(graph, members_keys, start_key)
+            findings.append({"code": "review_term_circular_definition", "term": start_name,
+                             "record_id": by_key[start_key][0].get("id", start_name),
+                             "terms": [display_name[k] for k in members_keys],
+                             "cycle": [display_name[k] for k in cycle_keys]})
+    return findings
+
+
+_DIMENSION_CODES = {
+    "1_structure": {"review_clauses_not_provided", "review_duplicate_clause_id",
+                    "review_duplicate_display_number", "review_verification_link_missing",
+                    "review_verification_link_needs_review", "review_verification_link_conflict",
+                    "review_structure_conflict", "review_heading_conflict", "review_outline_conflict",
+                    "actual_final_text_not_verified", "actual_final_text_missing",
+                    "actual_final_block_duplicated", "actual_final_block_missing", "actual_final_block_not_verified"},
+    "2_modality_strength": {"review_strength_conflict", "review_strength_needs_review", "review_modal_conflict",
+                            "review_condition_declaration_needs_review", "review_condition_direction_conflict",
+                            "review_condition_direction_needs_review", "review_exception_conflict",
+                            "review_exception_needs_review", "review_quantity_conflict", "review_unit_conflict",
+                            "review_quantity_unit_conflict", "review_quantity_unit_needs_review"},
+    "3_cross_references": {"review_reference_conflict", "review_reference_integrity_conflict",
+                           "review_reference_integrity_needs_review", "source_report_id_duplicated",
+                           "source_report_not_read", "source_binding_id_duplicated", "source_report_missing",
+                           "source_target_missing_or_ambiguous", "source_target_version_mismatch",
+                           "source_evidence_not_verified", "source_proposition_applicability_needs_review",
+                           "source_verification_untrusted_or_stale", "source_binding_review_stale",
+                           "source_citation_coverage_partial", "source_citation_missing",
+                           "source_extraction_coverage_partial", "source_format_unsupported",
+                           "source_identity_mismatch", "source_original_text_not_verified",
+                           "source_record_id_duplicated", "source_report_text_changed",
+                           "source_report_text_hash_changed", "source_report_tool_unsupported",
+                           "source_report_unreadable"},
+    "4_terminology_and_circularity": {"review_term_definition_conflict", "review_term_declaration_incomplete",
+                                     "review_term_consistency_conflict", "review_term_consistency_needs_review",
+                                     "review_term_circular_definition", "review_term_self_circular_definition",
+                                     "review_duplicate_term_name"},
+    "5_figures_tables_formulas": {"review_figure_conflict", "review_table_conflict", "review_formula_conflict",
+                                  "review_omml_conflict"},
+}
+_DIMENSION_BY_CODE = {code: dimension for dimension, codes in _DIMENSION_CODES.items() for code in codes}
+_DIMENSION_BY_RULE = {
+    "reference_integrity": "3_cross_references", "term_consistency": "4_terminology_and_circularity",
+    "quantity_unit": "2_modality_strength", "condition_direction": "2_modality_strength",
+    "exception": "2_modality_strength", "strength": "2_modality_strength", "verification_link": "1_structure",
+}
+_DIMENSION_BY_RULE_ID = {row["id"]: _DIMENSION_BY_RULE[row["implementation"]] for row in _RULE_ASSET["rules"]}
+
+
+def project_six_dimension_report(assessment: dict, *, payload: dict | None = None) -> dict:
+    """将有限核稿结果投影为六维度结构化审稿报告及“位置—问题—依据—建议—优先级”摘要表。"""
+    dims = {
+        "1_structure": [],
+        "2_modality_strength": [],
+        "3_cross_references": [],
+        "4_terminology_and_circularity": [],
+        "5_figures_tables_formulas": [],
+        "6_clarity_and_ambiguity": [],
+    }
+    priority_rows = []
+
+    def classify(code, row):
+        return _DIMENSION_BY_CODE.get(code, _DIMENSION_BY_RULE_ID.get(row.get("rule_id"), "6_clarity_and_ambiguity"))
+
+    seen_circular = set()
+    for issue in assessment.get("issues", []):
+        code = issue.get("code", "unknown_issue")
+        dim = classify(code, issue)
+        loc = issue.get("record_id") or issue.get("target_id") or issue.get("clause_id") or "document"
+        if code in {"review_term_circular_definition", "review_term_self_circular_definition",
+                    "review_duplicate_term_name"}:
+            seen_circular.add((loc, code))
+        entry = {
+            "location": loc,
+            "issue": code,
+            "basis": issue.get("rule_id") or "internal_finite_rule",
+            "suggestion": issue.get("reason") or "对照原文与受影响条款核实并修订后重跑核稿。",
+            "priority": "P0_blocking",
+            "dimension": dim,
+        }
+        dims[dim].append(entry)
+        priority_rows.append(entry)
+
+    if payload and isinstance(payload.get("terms"), list):
+        for circ in detect_circular_definitions(payload["terms"]):
+            if (circ["record_id"], circ["code"]) in seen_circular:
+                continue
+            entry = {
+                "location": circ["record_id"],
+                "issue": circ["code"],
+                "basis": "terminology_non_circularity_check",
+                "suggestion": (f"拆分循环定义链：{' -> '.join(circ['cycle'])}" if "cycle" in circ
+                               else "核对重复术语的概念、定义与记录标识。"),
+                "priority": "P0_blocking",
+                "dimension": "4_terminology_and_circularity",
+            }
+            dims["4_terminology_and_circularity"].append(entry)
+            priority_rows.append(entry)
+
+    for pend in assessment.get("pending_reviews", []):
+        code = pend.get("code", "pending_review")
+        dim = classify(code, pend)
+        entry = {
+            "location": pend.get("record_id") or pend.get("target_id") or "document",
+            "issue": code,
+            "basis": pend.get("rule_id") or "pending_semantic_or_source_review",
+            "suggestion": pend.get("reason") or "需由具名技术或标准化人员复核。",
+            "priority": "P1_needs_review",
+            "dimension": dim,
+        }
+        dims[dim].append(entry)
+        priority_rows.append(entry)
+
+    priority_rows.sort(key=lambda r: (0 if r["priority"] == "P0_blocking" else 1, r["dimension"], str(r["location"])))
+    return {
+        "schema": "dyz-standard-six-dimension-review-v1",
+        "source_assessment_hash": assessment.get("input_hash"),
+        "status": ("blocked" if assessment.get("status") == "blocked"
+                   or any(r["priority"] == "P0_blocking" for r in priority_rows) else "needs_review"),
+        "dimensions": dims,
+        "dimension_counts": {k: len(v) for k, v in dims.items()},
+        "priority_table": priority_rows,
+        "professional_review": "not_performed",
+        "organization_compliance": "not_asserted",
+    }

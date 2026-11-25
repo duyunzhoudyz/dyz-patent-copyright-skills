@@ -20,8 +20,8 @@ from datetime import datetime, timezone
 from urllib.parse import parse_qsl, urlsplit
 
 from tools.core import (
-    ContractError, canonical_bytes, check_permission, digest, parse_time, preflight, require,
-    require_fields, safe_path, sha256_bytes, strict_json_loads,
+    ContractError, canonical_bytes, check_permission, digest, is_macos_system_root_symlink,
+    parse_time, preflight, require, require_fields, safe_path, sha256_bytes, strict_json_loads,
 )
 
 VERSION = "1.3"
@@ -87,9 +87,15 @@ def scoped_path(root, relative, *, must_exist=True):
             info = path.lstat()
         except FileNotFoundError:
             continue
-        require(not stat.S_ISLNK(info.st_mode)
-                and not getattr(info, "st_file_attributes", 0) & 0x400,
-                "linked_path_forbidden")
+        is_link = stat.S_ISLNK(info.st_mode) or bool(getattr(info, "st_file_attributes", 0) & 0x400)
+        if is_link:
+            if path != candidates[-1] and is_macos_system_root_symlink(path):
+                try:
+                    info = path.stat()
+                except OSError:
+                    raise ContractError("linked_path_forbidden") from None
+            else:
+                require(False, "linked_path_forbidden")
         if stat.S_ISREG(info.st_mode):
             require(info.st_nlink == 1, "file_alias_forbidden")
     return target

@@ -206,6 +206,92 @@ class FiniteReviewTests(unittest.TestCase):
         self.assertNotIn("review_term_undeclared_substitution", self.codes(result))
         self.assertTrue(any(r.get("limitation_type") == "term_usage" for r in result["limitation_checks"]))
 
+    def test_circular_definitions_casefold_admitted_validation_and_delivery_integration(self):
+        from tools import standards_delivery as delivery
+        from tools.core import ContractError
+        from evals.test_standards_delivery import task as delivery_task
+        import zipfile
+        from xml.etree import ElementTree as ET
+
+        # Mixed-case circularity (Latency <-> jitter), mixed-case self-cycle, and case-folded duplicates
+        findings = review.detect_circular_definitions([
+            {"id": "T1", "term": "Latency", "definition": "Delay dependent on jitter."},
+            {"id": "T2", "term": "Jitter", "definition": "Variation of latency over time."},
+            {"id": "T3", "term": "Packet", "definition": "A packet carrying payload."},
+            {"id": "T4", "term": "Frame", "definition": "Unit A."},
+            {"id": "T5", "term": "frame", "definition": "Unit B."},
+        ])
+        by_code = {row["code"]: row for row in findings}
+        self.assertIn("review_term_circular_definition", by_code)
+        self.assertEqual(["Latency", "Jitter"], by_code["review_term_circular_definition"]["terms"])
+        self.assertEqual(["Latency", "Jitter", "Latency"], by_code["review_term_circular_definition"]["cycle"])
+        self.assertIn("review_term_self_circular_definition", by_code)
+        self.assertEqual("Packet", by_code["review_term_self_circular_definition"]["term"])
+        self.assertIn("review_duplicate_term_name", by_code)
+        self.assertEqual("Frame", by_code["review_duplicate_term_name"]["term"])
+        self.assertEqual(["T4", "T5"], by_code["review_duplicate_term_name"]["record_ids"])
+
+        # Non-list admitted MUST fail closed with ContractError
+        for bad_admitted in ("not-a-list", 123, [123], [""]):
+            with self.subTest(admitted=bad_admitted):
+                with self.assertRaisesRegex(ContractError, "review_term_admitted_required"):
+                    review.detect_circular_definitions([
+                        {"id": "T1", "term": "Latency", "admitted": bad_admitted, "definition": "Delay."},
+                    ])
+
+        # Circular definitions flow into assess(), six-dimension report (without double-counting), and standards_delivery!
+        data = payload("设备应满足规范要求。")
+        data["terms"] = [
+            {"id": "T1", "term": "Latency", "definition": "Delay dependent on jitter.", "source": "S1"},
+            {"id": "T2", "term": "Jitter", "definition": "Variation of latency.", "source": "S1"},
+        ]
+        assessed = review.assess(data, actual_texts={"C-1": data["clauses"][0]["text"]})
+        self.assertEqual("blocked", assessed["status"])
+        self.assertIn("review_term_circular_definition", self.codes(assessed))
+        six = review.project_six_dimension_report(assessed, payload=data)
+        self.assertEqual("blocked", six["status"])
+        self.assertEqual(1, six["dimension_counts"]["4_terminology_and_circularity"])
+
+        with tempfile.TemporaryDirectory(prefix="dyz-std-circ-") as folder:
+            root = Path(folder)
+            pkg = delivery_task()
+            pkg["terms"] = copy.deepcopy(data["terms"])
+            manifest = delivery.prepare(root, pkg, "pack", synthetic=True)
+            self.assertEqual("needs_evidence", manifest["status"])
+            self.assertEqual("internal_draft_needs_evidence", manifest["delivery_state"])
+            self.assertIn("review_term_circular_definition", {row["code"] for row in manifest["issues"]})
+            with zipfile.ZipFile(root / "pack/body/review_report.docx") as archive:
+                tree = ET.fromstring(archive.read("word/document.xml"))
+            report_text = "".join(node.text or "" for node in tree.iter(
+                "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}t"))
+            self.assertIn("review_term_circular_definition", report_text)
+            self.assertIn("Latency", report_text)
+            self.assertTrue(delivery.verify(root, pkg, "pack", synthetic=True)["file_hashes_equal"])
+
+            # P2-9: OSError from .stat() on macOS system root symlink is caught as ContractError
+            child = root / "sub" / "leaf.txt"
+            (root / "sub").mkdir()
+            child.write_text("x", encoding="utf-8")
+            fake_link = type("FakeStat", (), {"st_mode": 0o120777, "st_nlink": 1})()
+            real_lstat = Path.lstat
+            real_stat = Path.stat
+
+            def mock_lstat(p):
+                if p == root / "sub":
+                    return fake_link
+                return real_lstat(p)
+
+            def mock_stat(p, *args, **kwargs):
+                if p == root / "sub":
+                    raise OSError("broken system symlink")
+                return real_stat(p, *args, **kwargs)
+
+            with patch.object(delivery, "is_macos_system_root_symlink", side_effect=lambda p: p == root / "sub"), \
+                 patch.object(Path, "lstat", mock_lstat), \
+                 patch.object(Path, "stat", mock_stat):
+                with self.assertRaisesRegex(ContractError, "standard_path_link_unsupported"):
+                    delivery._plain_path(child)
+
 
 class VerifiedSourceReviewTests(unittest.TestCase):
     def setUp(self):

@@ -250,6 +250,120 @@ class SoftwareDeliveryTests(unittest.TestCase):
         self.assertEqual(manifest['selection_applied'], 'all_pending_physical_validation')
         self.assertIn('physical_selection_not_verified', manifest['issues'])
 
+    def test_screenshot_rejects_hardlinks_toctou_and_corrupt_idat_while_accepting_valid_pngs(self):
+        import os
+
+        def chunk(kind, data):
+            return struct.pack('>I', len(data)) + kind + data + struct.pack('>I', zlib.crc32(kind + data) & 0xFFFFFFFF)
+
+        def build_png(ihdr_args, idat_chunks, *, extra_before=(), extra_after=()):
+            parts = [b'\x89PNG\r\n\x1a\n', chunk(b'IHDR', struct.pack('>IIBBBBB', *ihdr_args))]
+            parts.extend(extra_before)
+            for payload in idat_chunks:
+                parts.append(chunk(b'IDAT', payload))
+            parts.extend(extra_after)
+            parts.append(chunk(b'IEND', b''))
+            return b''.join(parts)
+
+        # 1) Hardlink escaping outside root and intra-root hardlink MUST be rejected before os.open
+        raw = self.gui()
+        with tempfile.TemporaryDirectory(prefix='dyz-outside-shot-') as outside_dir:
+            outside_png = Path(outside_dir) / 'secret.png'
+            outside_png.write_bytes(raw)
+            os.link(outside_png, self.root / 'escaped.png')
+            escaped_opts = copy.deepcopy(self.options)
+            escaped_opts['screenshots'][0]['path'] = 'escaped.png'
+            with patch.object(os, 'open', side_effect=AssertionError('hardlink must be rejected before open')):
+                with self.assertRaisesRegex(core.ContractError, 'screenshot_file_or_link_invalid'):
+                    delivery.build(self.root, self.preparation, escaped_opts, 'pack', context=self.context)
+            self.assertFalse((self.root / 'pack').exists())
+            (self.root / 'escaped.png').unlink()
+
+        os.link(self.root / 'screen.png', self.root / 'alias.png')
+        alias_opts = copy.deepcopy(self.options)
+        alias_opts['screenshots'][0]['path'] = 'alias.png'
+        with patch.object(os, 'open', side_effect=AssertionError('intra-root hardlink must be rejected before open')):
+            with self.assertRaisesRegex(core.ContractError, 'screenshot_file_or_link_invalid'):
+                delivery.build(self.root, self.preparation, alias_opts, 'pack', context=self.context)
+        self.assertFalse((self.root / 'pack').exists())
+        (self.root / 'alias.png').unlink()
+
+        # 2) TOCTOU: st_nlink changes to 2 after open MUST be rejected by os.fstat check
+        real_fstat = os.fstat
+
+        def mutated_fstat(fd):
+            st = real_fstat(fd)
+            return os.stat_result((st.st_mode, st.st_ino, st.st_dev, 2, st.st_uid, st.st_gid,
+                                   st.st_size, st.st_atime, st.st_mtime, st.st_ctime))
+
+        with patch.object(os, 'fstat', side_effect=mutated_fstat):
+            with self.assertRaisesRegex(core.ContractError, 'screenshot_file_changed'):
+                self.build()
+        self.assertFalse((self.root / 'pack').exists())
+
+        # 3) Undecodable / mismatched / bomb / bad-filter / non-contiguous IDAT MUST be rejected
+        valid_4x4 = zlib.compress(b''.join(b'\x00' + b'\x11\x22\x33' * 4 for _ in range(4)))
+        bad_cases = [
+            ('not_zlib', build_png((4, 4, 8, 2, 0, 0, 0), [b'not-a-zlib-stream']), 'screenshot_png_idat_corrupt'),
+            ('truncated_zlib', build_png((4, 4, 8, 2, 0, 0, 0), [valid_4x4[:-4]]), 'screenshot_png_idat_corrupt'),
+            ('trailing_garbage', build_png((4, 4, 8, 2, 0, 0, 0), [valid_4x4 + b'EXTRA']), 'screenshot_png_idat_corrupt'),
+            ('trailing_second_idat', build_png((4, 4, 8, 2, 0, 0, 0), [valid_4x4, b'EXTRA']), 'screenshot_png_idat_corrupt'),
+            ('empty_idat', build_png((4, 4, 8, 2, 0, 0, 0), [b'']), 'screenshot_png_idat_empty'),
+            ('all_empty_multi_idat', build_png((4, 4, 8, 2, 0, 0, 0), [b'', b'']), 'screenshot_png_idat_empty'),
+            ('too_short_pixels', build_png((4, 4, 8, 2, 0, 0, 0), [zlib.compress(b'\x00' * 10)]), 'screenshot_png_idat_size_mismatch'),
+            ('too_long_pixels', build_png((4, 4, 8, 2, 0, 0, 0), [zlib.compress(b'\x00' * 200)]), 'screenshot_png_idat_size_mismatch'),
+            ('png_bomb_small_dim', build_png((4, 4, 8, 2, 0, 0, 0), [zlib.compress(b'\x00' * (1024 * 1024))]), 'screenshot_png_idat_size_mismatch'),
+            ('bad_filter_byte', build_png((4, 4, 8, 2, 0, 0, 0), [zlib.compress(b''.join(b'\x09' + b'\x11\x22\x33' * 4 for _ in range(4)))]), 'screenshot_png_idat_corrupt'),
+            ('indexed_missing_plte', build_png((4, 4, 8, 3, 0, 0, 0), [zlib.compress(b''.join(b'\x00' + b'\x00\x01\x00\x01' for _ in range(4)))]), 'screenshot_png_palette'),
+            ('plte_after_zero_idat', (b'\x89PNG\r\n\x1a\n' + chunk(b'IHDR', struct.pack('>IIBBBBB', 4, 4, 8, 3, 0, 0, 0))
+                                      + chunk(b'IDAT', b'') + chunk(b'PLTE', b'\x00\x00\x00\xff\xff\xff')
+                                      + chunk(b'IDAT', zlib.compress(b''.join(b'\x00' + b'\x00\x01\x00\x01' for _ in range(4))))
+                                      + chunk(b'IEND', b'')), 'screenshot_png_palette'),
+            ('non_contiguous_idat', (b'\x89PNG\r\n\x1a\n' + chunk(b'IHDR', struct.pack('>IIBBBBB', 4, 4, 8, 2, 0, 0, 0))
+                                     + chunk(b'IDAT', valid_4x4[:6]) + chunk(b'sRGB', b'\x00')
+                                     + chunk(b'IDAT', valid_4x4[6:]) + chunk(b'IEND', b'')), 'screenshot_png_idat_corrupt'),
+            ('non_contiguous_zero_idat', (b'\x89PNG\r\n\x1a\n' + chunk(b'IHDR', struct.pack('>IIBBBBB', 4, 4, 8, 2, 0, 0, 0))
+                                          + chunk(b'IDAT', b'') + chunk(b'sRGB', b'\x00')
+                                          + chunk(b'IDAT', valid_4x4) + chunk(b'IEND', b'')), 'screenshot_png_idat_corrupt'),
+        ]
+        for label, bad_bytes, code in bad_cases:
+            with self.subTest(bad_png=label):
+                with self.assertRaisesRegex(core.ContractError, code):
+                    delivery._png(bad_bytes)
+                (self.root / 'bad.png').write_bytes(bad_bytes)
+                bad_opts = copy.deepcopy(self.options)
+                bad_opts['screenshots'][0].update(path='bad.png', sha256=core.sha256_bytes(bad_bytes))
+                with self.assertRaisesRegex(core.ContractError, code):
+                    delivery.build(self.root, self.preparation, bad_opts, 'pack', context=self.context)
+                self.assertFalse((self.root / 'pack').exists())
+                (self.root / 'bad.png').unlink()
+
+        # 4) Valid multi-chunk IDAT (including legal 0-byte IDAT chunks) and Adam7 interlaced PNG MUST pass cleanly
+        split_png = build_png((4, 4, 8, 2, 0, 0, 0), [valid_4x4[:8], valid_4x4[8:]])
+        self.assertEqual((4, 4), delivery._png(split_png))
+        for z_idx, (z_label, idat_seq) in enumerate((
+            ('leading_zero_idat', [b'', valid_4x4]),
+            ('middle_zero_idat', [valid_4x4[:6], b'', valid_4x4[6:]]),
+            ('trailing_zero_idat', [valid_4x4, b'']),
+            ('multi_zero_idat', [b'', valid_4x4[:4], b'', valid_4x4[4:], b'']),
+        )):
+            with self.subTest(zero_idat=z_label):
+                z_png = build_png((4, 4, 8, 2, 0, 0, 0), idat_seq)
+                self.assertEqual((4, 4), delivery._png(z_png))
+                z_name = f'zero_idat_{z_idx}.png'
+                (self.root / z_name).write_bytes(z_png)
+                z_opts = copy.deepcopy(self.options)
+                z_opts['screenshots'][0].update(path=z_name, sha256=core.sha256_bytes(z_png))
+                manifest = delivery.build(self.root, self.preparation, z_opts, f'pack-zero-{z_idx}', context=self.context)
+                self.assertEqual(manifest['kind'], 'software_delivery')
+                with zipfile.ZipFile(self.root / f'pack-zero-{z_idx}/body/manual.docx') as archive:
+                    images = [archive.read(n) for n in archive.namelist() if n.startswith('word/media/')]
+                    self.assertEqual(images, [z_png])
+        adam7_passes = delivery._png_scanline_layout(5, 5, 8, 2, 1)
+        adam7_raw = b''.join(b'\x00' + b'\x22' * (stride - 1) for pass_h, stride in adam7_passes for _ in range(pass_h))
+        adam7_png = build_png((5, 5, 8, 2, 0, 0, 1), [b'', zlib.compress(adam7_raw), b''])
+        self.assertEqual((5, 5), delivery._png(adam7_png))
+
 
 class SoftwareDeliveryCliTests(unittest.TestCase):
     def setUp(self):

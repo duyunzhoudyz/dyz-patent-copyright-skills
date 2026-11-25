@@ -449,6 +449,7 @@ def _office_action(c: _Context) -> dict:
         issues.append("amendment_support_unresolved")
     if "replacement_required" in p:
         require(type(p["replacement_required"]) is bool, "replacement_required_boolean_required")
+    replacement_required = p.get("replacement_required") is True or bool(amendments)
     candidates = _items(p, "replacement_candidates") if "replacement_candidates" in p else []
     for candidate in candidates:
         require(isinstance(candidate["id"], str) and bool(candidate["id"].strip()),
@@ -466,7 +467,8 @@ def _office_action(c: _Context) -> dict:
     if candidates:
         replacement_status = ("supplied_partial" if any(row["coverage"] == "partial" for row in candidates)
                               else "supplied_complete")
-    elif p.get("replacement_required") is True:
+    elif replacement_required and ("oa_dual_track" in p or p.get("delivery_stage") == "final"
+                                   or p.get("replacement_required") is True):
         replacement_status = "missing"
         issues.append("replacement_candidate_missing")
     else:
@@ -476,23 +478,69 @@ def _office_action(c: _Context) -> dict:
     from .fidelity import audit_text_quality
     texts = {"response:" + row["opinion_id"]: row["text"] for row in responses}
     texts.update({"replacement:" + row["id"]: row["text"] for row in candidates})
-    quality = (audit_text_quality(texts, business="patent", stage="draft") if texts else
+    dual_args = p["oa_dual_track"].get("arguments", []) if isinstance(p.get("oa_dual_track"), dict) else []
+    if isinstance(dual_args, list):
+        for idx, arg in enumerate(dual_args):
+            if isinstance(arg, dict) and isinstance(arg.get("text"), str):
+                texts[f"oa_argument:{idx}:{arg.get('opinion_id', idx)}"] = arg["text"]
+    delivery_stage = p.get("delivery_stage", "draft")
+    require(delivery_stage in {"draft", "final"}, "patent_delivery_stage_invalid")
+    quality = (audit_text_quality(texts, business="patent", stage=delivery_stage) if texts else
                {"status": "not_performed", "issues": [], "reason": "no_deliverable_text",
                 "semantic_fidelity": "not_performed", "professional_review": "not_performed"})
     issues.extend("text_quality:" + row["code"] for row in quality["issues"])
-    require(p.get("delivery_stage", "draft") in {"draft", "final"}, "patent_delivery_stage_invalid")
     final_text_gate = {"status": "not_performed", "delivery_allowed": False,
                        "reason": "internal_draft_only"}
-    if p.get("delivery_stage") == "final" or "final_text_sources" in p:
+    if "oa_dual_track" in p:
+        from .patent_gate import audit_oa_response
+        dual = p["oa_dual_track"]
+        require(isinstance(dual, dict), "oa_dual_track_object_required")
+        rep_texts = {"replacement:" + row["id"]: row["text"] for row in candidates}
+        sources = p.get("final_text_sources")
+        if sources is None:
+            sources = [row for row in p.get("fidelity", {}).get("documents", [])
+                       if row.get("role") == "original"]
+        final_text_gate = audit_oa_response(
+            replacement_texts=rep_texts,
+            original_sources=sources,
+            notice_opinions=opinions,
+            arguments=dual.get("arguments", []),
+            cited_references=dual.get("cited_references", []),
+            extra_response_texts={"response:" + row["opinion_id"]: row["text"] for row in responses},
+            replacement_required=replacement_required,
+        )
+        if final_text_gate["status"] != "checked":
+            issues.extend(
+                "oa_dual_track:" + item.get("code", "blocked")
+                for item in final_text_gate.get("argument_evidence_track", {}).get("issues", [])
+            )
+            issues.extend(
+                "oa_amendment_track:" + item.get("code", "blocked")
+                for item in final_text_gate.get("amendment_support_track", {}).get("issues", [])
+            )
+        if delivery_stage == "final" and (final_text_gate["status"] != "checked" or quality["status"] == "blocked"
+                                          or unsupported or fidelity["status"] == "blocked"):
+            error = ContractError("oa_dual_track_gate_blocked")
+            error.report = {**final_text_gate, "status": "blocked", "quality": quality,
+                            "unsupported_amendments": unsupported, "fidelity": fidelity}
+            raise error
+    elif delivery_stage == "final" or "final_text_sources" in p:
         from .patent_gate import require_final_text
         sources = p.get("final_text_sources")
         if sources is None:
             sources = [row for row in p.get("fidelity", {}).get("documents", [])
                        if row.get("role") == "original"]
         final_text_gate = require_final_text(texts, sources)
+        if delivery_stage == "final" and (unsupported or (replacement_required and not candidates)
+                                          or "blocked" in (quality["status"], fidelity["status"])):
+            error = ContractError("oa_final_delivery_blocked")
+            error.report = {**final_text_gate, "status": "blocked", "quality": quality, "fidelity": fidelity,
+                            "unsupported_amendments": unsupported, "replacement_status": replacement_status}
+            raise error
     tasks = _citation_tasks(c)
     if any(task["status"] != "not_applicable" for task in tasks):
         issues.append("citation_disclosure_review_required")
+    gate_blocked = final_text_gate.get("status") == "blocked"
     return c.finish({"notice_id": notice["id"], "notice_version": notice["version"],
                      "notice_kind": notice["kind"], "opinions": opinions,
                      "current_claims": p.get("current_claims"),
@@ -503,7 +551,7 @@ def _office_action(c: _Context) -> dict:
                      "replacement_coverage": "caller_declared_not_verified", "fidelity": fidelity,
                      "text_quality": quality, "final_text_gate": final_text_gate,
                      "citation_tasks": tasks, "response_status": "draft"}, issues,
-                    status="blocked" if "blocked" in (fidelity["status"], quality["status"]) else None)
+                    status="blocked" if ("blocked" in (fidelity["status"], quality["status"]) or gate_blocked) else None)
 
 
 def _correction(c: _Context) -> dict:

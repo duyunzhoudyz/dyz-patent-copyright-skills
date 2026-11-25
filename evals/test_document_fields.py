@@ -8,6 +8,7 @@ from xml.etree import ElementTree as ET
 from tools import documents
 from tools.core import ContractError, sha256_bytes
 from evals.test_document_quality import repack
+from evals.test_software_documents import legacy_docx_hash
 
 
 PROFILE = "dyz-standard-internal-v1"
@@ -267,12 +268,18 @@ class DocumentFieldTests(unittest.TestCase):
         blocks = legacy_fixture()
         raw = documents.make_docx(blocks, [])
         self.assertEqual(raw, documents.make_docx(blocks, [], profile=None))
-        self.assertEqual("6950d3425865232c37477d5efb7b32f3f3db49e0f98717a1b4a08c688f603708",
-                         sha256_bytes(raw))
+        self.assertEqual(sha256_bytes(raw), legacy_docx_hash(
+            windows=("6950d3425865232c37477d5efb7b32f3f3db49e0f98717a1b4a08c688f603708",
+                     "eb9ff02b24f7c1ee403276b1aa73cf262cff3078c8beac149d575d9586566632"),
+            unix=("4d019b18db643bf893504c9fd96146a09c5461b00345dc3dccc935c005d129ae",
+                  "5176fd3409b8d1f964685cda7bd8640c6c1e42d6a25731fbfa6e0c934404b51d")))
         pages = [blocks[:4], [{"id": "NextPage", "kind": "paragraph", "text": "合成软件第二页。"}]]
         software = documents.make_software_docx(pages, title="合成软件", version="1", kind="manual")
-        self.assertEqual("601a8490e16da5296273252d604bded0fc4271d594d9ca01b9bb78e781ec3143",
-                         sha256_bytes(software))
+        self.assertEqual(sha256_bytes(software), legacy_docx_hash(
+            windows=("601a8490e16da5296273252d604bded0fc4271d594d9ca01b9bb78e781ec3143",
+                     "1b6e117a4618e0467a8a41cf3e1a5ba8cb83a0b0684d949de9d6a0c6313f8c75"),
+            unix=("58a11af618ccf10186e4e763daf1c0ccb275d655050eccd0d544c61f91bc0758",
+                  "fd276250295c114f3067a14a63ba69330dda83305e8e3c6ae4a6ec9ff09bf808")))
 
     def test_stress_fixture_retains_native_table_headers_and_long_annex(self):
         blocks, images = field_stress_fixture()

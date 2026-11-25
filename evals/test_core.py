@@ -2,11 +2,15 @@
 
 import copy
 import json
+import os
+import stat
 import tempfile
 import unittest
 from pathlib import Path
+from types import SimpleNamespace
 from unittest.mock import patch
 
+from tools import bundle, core
 from tools.core import (
     ContractError, VersionLedger, assess_contributions, canonical_bytes,
     capture_evidence, check_permission, digest, parse_time, record_deadline,
@@ -93,6 +97,91 @@ class CoreTests(unittest.TestCase):
             for relative in ("../x", "a/../../x", "C:/x", "C:x", "/tmp/x", "a:secret", "a\\..\\x", "a//x"):
                 with self.subTest(relative=relative), self.assertRaises(ContractError):
                     safe_path(directory, relative, must_exist=False)
+
+    def test_macos_system_root_links_require_exact_ancestor_and_target(self):
+        for name in ("var", "tmp", "etc"):
+            entry = Path("/" + name)
+            for target in (f"private/{name}", f"/private/{name}", "private/other", f"../private/{name}"):
+                with (self.subTest(entry=entry, target=target), patch.object(core.sys, "platform", "darwin"),
+                      patch.object(core.os, "readlink", return_value=target)):
+                    self.assertEqual(target in (f"private/{name}", f"/private/{name}"),
+                                     core.is_macos_system_root_symlink(entry))
+        with (patch.object(core.sys, "platform", "darwin"),
+              patch.object(core.os, "readlink", side_effect=OSError("private path")) as readlink):
+            self.assertFalse(core.is_macos_system_root_symlink(Path("/home/tmp")))
+            readlink.assert_not_called()
+            self.assertFalse(core.is_macos_system_root_symlink(Path("/tmp")))
+            readlink.assert_called_once_with(Path("/tmp"))
+        with (patch.object(core.sys, "platform", "win32"), patch.object(core.os, "readlink") as readlink):
+            self.assertFalse(core.is_macos_system_root_symlink(Path("/tmp")))
+            readlink.assert_not_called()
+
+    def test_checked_path_preserves_bundle_types_and_error_codes(self):
+        self.assertIs(bundle._checked_path, core.checked_path)
+        self.assertIs(bundle._is_macos_system_root_symlink, core.is_macos_system_root_symlink)
+        with tempfile.TemporaryDirectory() as directory:
+            base = Path(directory).resolve()
+            leaf = base / "item"
+            leaf.write_bytes(b"synthetic")
+            self.assertTrue(os.path.samestat(leaf.lstat(), core.checked_path(leaf)))
+            self.assertIsNone(core.checked_path(base / "missing", missing_leaf=True))
+            with self.assertRaisesRegex(bundle.BundleError, "^bundle_path_missing$"):
+                core.checked_path(base / "missing")
+            with self.assertRaisesRegex(bundle.BundleError, "^bundle_path_missing$"):
+                core.checked_path(base / "missing" / "child", missing_leaf=True)
+            with self.assertRaisesRegex(bundle.BundleError, "^bundle_parent_not_directory$"):
+                core.checked_path(leaf / "child")
+            with (patch.object(Path, "lstat", side_effect=PermissionError("private path")),
+                  self.assertRaises(PermissionError)):
+                core.checked_path(leaf)
+
+    def test_checked_path_rejects_links_and_reparse_points_before_descending(self):
+        with tempfile.TemporaryDirectory() as directory:
+            base = Path(directory).resolve()
+            parent = base / "alias"
+            leaf = parent / "child"
+            lstat = Path.lstat
+            for mode, attributes in ((stat.S_IFLNK, 0), (stat.S_IFDIR, stat.FILE_ATTRIBUTE_REPARSE_POINT)):
+                calls = []
+                def path_info(path):
+                    calls.append(path)
+                    if path == parent:
+                        return SimpleNamespace(st_mode=mode, st_file_attributes=attributes)
+                    return lstat(path)
+                with (self.subTest(mode=mode, attributes=attributes), patch.object(Path, "lstat", path_info),
+                      self.assertRaisesRegex(bundle.BundleError, "^bundle_link_rejected$")):
+                    core.checked_path(leaf, missing_leaf=True)
+                self.assertEqual([*reversed(parent.parents), parent], calls)
+
+    def test_checked_path_accepts_macos_system_link_only_as_ancestor(self):
+        ancestor = Path("/var")
+        leaf = ancestor / "item"
+        directory = SimpleNamespace(st_mode=stat.S_IFDIR)
+        file = SimpleNamespace(st_mode=stat.S_IFREG)
+        def path_info(path):
+            if path == ancestor:
+                return SimpleNamespace(st_mode=stat.S_IFLNK)
+            return file if path == leaf else directory
+        with (patch.object(core.sys, "platform", "darwin"),
+              patch.object(core.os, "readlink", return_value="private/var"),
+              patch.object(Path, "lstat", path_info), patch.object(Path, "stat", return_value=directory)):
+            self.assertIs(file, core.checked_path(leaf))
+            with self.assertRaisesRegex(bundle.BundleError, "^bundle_link_rejected$"):
+                core.checked_path(ancestor)
+            with (patch.object(Path, "stat", side_effect=OSError("private path")),
+                  self.assertRaisesRegex(bundle.BundleError, "^bundle_link_rejected$")):
+                core.checked_path(leaf)
+
+    def test_reserved_windows_names_use_windows_rules_on_all_hosts(self):
+        for name, reserved in (("CON", True), ("Nul.txt", True), ("Lpt9.DOCX", True),
+                               ("com1", True), ("Console.txt", False), ("plain.txt", False)):
+            with self.subTest(name=name):
+                self.assertEqual(reserved, core.is_reserved_windows_name(name))
+        if hasattr(core.ntpath, "isreserved"):
+            with patch.object(core.os, "path", SimpleNamespace()):
+                self.assertTrue(core.is_reserved_windows_name("NUL.docx"))
+                self.assertTrue(core.is_reserved_windows_name("trailing."))
+                self.assertFalse(core.is_reserved_windows_name("plain.docx"))
 
     def test_output_never_overwrites(self):
         with tempfile.TemporaryDirectory() as directory:

@@ -68,6 +68,70 @@ class ProductBridgeTests(unittest.TestCase):
                            {'id': 'Note', 'kind': 'paragraph', 'audience': 'internal', 'source_id': 'Source', 'start_line': 3, 'end_line': 3}],
                 'figures': []}
 
+    def test_case_write_rejects_scripts_and_root_parent_segments(self):
+        for ext in ('.sh', '.py', '.vbs', '.JS', '.ps1', '', '.docx'):
+            path = 'work/unsafe' + ext
+            result = self.bridge.call('case_write', {'path': path, 'text': 'synthetic text'})
+            self.assertEqual('text_file_required', result['error'])
+            self.assertFalse((self.work / path).exists())
+        with self.assertRaisesRegex(BridgeError, 'unsafe_path'):
+            HostToolBridge(self.package, self.work / 'input' / '..', self.control, self.manifest)
+
+    def test_worker_output_is_rejected_at_stream_limit(self):
+        self.put_spec(self.spec())
+        with mock.patch('tools.host_bridge.MAX_WORKER_STREAM_BYTES', 8):
+            answer = self.bridge.call('case_documents', {'input': 'input/spec.json', 'output': 'output/doc', 'mode': 'synthetic'})
+        self.assertFalse(answer['success'])
+        self.assertEqual('worker_output_limit_exceeded', answer['error'])
+
+    def test_audit_write_is_blocked_during_tool_and_runtime_sibling_is_unreadable(self):
+        runtime = self.case / 'synthetic-runtime'
+        library = runtime / 'lib'
+        library.mkdir(parents=True)
+        (library / 'marker.txt').write_text('synthetic library fixture', encoding='utf-8')
+        (runtime / 'outside.txt').write_text('synthetic non-library fixture', encoding='utf-8')
+        job = self.control / 'direct-audit.job.json'
+        audit = self.control / 'direct-audit.audit.json'
+        job.write_text(json.dumps({'tool': 'case_fidelity', 'arguments': {}, 'package': str(self.package),
+                                  'workspace': str(self.work), 'audit': str(audit),
+                                  'expected_manifest_sha256': self.manifest}), encoding='utf-8')
+        program = """
+import importlib.util
+from pathlib import Path
+import sys
+
+worker_path, job_path, root = sys.argv[1:]
+spec = importlib.util.spec_from_file_location('isolated_test_worker', worker_path)
+worker = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(worker)
+runtime = Path(root)
+sys.base_prefix = sys.base_exec_prefix = root
+worker.sysconfig.get_paths = lambda: dict(stdlib=runtime / 'lib', platstdlib=runtime / 'lib',
+                                         purelib=runtime / 'lib' / 'site-packages', platlib=runtime / 'lib' / 'site-packages')
+
+def observe_open_modes(job, _workspace):
+    (runtime / 'lib' / 'marker.txt').read_bytes()
+    for path, mode in [(Path(job['audit']), 'xb'), (runtime / 'outside.txt', 'rb')]:
+        try:
+            with path.open(mode):
+                pass
+        except PermissionError:
+            continue
+        raise AssertionError('worker accepted an unapproved path')
+    return 0, None
+
+worker._run_tool = observe_open_modes
+sys.argv = [worker_path, job_path]
+raise SystemExit(worker.main())
+"""
+        result = subprocess.run([BASE_PYTHON, '-I', '-S', '-B', '-X', 'utf8', '-c', program,
+                                 str(self.package / 'tools/host_bridge_worker.py'), str(job), str(runtime)],
+                                cwd=self.work, capture_output=True, timeout=30)
+        self.assertEqual(0, result.returncode, result.stderr)
+        proof = json.loads(audit.read_bytes())
+        self.assertEqual({audit, runtime / 'outside.txt'}, {Path(row['path']) for row in proof['blocked']})
+        self.assertTrue(any(row['location'] == 'python_runtime' for row in proof['file_open_events']))
+
     def test_docx_summary_crosses_worker_and_retains_hash_bound_full_report(self):
         from evals.test_document_review import fixture, edited, tag
         from tools.document_review import review_docx

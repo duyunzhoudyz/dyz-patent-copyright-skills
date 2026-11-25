@@ -16,13 +16,33 @@ import re
 import runpy
 import stat
 import sys
+import sysconfig
+
+
+def _is_macos_system_root_symlink(entry):
+    # Bootstrap and the audit hook must not import tools before the frozen loader can read them.
+    if sys.platform != 'darwin' or entry not in (Path('/var'), Path('/tmp'), Path('/etc')):
+        return False
+    try:
+        target = os.readlink(entry)
+    except OSError:
+        return False
+    return target in (f'private/{entry.name}', f'/private/{entry.name}')
 
 
 def _regular(path):
     for item in (path, *path.parents):
         info = item.lstat()
-        if item.is_symlink() or getattr(info, 'st_file_attributes', 0) & stat.FILE_ATTRIBUTE_REPARSE_POINT:
-            raise PermissionError('worker_reparse_path')
+        is_link = item.is_symlink() or bool(
+            getattr(info, 'st_file_attributes', 0) & getattr(stat, 'FILE_ATTRIBUTE_REPARSE_POINT', 0))
+        if is_link:
+            if item != path and _is_macos_system_root_symlink(item):
+                try:
+                    info = item.stat()
+                except OSError:
+                    raise PermissionError('worker_reparse_path') from None
+            else:
+                raise PermissionError('worker_reparse_path')
         if item == path and not stat.S_ISDIR(info.st_mode) and (not stat.S_ISREG(info.st_mode) or info.st_nlink != 1):
             raise PermissionError('worker_nonregular_or_aliased_file')
 
@@ -279,7 +299,11 @@ def main():
     package, workspace, audit_path = (Path(job[k]).absolute() for k in ('package', 'workspace', 'audit'))
     for root in (package, workspace, audit_path.parent):
         _regular(root)
-    if Path.cwd().resolve() != workspace or audit_path.parent != job_path.parent or audit_path.exists():
+    package = package.resolve()
+    workspace = workspace.resolve()
+    audit_path = audit_path.parent.resolve() / audit_path.name
+    job_path = job_path.resolve()
+    if Path.cwd().resolve() != workspace or audit_path.parent != job_path.parent or os.path.lexists(audit_path):
         return 2
     roots = [package, workspace, audit_path.parent]
     if len(set(roots)) != 3 or any(a.is_relative_to(b) for a in roots for b in roots if a != b):
@@ -297,13 +321,19 @@ def main():
     # The parent already verified the fixed inventory against the external hash.
     allowed_package = set(rows) | {'bundle-manifest.json'}
     worker_hash = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
-    runtime = Path(sys.base_prefix).resolve()
+    runtime_paths = sysconfig.get_paths()
+    runtime_roots = tuple({Path(runtime_paths[key]).resolve() for key in ('stdlib', 'platstdlib')})
+    excluded_runtime_roots = tuple({Path(runtime_paths[key]).resolve() for key in ('purelib', 'platlib')})
+    writing_audit = False
     events, blocked = [], []
 
     def observe(event, args):
         if event == 'open' and not isinstance(args[0], int):
-            lexical = Path(os.path.abspath(os.fsdecode(args[0])))
-            path = lexical.resolve()
+            # Do NOT call os.path.abspath() before resolve(), as abspath() lexically collapses
+            # symlink/.. segments on POSIX before lstat/resolve can detect workspace escapes.
+            raw_path = Path(os.fsdecode(args[0]))
+            path = raw_path.resolve()
+            lexical = raw_path if raw_path.is_absolute() else (workspace / raw_path)
             mode, flags = args[1], args[2]
             writing = ((isinstance(mode, str) and any(c in mode for c in 'wax+')) or
                        bool(flags & (os.O_WRONLY | os.O_RDWR | os.O_CREAT | os.O_TRUNC | os.O_APPEND)))
@@ -317,24 +347,28 @@ def main():
                 location = 'installed_package'
                 allowed = not writing and path.relative_to(package).as_posix() in allowed_package
             elif path == audit_path:
-                location, allowed = 'audit', writing
-            elif path.is_relative_to(runtime):
-                # Trust the installed standard library's own deployment layout
-                # (this Windows interpreter uses a reparse-point runtime root).
-                # Project package/workspace roots retain the stricter checks.
-                location, allowed = 'python_runtime', not writing
+                location, allowed = 'audit', writing and writing_audit
+            elif any(path.is_relative_to(r) for r in runtime_roots):
+                location = 'python_runtime'
+                allowed = not writing and not any(path.is_relative_to(r) for r in excluded_runtime_roots)
             if allowed and location != 'python_runtime':
-                try:
-                    # Check lexical parents before resolving away any links.
-                    _regular(lexical if lexical.exists() else lexical.parent)
-                except OSError:
+                if '..' in raw_path.parts or Path.cwd().resolve() != workspace:
                     allowed = False
+                else:
+                    try:
+                        # Check un-collapsed lexical path (handles dangling symlinks and reparse points!).
+                        _regular(lexical if os.path.lexists(lexical) else lexical.parent)
+                    except OSError:
+                        allowed = False
             row = {'path': str(lexical), 'location': location, 'writing': writing}
             events.append(row)
             if not allowed:
                 blocked.append(row)
                 raise PermissionError('worker_file_boundary')
-        if event in {'socket.connect', 'socket.bind', 'subprocess.Popen', 'os.system'}:
+        if event.startswith('socket.') or event in {
+            'subprocess.Popen', 'os.system', 'os.posix_spawn', 'os.spawn',
+            'os.startfile', 'os.fork', 'os.forkpty', 'os.exec', 'webbrowser.open',
+        }:
             blocked.append({'event': event})
             raise PermissionError('worker_network_or_subprocess_boundary')
 
@@ -352,13 +386,17 @@ def main():
                    if (key == 'tools' or key.startswith('tools.')) and getattr(value, '__file__', None)}
         if not all(Path(value).is_relative_to(package) for value in modules.values()):
             unexpected, code = 'ModuleOriginMismatch', 1
-        with audit_path.open('x', encoding='utf-8') as stream:
-            json.dump({'exit_code': code, 'unexpected_exception': unexpected, 'contract_error': contract_error,
-                       'worker_pid': os.getpid(), 'worker_source_sha256': worker_hash,
-                       'source_loading': 'manifest_hash_bound_source_only_no_bytecode',
-                       'blocked': blocked, 'file_open_events': events, 'loaded_tools_modules': modules,
-                       'scope': 'Python events only; not complete OS or native runtime isolation.'},
-                      stream, ensure_ascii=False, indent=2)
+        writing_audit = True
+        try:
+            with audit_path.open('x', encoding='utf-8') as stream:
+                json.dump({'exit_code': code, 'unexpected_exception': unexpected, 'contract_error': contract_error,
+                           'worker_pid': os.getpid(), 'worker_source_sha256': worker_hash,
+                           'source_loading': 'manifest_hash_bound_source_only_no_bytecode',
+                           'blocked': blocked, 'file_open_events': events, 'loaded_tools_modules': modules,
+                           'scope': 'Python events only; not complete OS or native runtime isolation.'},
+                          stream, ensure_ascii=False, indent=2)
+        finally:
+            writing_audit = False
     return code
 
 

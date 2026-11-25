@@ -1,4 +1,4 @@
-<!-- README_SYNC: source=working-tree; updated=2026-11-17 -->
+<!-- README_SYNC: source=working-tree; updated=2026-11-25 -->
 <p>简体中文 · <a href="./README_EN.md">English</a></p>
 
 # dyz-patent-copyright-skills
@@ -12,8 +12,8 @@
 [![Issues](https://img.shields.io/github/issues/duyunzhoudyz/dyz-patent-copyright-skills)](https://github.com/duyunzhoudyz/dyz-patent-copyright-skills/issues)
 [![Version](https://img.shields.io/badge/version-0.1.0a1-blue)](CHANGELOG.md)
 [![Status](https://img.shields.io/badge/status-unpublished%20candidate-orange)](RELEASE.md)
-![Python](https://img.shields.io/badge/python-3.11-3776AB)
-![Platform](https://img.shields.io/badge/platform-Windows-0078D6)
+![Python](https://img.shields.io/badge/python-3.11%20%7C%203.13%20%7C%203.14%20(CI%20target%203.11--3.14)-3776AB)
+![Platform](https://img.shields.io/badge/platform-Windows%20verified%20%7C%20Linux%2FmacOS%20CI%20pending-0078D6)
 [![License](https://img.shields.io/badge/license-PolyForm%20Noncommercial%201.0.0-blue)](LICENSE)
 
 [![Stargazers](https://bytecrank.com/nastyox/reporoster/php/stargazersSVG.php?user=duyunzhoudyz&repo=dyz-patent-copyright-skills)](https://github.com/duyunzhoudyz/dyz-patent-copyright-skills/stargazers)
@@ -77,7 +77,7 @@
 
 ## 快速开始
 
-环境：**Windows + Python 3.11**。工具只用标准库，不需要 pip 安装。下载完整源码或可信的完整包，保留 `tools/`、`skills/`、`references/` 的相对位置，在根目录运行命令。
+环境：**Python 3.11—3.14 标准库**，核心工具零 pip 依赖。本机已实测基线为 Windows 下的 Python 3.11 / 3.13 / 3.14；Windows Python 3.12 及 Ubuntu / macOS（Python 3.11 / 3.12 / 3.13 / 3.14）已完成跨平台代码守护与 CI 矩阵配置，待托管 CI 实跑验证。下载完整源码或可信的完整包，保留 `tools/`、`skills/`、`references/` 的相对位置，在根目录运行命令；完整 3 分钟实操演练见[快速上手剧本](skills/dyz-workbench/resources/quickstarts.md)。
 
 **1. 确认解释器**
 
@@ -85,16 +85,17 @@
 python --version
 ```
 
-应显示 3.11.x。默认解释器是其他版本时，把下面命令里的 `python` 换成 3.11 解释器的完整路径。
+应显示 3.11.x 至 3.14.x（当前本机已实测 3.11 / 3.13 / 3.14，3.12 待托管 CI 验证）。
 
-**2. 查看能力目录，跑一次合成演练**
+**2. 查看能力目录、帮助与合成演练**
 
 ```powershell
+python -B -X utf8 -m tools help
 python -B -X utf8 -m tools list
 python -B -X utf8 -m tools demo --synthetic --root . --output synthetic-demo.json
 ```
 
-第一条输出 83 项的 JSON 目录，第二条输出 `result_written`。
+`list` 输出 83 项的 JSON 目录，`demo` 输出 `result_written`。
 
 **3. 生成并回读一份合成 Word 审阅包**
 
@@ -105,9 +106,15 @@ python -B -X utf8 -m tools.documents --synthetic --root . --input skills/dyz-ren
 
 依次输出 `document_written_needs_review` 和 `document_verified_needs_review`。输出目标须事先不存在，并且位于 `--root` 之内；放在仓库根目录时会被 Git 忽略。PDF 是显式可选的转换，需要本机已安装 LibreOffice，不是首次试用的前提。
 
-**4. 在 Agent 里加载一个入口**
+**4. 通过标准 MCP（stdio）或本地安装器接入 Agent 宿主**
 
-让支持读取文件的 Agent 加载 `skills/dyz-patent/SKILL.md`，再提出类似“只按给定技术材料起草内部工作稿，逐项列原文支持和缺口”的任务。文字任务不需要先填 JSON；软件版权或标准任务改用下表对应的入口。
+```powershell
+# 预览安装计划与 MCP 客户端配置片段（不写盘、不改全局配置）
+python -B -X utf8 -m tools.install --target D:/dyz-installed --host claude-code --plan
+python -B -X utf8 -m tools.mcp_server --print-config --host claude-code
+```
+
+纯文本场景也可直接让支持读取文件的 Agent 加载 `skills/dyz-patent/SKILL.md`，再提出类似“只按给定技术材料起草内部工作稿，逐项列原文支持和缺口”的任务。文字任务不需要先填 JSON；软件版权或标准任务改用下表对应的入口。
 
 ## 从你的任务选入口
 
@@ -124,12 +131,15 @@ python -B -X utf8 -m tools.documents --synthetic --root . --input skills/dyz-ren
 
 ### 更多本地入口
 
+- [3 分钟快速上手剧本](skills/dyz-workbench/resources/quickstarts.md)：跨专利、软件、标准与 MCP 接入的可复制演练。
 - [完整包使用说明](skills/dyz-workbench/resources/package-use.md)：布局、按需加载、冻结和恢复。
-- [本地文件工具](skills/dyz-workbench/resources/host-bridge.md)：有界分段读取、按 hash 修改或复制、Word 回查。`python -B -m tools.host_bridge --describe` 列出工具定义；控制器接入和宿主注册需要分别验证。
-- [获准的本地软件材料](skills/dyz-software/resources/tools.md#软件成品链与集中采集)：集中采集、生成内部准备包，再生成源码、说明和字段 DOCX 及可选 PDF。所有产物仍是内部候选。
-- [标准五文书闭环](skills/dyz-standards/resources/tools.md#五文书闭环与本地入口)：由意见、决定、条款和说明派生五类 Word，并回验真实字节。
+- [本地文件工具](skills/dyz-workbench/resources/host-bridge.md)与标准 MCP 服务端：`python -B -m tools.host_bridge --describe` 或 `python -B -m tools.mcp_server --describe` 列出工具定义；多宿主安装计划使用 `python -B -m tools.install`。
+- 专利工程扩展：权项-事实中间表示（`tools/patent_ir.py`）、专利门禁 2.1（从属继承、结构锚点、英文子集与 OA 双轨核验 `tools/patent_gate.py`）、三轴材料接入（`tools/patent_intake.py`）、原生 Word 数学公式 OMML（`tools/omml.py`）及美欧法域与 FTO/SEP/不建议申请策略分析（`tools/jurisdiction_analyzers.py`、`tools/procedure_strategy.py`）。
+- [获准的本地软件材料](skills/dyz-software/resources/tools.md#软件成品链与集中采集)：多技术栈只读发现、三批次集中采集（`software_intake.collect_batch`）、PNG 辅助块清洗与截图清单元校验（`tools/media_prep.py`）及源码/说明/字段 DOCX 生成。所有产物仍是内部候选。
+- [标准五文书闭环](skills/dyz-standards/resources/tools.md#五文书闭环与本地入口)：支持 v3 排版配置（DOCX 侧支持有限原生 OMML 公式）、外部合规模板声明式映射（`tools/template_mapper.py`）、六维结构审稿与循环定义检测及术语标准示范。
+- 可选外联只读连接器与验证治理：默认离线的 USPTO/EPO/SAMR/ISO/外部 MCP 策略适配层（`tools/connectors/`）、多模态视觉覆盖台账（`tools/visual_ledger.py`）、专家试审包与连续三案升级门控（`tools/trial_pack.py`），以及开发仓未见任务盲测协议校验器（`evals/benchmark_harness.py`）。
 - [文件装配](skills/dyz-rendering/resources/tools.md)与[编辑后的 Word 回查](skills/dyz-rendering/resources/docx-readback.md)。
-- [有限公开专利检索附录](skills/dyz-patent/resources/cn-gateway-search.md)：研究资源，实际查询、公开版本和逐篇比较分列，不代表工具具备联网检索能力。
+- [有限公开专利检索附录](skills/dyz-patent/resources/cn-gateway-search.md)：研究资源，实际查询、公开版本和逐篇比较分列。
 
 ## 它是怎么组织的
 
@@ -153,14 +163,14 @@ flowchart LR
 
 ## 这一版做不到什么
 
-- **环境只验证了 Windows + Python 3.11。** 其他 Python 版本、其他操作系统和任意 Agent 宿主没有通过本版的完整验证；发布检查在非 3.11 解释器上会直接拒绝。
-- **专利终稿门禁只核有限句法和固定原文。** 原文含从属权项继承、公式、表格或其他未支持的表达时，有依据的候选也可能被阻断。遇到 `blocked` 请保留原件，只交标明“未完成检查”的内部工作稿。
-- **审查意见（OA）答复尚未分开核验。** 答复论证和技术替换稿目前共用原申请支持门禁，法律、程序和引证论证的依据没有单独核对，完整的 OA 答复不能据此放行。
-- **工具结论不是专业结论。** `checked`、零 issues、Word 生成成功或 PDF 字面一致，都不证明可以提交、登记、认证或已获组织批准；项目也不保证授权、登记、不侵权或标准获批。
+- **Windows Python 3.12、Linux/macOS 托管 CI 与跨平台 Office/PDF 尚未全部实测。** 核心标准库工具与发布检查已在本机 Windows Python 3.11 / 3.13 / 3.14 实测通过并加入跨平台守护；Windows / Ubuntu / macOS × Python 3.11 / 3.12 / 3.13 / 3.14 矩阵已写入 `.github/workflows/ci.yml`，待公开仓库后由托管 CI 实跑验证，LibreOffice/Poppler 物理分页核验仍以 Windows 实测为基线。
+- **专利门禁 2.1 与美欧分析器仍只覆盖有限规则子集。** 虽已扩展从属权项继承链、结构锚点、有限英文条件关系、OA 双轨核验与 US/EP 形式提示，但仍非完整法律审查或等价语义判定。遇到 `blocked` 请保留原件，只交标明“未完成检查”的内部工作稿。
+- **默认离线且未执行真实外联/付费盲测。** `tools/connectors/` 在未显式开启策略与配额前一律默认离线；未见任务盲测框架仅在本地离线夹具上完成协议自检，尚未执行大规模真人盲评或付费模型对照，不作市场效果领先声明。
+- **工具结论不是专业结论。** `checked`、零 issues、Word 生成成功或 PDF 字面一致，都不证明可以提交、登记、认证或已获组织批准；83 项入口仍为 `synthetic_helper_only`，需经独立专业人员按具体组合连续复核并由维护者另行决策，不保证授权、登记、不侵权或标准获批。
 - **不替你做真实动作。** 没有真实提交、自动外发、签署或付款，也不提供操作系统级隔离。正式提交、公开征求意见、发布、签章、缴费和需要执业资格的行为，须另行确认授权与资格。
 - **本地工具不等于离线。** 模型如果在云端，材料仍会进入宿主的数据路径；加载前请确认未公开技术、源码和受限标准可以这样处理。
-- **宿主集成是实验性的。** 显式加载文件不保证宿主自动发现 Skill 和注册工具；实验性的[宿主元数据检查器](skills/dyz-workbench/resources/package-use.md#7-当前源码的本地六入口元数据配置工具)绑定特定二进制，不是通用安装器。
-- **合成入口只处理合成示例。** 真实案件不能改标为合成材料；真实软件材料走单独的获准入口。
+- **外部宿主自动发现与全局配置由用户自决。** `tools/mcp_server.py` 与 `tools/install.py` 提供标准 stdio MCP 接口与本地配置片段，不自动改写全局宿主配置；真实宿主模型往返稳定性须结合具体宿主版本另验。
+- **合成入口只处理合成示例。** 真实案件不能改标为合成材料；真实软件与专利材料须走显式获准入口。
 
 ## 完整本地包
 
@@ -172,7 +182,7 @@ $dyzManifestSha = (Get-FileHash -LiteralPath D:/dyz-local-bundle/bundle-manifest
 python -B -X utf8 -m tools.bundle --verify D:/dyz-local-bundle --manifest-sha256 $dyzManifestSha
 ```
 
-构建输出 `bundle_created`，校验返回的 JSON 中 `"status": "matched"`。包目标须不存在，父目录须存在。本次构建为 291 个文件，准确数量以清单为准。
+构建输出 `bundle_created`，校验返回的 JSON 中 `"status": "matched"`。包目标须不存在，父目录须存在。本次构建是本地完整运行包白名单的 309 个源文件，不是整个 Git 源码仓库的文件总数（当前 source_candidates 口径为 415 份）；准确数量以清单为准。
 
 - 清单哈希由构建者保存在包外。下载者应使用发布者提供的哈希来校验，不要从待核的包里重新算一个“预期值”。
 - 不带包外哈希的校验只证明内部一致。两种校验都不认证来源、许可或专业质量。
@@ -221,7 +231,7 @@ python -B -X utf8 -m unittest discover -s evals -q
 python -B -X utf8 -m compileall -q tools evals skills
 ```
 
-仓库内的 CI 定义（`.github/workflows/ci.yml`）在 Windows + Python 3.11 上运行同样三步；托管 CI 尚未在公开仓库中实际执行过。全量测试通常需要几分钟。
+仓库内的 CI 定义（`.github/workflows/ci.yml`）已配置 Windows / Ubuntu / macOS × Python 3.11 / 3.12 / 3.13 / 3.14 共 12 组跨平台矩阵运行同样三步；托管 CI 尚未在公开仓库中实际执行过，当前仅 Windows 下的 Python 3.11 / 3.13 / 3.14 在本机实测过。全量测试通常需要几分钟。
 
 敏感问题按[安全报告说明](SECURITY.md)处理。私密报告渠道尚未设置，请不要在公开 Issue 里贴复现载荷、客户材料或凭证。
 

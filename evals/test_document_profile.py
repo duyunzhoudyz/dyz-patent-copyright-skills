@@ -82,6 +82,37 @@ class DocumentProfileTests(unittest.TestCase):
             checked = documents.verify(root, spec, "pack", synthetic=True)
             self.assertEqual(built["profile"], checked["profile"])
 
+    def test_resolution_rejects_non_string_profile_before_dispatch(self):
+        with tempfile.TemporaryDirectory(prefix="dyz-profile-") as folder:
+            root = Path(folder)
+            spec = source_case(root, "Original technical text.")
+            for profile in ({"unexpected": "value"}, [], True):
+                with self.subTest(profile=profile), self.assertRaisesRegex(ContractError, "document_profile_unsupported"):
+                    documents.resolve_document(root, {**spec, "profile": profile})
+
+    def test_unsupported_standard_profiles_reject_formula(self):
+        with tempfile.TemporaryDirectory(prefix="dyz-profile-") as folder:
+            root = Path(folder)
+            spec = source_case(root, "x = y^2")
+            spec["blocks"][0]["kind"] = "formula"
+            for profile in (None, "dyz-standard-internal-v1", "dyz-standard-internal-v2"):
+                with self.subTest(profile=profile), self.assertRaisesRegex(ContractError, "document_formula_profile_unsupported"):
+                    documents.resolve_document(root, {**spec, "profile": profile})
+            for profile in ("dyz-standard-internal-v1", "dyz-standard-internal-v2"):
+                with self.subTest(direct_profile=profile), self.assertRaisesRegex(ContractError, "document_formula_profile_unsupported"):
+                    documents.make_docx([{"id": "F", "kind": "formula", "text": "x = y^2"}], [], profile=profile)
+
+    def test_v3_formula_keep_with_next_is_written_and_verified(self):
+        profile = "dyz-standard-internal-v3"
+        blocks = [{"id": "F1", "kind": "formula", "text": "x = y^2", "keep_with_next": True},
+                  {"id": "F2", "kind": "formula", "text": "x = y^2", "keep_with_next": False}]
+        raw = documents.make_docx(blocks, [], profile=profile)
+        with zipfile.ZipFile(io.BytesIO(raw)) as package:
+            xml = ET.fromstring(package.read("word/document.xml"))
+        w = "{" + documents.W + "}"
+        self.assertEqual(["1", "0"], [node.get(w + "val") for node in xml.iter(w + "keepNext")])
+        self.assertTrue(documents.inspect_generated_docx(raw, blocks, [], profile=profile)["source_text_equal"])
+
 
 if __name__ == "__main__":
     unittest.main()

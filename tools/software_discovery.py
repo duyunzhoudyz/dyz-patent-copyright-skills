@@ -7,6 +7,7 @@ import re
 import tomllib
 from datetime import datetime, timezone
 from pathlib import Path
+from xml.etree import ElementTree as ET
 
 from tools import core
 
@@ -36,8 +37,31 @@ SECRET_TEXT = re.compile(
     r"(?i)(password|passwd|secret|api[_-]?key|access[_-]?token|private[_-]?key)"
     r"|-----BEGIN [A-Z ]*PRIVATE KEY-----"
 )
-CONFIG_NAMES = {"package.json", "app.json", "project.json", "project.config.json",
-                "pyproject.toml"}
+CONFIG_NAMES = {
+    "package.json", "app.json", "project.json", "project.config.json",
+    "pyproject.toml", "cargo.toml", "go.mod", "pom.xml",
+    "requirements.txt", "setup.cfg", "composer.json",
+}
+URL_CREDENTIALS = re.compile(r"(?i)[a-z][a-z0-9+.-]*://[^\s/?#]*@")
+
+
+class _PomTreeBuilder(ET.TreeBuilder):
+    def __init__(self):
+        super().__init__()
+        self.depth = 0
+
+    def doctype(self, name, pubid, system):
+        raise ET.ParseError("pom_dtd_forbidden")
+
+    def start(self, tag, attrs):
+        self.depth += 1
+        if self.depth > 64:
+            raise ET.ParseError("pom_depth_exceeded")
+        return super().start(tag, attrs)
+
+    def end(self, tag):
+        self.depth -= 1
+        return super().end(tag)
 
 
 def _text(value: object, code: str) -> str:
@@ -141,16 +165,99 @@ def _extract(path: str, text: str, sha256: str, secrets: list[str]) -> tuple[lis
 
     name = Path(path).name.casefold()
     if name in CONFIG_NAMES:
+        if name == "go.mod":
+            req_deps = []
+            for lineno, raw_line in enumerate(text.splitlines(), start=1):
+                line = raw_line.split("//", 1)[0].strip()
+                if line.startswith("module "):
+                    add("name", line[7:].strip().split("/")[-1], f"line:{lineno}", inferred=True)
+                    add("development_tools", "Go toolchain", f"line:{lineno}", inferred=True)
+                elif line.startswith("go "):
+                    add("runtime_environment", "Go " + line[3:].strip(), f"line:{lineno}")
+                elif re.match(r"^[a-zA-Z0-9._-]+/[a-zA-Z0-9._/-]+\s+v\d", line):
+                    req_deps.append(line.split()[0])
+            if req_deps:
+                add("runtime_dependencies", ", ".join(sorted(set(req_deps))[:40]), "go.mod:require", inferred=True)
+            return candidates, facts
+        if name == "requirements.txt":
+            pkgs = []
+            for raw_line in text.splitlines():
+                if URL_CREDENTIALS.search(raw_line):
+                    continue
+                line = raw_line.split("#", 1)[0].strip()
+                if line and not line.startswith("-"):
+                    pkgs.append(re.split(r"[=<>!~;\s]", line, maxsplit=1)[0])
+            if pkgs:
+                add("runtime_dependencies", ", ".join(sorted(set(pkgs))[:40]), "requirements.txt", inferred=True)
+                add("development_tools", "Python / pip", "requirements.txt", inferred=True)
+            return candidates, facts
+        if name == "setup.cfg":
+            section = ""
+            for lineno, raw_line in enumerate(text.splitlines(), start=1):
+                line = raw_line.strip()
+                if line.startswith("[") and line.endswith("]"):
+                    section = line[1:-1].strip().lower()
+                elif "=" in line and not line.startswith("#"):
+                    k, _, v = line.partition("=")
+                    k, v = k.strip().lower(), v.strip()
+                    if section == "metadata":
+                        if k == "name":
+                            add("name", v, f"line:{lineno}", inferred=True)
+                        elif k == "version":
+                            add("version", v, f"line:{lineno}")
+                        elif k == "description":
+                            add("main_functions", v, f"line:{lineno}", inferred=True)
+                    elif section == "options" and k == "python_requires":
+                        add("runtime_environment", "Python " + v, f"line:{lineno}")
+            return candidates, facts
+        if name == "pom.xml":
+            try:
+                root_el = ET.fromstring(text, parser=ET.XMLParser(target=_PomTreeBuilder()))
+            except ET.ParseError:
+                return [], [{"status": "candidate", "needs_confirm": True,
+                             "source": {"path": path, "sha256": sha256, "locator": "document"},
+                             "reason": "configuration_unreadable"}]
+            def _xml_child(el, tag_name):
+                for child in el:
+                    if child.tag.rsplit("}", 1)[-1] == tag_name and (child.text or "").strip():
+                        return child.text.strip()
+                return None
+            for tag_name in ("name", "artifactId"):
+                val = _xml_child(root_el, tag_name)
+                if val:
+                    add("name", val, f"pom.{tag_name}", inferred=True)
+                    break
+            ver = _xml_child(root_el, "version")
+            if ver:
+                add("version", ver, "pom.version")
+            desc = _xml_child(root_el, "description")
+            if desc:
+                add("main_functions", desc, "pom.description", inferred=True)
+            add("development_tools", "Apache Maven", "pom.xml", inferred=True)
+            for child in root_el:
+                if child.tag.rsplit("}", 1)[-1] == "properties":
+                    jver = _xml_child(child, "java.version") or _xml_child(child, "maven.compiler.release")
+                    if jver:
+                        add("runtime_environment", "Java " + jver, "pom.properties.java.version")
+            return candidates, facts
         try:
-            data = tomllib.loads(text) if name == "pyproject.toml" else core.strict_json_loads(text)
+            data = tomllib.loads(text) if name in {"pyproject.toml", "cargo.toml"} else core.strict_json_loads(text)
         except (core.ContractError, ValueError, TypeError):
             return [], [{"status": "candidate", "needs_confirm": True,
                          "source": {"path": path, "sha256": sha256, "locator": "document"},
                          "reason": "configuration_unreadable"}]
         if not isinstance(data, dict):
             return [], []
+        if name == "cargo.toml":
+            add("development_tools", "Cargo / Rust", "cargo.toml", inferred=True)
+        elif name == "pyproject.toml":
+            add("development_tools", "Python / pyproject", "pyproject.toml", inferred=True)
+        elif name == "package.json":
+            add("development_tools", "Node.js / npm", "package.json", inferred=True)
+        elif name == "composer.json":
+            add("development_tools", "PHP / Composer", "composer.json", inferred=True)
         blocks = [("$", data)]
-        for key in ("project", "app", "expo"):
+        for key in ("project", "package", "app", "expo"):
             if isinstance(data.get(key), dict):
                 blocks.append(("$." + key, data[key]))
         for locator, block in blocks:
@@ -165,6 +272,12 @@ def _extract(path: str, text: str, sha256: str, secrets: list[str]) -> tuple[lis
             if "requires-python" in block:
                 add("runtime_environment", "Python " + str(block["requires-python"]),
                     locator + ".requires-python")
+            if "rust-version" in block:
+                add("runtime_environment", "Rust " + str(block["rust-version"]),
+                    locator + ".rust-version")
+            elif "edition" in block and name == "cargo.toml":
+                add("runtime_environment", "Rust edition " + str(block["edition"]),
+                    locator + ".edition", inferred=True)
             engines = block.get("engines")
             if isinstance(engines, dict):
                 for engine, version in sorted(engines.items()):
@@ -177,20 +290,47 @@ def _extract(path: str, text: str, sha256: str, secrets: list[str]) -> tuple[lis
                     locator + ".dependencies", inferred=True)
             elif isinstance(dependencies, list):
                 add("runtime_dependencies", dependencies, locator + ".dependencies", inferred=True)
+            require_map = block.get("require")
+            if isinstance(require_map, dict) and name == "composer.json":
+                add("runtime_dependencies", ", ".join(sorted(require_map)),
+                    locator + ".require", inferred=True)
     elif name.startswith("readme"):
         for number, line in enumerate(text.splitlines(), start=1):
             if line.startswith("# "):
                 add("name", line[2:].strip(), f"line:{number}", inferred=True)
                 break
-        # 仅提取明示标签，不把随意正文或命令当作已验证功能。
-        labels = {"功能：": "main_functions", "功能:": "main_functions",
-                  "用途：": "development_purpose", "用途:": "development_purpose",
-                  "运行环境：": "runtime_environment", "运行环境:": "runtime_environment",
-                  "版本：": "version", "版本:": "version"}
-        for number, line in enumerate(text.splitlines(), start=1):
+        # 同时识别中英文明示标签，不把随意正文或命令当作已验证功能；仍保持 inferred + needs_confirm。
+        labels = {
+            "功能：": "main_functions", "功能:": "main_functions",
+            "主要功能：": "main_functions", "主要功能:": "main_functions",
+            "技术特点：": "technical_features", "技术特点:": "technical_features",
+            "用途：": "development_purpose", "用途:": "development_purpose",
+            "开发目的：": "development_purpose", "开发目的:": "development_purpose",
+            "所属领域：": "application_domain", "所属领域:": "application_domain",
+            "运行环境：": "runtime_environment", "运行环境:": "runtime_environment",
+            "运行平台：": "runtime_platform", "运行平台:": "runtime_platform",
+            "开发工具：": "development_tools", "开发工具:": "development_tools",
+            "开发操作系统：": "development_os", "开发操作系统:": "development_os",
+            "版本：": "version", "版本:": "version",
+            "version:": "version", "runtime:": "runtime_environment",
+            "requirements:": "runtime_environment", "platform:": "runtime_platform",
+            "os:": "development_os", "purpose:": "development_purpose",
+            "domain:": "application_domain", "features:": "main_functions",
+            "technical features:": "technical_features", "tools:": "development_tools",
+        }
+        for number, raw_line in enumerate(text.splitlines(), start=1):
+            stripped = raw_line.strip().lstrip("-* ").strip()
+            low = stripped.casefold()
             for prefix, field in labels.items():
-                if line.strip().startswith(prefix):
-                    add(field, line.strip()[len(prefix):], f"line:{number}", inferred=True)
+                if low.startswith(prefix.casefold()):
+                    val = stripped[len(prefix):].strip().strip("`*")
+                    if val:
+                        add(field, val, f"line:{number}", inferred=True)
+                    break
+            else:
+                ver_match = re.match(r"(?i)^version\s*[:=]?\s*`?v?(\d+\.\d+(?:\.\d+)?(?:[a-z0-9.-]*)?)`?\s*$", stripped)
+                if ver_match and not any(c["field"] == "version" for c in candidates):
+                    add("version", ver_match[1], f"line:{number}", inferred=True)
     return candidates, facts
 
 
@@ -204,19 +344,39 @@ def discover(payload: dict, *, use_system_time: bool = False) -> dict:
     """
     core.require_fields(payload, ("context", "authorized_root", "files"))
     _preflight(payload["context"], use_system_time)
-    _file_permissions(payload)
     secrets = payload.get("sensitive_literals", [])
     core.require(isinstance(secrets, list) and all(isinstance(s, str) and s for s in secrets),
                  "sensitive_literals_required")
     try:
         root = Path(payload["authorized_root"]).resolve(strict=True)
         core.require(root.is_dir(), "authorized_root_required")
+        core.require(isinstance(payload["files"], list) and bool(payload["files"]), "file_inventory_required")
+        groups = payload.get("material_permissions", [])
+        core.require(isinstance(groups, list), "discovery_permissions_required")
+        normalized_groups, denied_identities = [], set()
+        for group in groups:
+            core.require(isinstance(group, dict) and isinstance(group.get("paths"), list),
+                         "discovery_permissions_required")
+            normalized = []
+            for relative in group["paths"]:
+                path = core.safe_path(root, _text(relative, "relative_path_required"), must_exist=False)
+                normalized.append(path.relative_to(root).as_posix())
+                evidence = group.get("evidence_id")
+                if group.get("decision") != "allow" or not isinstance(evidence, str) or not evidence.strip():
+                    try:
+                        st = path.stat()
+                    except FileNotFoundError:
+                        continue
+                    denied_identities.add((st.st_dev, st.st_ino))
+            normalized_groups.append({**group, "paths": normalized})
         paths, identities, checked = set(), set(), []
         for index, entry in enumerate(payload["files"], start=1):
-            path = core.safe_path(root, entry["path"])
+            core.require(isinstance(entry, dict), "discovery_file_required")
+            path = core.safe_path(root, _text(entry.get("path"), "relative_path_required"))
             core.require(path.is_file(), "source_file_required")
             stat = path.stat()
             identity = (stat.st_dev, stat.st_ino)
+            core.require(identity not in denied_identities, "material_permission_not_proven")
             core.require(path not in paths and identity not in identities, "duplicate_source_path")
             core.require(stat.st_size <= MAX_FILE_BYTES, "source_file_too_large")
             paths.add(path)
@@ -228,7 +388,9 @@ def discover(payload: dict, *, use_system_time: bool = False) -> dict:
             reason = ("generated_or_dependency" if parts & GENERATED_PARTS else
                       "sensitive_file" if name == ".env" or name.startswith(".env.")
                       or path.suffix.casefold() in {".pem", ".key", ".p12", ".pfx"} else None)
-            checked.append((entry, path, relative, reason, index))
+            checked.append(({**entry, "path": relative}, path, relative, reason, index))
+        _file_permissions({**payload, "files": [row[0] for row in checked],
+                           "material_permissions": normalized_groups})
         file_candidates, candidates, facts, language_sources, languages = [], [], [], [], set()
         for entry, path, relative, reason, index in checked:
             language = LANGUAGES.get(path.suffix.casefold())
@@ -246,9 +408,6 @@ def discover(payload: dict, *, use_system_time: bool = False) -> dict:
             if entry.get("expected_sha256") is not None:
                 core.require(entry["expected_sha256"] == sha256, "source_hash_mismatch")
             record.update(sha256=sha256, read_status="read")
-            if language:
-                languages.add(language)
-                language_sources.append({"path": relative, "sha256": sha256, "locator": "suffix"})
             try:
                 text = content.decode(entry.get("encoding", "utf-8-sig"))
             except (UnicodeError, LookupError):
@@ -257,7 +416,12 @@ def discover(payload: dict, *, use_system_time: bool = False) -> dict:
                 continue
             if "\x00" in text:
                 record["exclusion_reason"] = "binary_content"
+            elif any(secret in text for secret in secrets):
+                record["exclusion_reason"] = "sensitive_content"
             else:
+                if language:
+                    languages.add(language)
+                    language_sources.append({"path": relative, "sha256": sha256, "locator": "suffix"})
                 fields, clues = _extract(relative, text, sha256, secrets)
                 candidates.extend(fields)
                 facts.extend(clues)
@@ -313,18 +477,23 @@ def confirmation_group(payload: dict, *, use_system_time: bool = False) -> dict:
     _verify(discovery, "software_discovery")
     request = copy.deepcopy(payload["request"])
     _preflight(request["context"], use_system_time)
-    root = Path(request["authorized_root"]).resolve(strict=True)
-    core.require(core.digest(str(root)) == discovery["project_binding"], "discovery_project_mismatch")
-    _file_permissions({"files": request["files"], "request": request})
-    discovered = {row["path"]: row for row in discovery["file_candidates"]
-                  if row["read_status"] == "read" and not row["exclusion_reason"]}
-    for entry in request["files"]:
-        actual = core.safe_path(root, entry["path"]).relative_to(root).as_posix()
-        core.require(actual in discovered, "confirmation_source_not_discovered")
-        expected = discovered[actual]["sha256"]
-        core.require(entry.get("expected_sha256", expected) == expected,
-                     "confirmation_source_binding_invalid")
-        entry["expected_sha256"] = expected
+    try:
+        core.require(isinstance(request.get("authorized_root"), (str, Path)), "authorized_root_required")
+        root = Path(request["authorized_root"]).resolve(strict=True)
+        core.require(root.is_dir(), "authorized_root_required")
+        core.require(core.digest(str(root)) == discovery["project_binding"], "discovery_project_mismatch")
+        _file_permissions({"files": request["files"], "request": request})
+        discovered = {row["path"]: row for row in discovery["file_candidates"]
+                      if row["read_status"] == "read" and not row["exclusion_reason"]}
+        for entry in request["files"]:
+            actual = core.safe_path(root, entry["path"]).relative_to(root).as_posix()
+            core.require(actual in discovered, "confirmation_source_not_discovered")
+            expected = discovered[actual]["sha256"]
+            core.require(entry.get("expected_sha256", expected) == expected,
+                         "confirmation_source_binding_invalid")
+            entry["expected_sha256"] = expected
+    except (OSError, RuntimeError, OverflowError):
+        raise core.ContractError("discovery_io_failed") from None
     request["field_candidates"] = copy.deepcopy(discovery["field_candidates"])
     # 旧独立确认可继续带入；新增组只绑定当前实际输入和候选摘要。
     prepared = software.prepare(request, use_system_time=use_system_time)["artifacts"]

@@ -1,0 +1,82 @@
+{
+  "profile_id": "dyz-standard-internal-v3",
+  "version": "3",
+  "template_origin": "original_internal_gbt_style_inspired_implementation",
+  "official_format": "not_asserted",
+  "professional_review": "not_performed",
+  "dynamic_fields": "generated_not_refreshed",
+  "field_cache": "（域未刷新）",
+  "fields_refreshed": false,
+  "supported_objects": [
+    "title", "paragraph", "heading1", "heading2", "heading3", "heading4",
+    "annex_heading1_to_4", "code", "formula", "rectangular_table", "png_figure",
+    "TOC", "SEQ", "REF", "PAGEREF", "footer_PAGE", "header_footer"
+  ],
+  "unsupported_objects": [
+    "field_refresh", "arbitrary_field_instructions", "merged_table_generation",
+    "nested_tables", "textbox", "ole", "automatic_numbering",
+    "official_organization_template_without_explicit_mapping", "heading_depth_over_4"
+  ],
+  "formula": {
+    "docx": "limited_latex_to_validated_native_omml",
+    "pdf_text_evidence": "exact_omml_character_order_in_direct_body_paragraphs",
+    "pdf_layout_equivalence": "not_asserted"
+  },
+  "bookmark_scope": "complete_block_text_and_all_table_cells_not_heading_only",
+  "max_heading_depth": 4,
+  "heading_numbers": "caller_supplied_display_mapping_preserving_stable_ids",
+  "annex": {
+    "marker": "annex_boolean_on_heading",
+    "styles": "AnnexHeading1_to_4",
+    "numbering": "caller_supplied_display_mapping",
+    "page_number_restart": false
+  },
+  "toc": {"max_depth": 4, "include_outline_styles": true},
+  "caption_numbering": "explicit_SEQ_sequence_identifier_continuous_in_document",
+  "page": "A4_body_optional_A3_figure_appendix",
+  "margin_twips": 1417,
+  "table_width_twips": 9072,
+  "body_font": "SimSun",
+  "heading_font": "SimHei",
+  "sizes": {
+    "Normal": "21",
+    "Heading1": "28",
+    "Heading2": "24",
+    "Heading3": "22",
+    "Heading4": "21",
+    "Code": "18",
+    "TableText": "18",
+    "Title": "36",
+    "AnnexHeading1": "28",
+    "AnnexHeading2": "24",
+    "AnnexHeading3": "22",
+    "AnnexHeading4": "21",
+    "Header": "18",
+    "Footer": "18"
+  },
+  "pagination": "gbt_style_keep_next_repeat_table_headers_compact_rows",
+  "table": {
+    "repeat_header": true,
+    "header_keep_next": true,
+    "short_row_max_characters": 120,
+    "long_row_split": true
+  },
+  "header_footer": {
+    "header_text": "原创标准工作稿（v3 阅读基线）",
+    "header_distance_twips": 567,
+    "footer_distance_twips": 567,
+    "footer_field": "PAGE",
+    "footer_alignment": "center",
+    "cached_value": "（域未刷新）"
+  },
+  "page_numbering": {
+    "format": "decimal",
+    "start": 1,
+    "policy": "continuous_from_1_including_contents_body_annex_and_figures",
+    "section_policy": "A4_body_then_optional_A3_figures_only",
+    "contents_separate_section": false,
+    "annex_restart": false,
+    "physical_page_numbers": "not_verified"
+  },
+  "external_adapter": "declarative_template_mapper_supported_for_user_supplied_licensed_docx"
+}

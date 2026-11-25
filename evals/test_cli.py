@@ -1,6 +1,7 @@
 """统一CLI真实模块集成、共享AC分支和输入/输出边界。"""
 import contextlib
 import copy
+import errno
 import importlib
 import io
 import json
@@ -18,6 +19,17 @@ from tools.cli import CAPABILITIES, catalog, demo, dispatch, main
 from evals.test_disclosure import END, NOW, START, make_case
 
 ROOT = Path(__file__).resolve().parents[1]
+LOCAL_COMMANDS = {
+    "check-patent-ir": [],
+    "build-patent-pack": ["--synthetic", "--output", "pack"],
+    "verify-patent-pack": ["--synthetic", "--output", "pack"],
+    "check-jurisdiction": ["--jurisdiction", "us"],
+    "check-strategy": ["--kind", "non-filing"],
+    "check-visual-ledger": [],
+    "check-capture-manifest": [],
+    "inspect-template": [],
+    "check-trial-upgrade": [],
+}
 
 
 class CliTests(unittest.TestCase):
@@ -31,6 +43,243 @@ class CliTests(unittest.TestCase):
         with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
             code = main(args)
         return code, out.getvalue(), err.getvalue()
+
+    def local_args(self, command, *, source="control.json", options=None):
+        return [command, "--root", str(self.root), "--input", source,
+                *(LOCAL_COMMANDS[command] if options is None else options)]
+
+    def local_report(self, command, payload=None, **kwargs):
+        if payload is not None:
+            (self.root / "control.json").write_bytes(core.canonical_bytes(payload))
+        code, out, err = self.call_main(self.local_args(command, **kwargs))
+        self.assertEqual((0, ""), (code, err))
+        return json.loads(out)
+
+    def test_local_command_help_and_unknown_topic_are_safe(self):
+        for command in (*LOCAL_COMMANDS, "connector-status"):
+            with self.subTest(command=command):
+                code, out, err = self.call_main(["help", command])
+                self.assertEqual((0, ""), (code, err))
+                self.assertIn(f"python -m tools {command}", out)
+        self.assertEqual((2, "", "unknown_help_topic\n"),
+                         self.call_main(["help", "PRIVATE_CASE_HELP_TOPIC"]))
+
+    def test_local_command_contracts_and_missing_inputs_use_fixed_codes(self):
+        rejected = (2, "", "contract_rejected\n")
+        (self.root / "invalid.docx").write_bytes(b"private case details not a template")
+        (self.root / "control.json").write_bytes(b'{"private-case-name":"secret"}')
+        for command in LOCAL_COMMANDS:
+            with self.subTest(command=command):
+                source = "invalid.docx" if command == "inspect-template" else "control.json"
+                self.assertEqual(rejected, self.call_main(self.local_args(command, source=source)))
+                self.assertEqual(rejected, self.call_main(self.local_args(command, source="../PRIVATE_INPUT")))
+                self.assertEqual((3, "", "local_io_failed\n"),
+                                 self.call_main(self.local_args(command, source="PRIVATE_MISSING_INPUT")))
+                self.assertEqual(rejected, self.call_main([*self.local_args(command), "--PRIVATE_ARGUMENT"]))
+        for command, options in (("check-jurisdiction", ["--jurisdiction", "PRIVATE_INVALID_CHOICE"]),
+                                 ("check-strategy", ["--kind", "PRIVATE_INVALID_CHOICE"])):
+            with self.subTest(command=command, options=options):
+                self.assertEqual(rejected, self.call_main(self.local_args(command, options=options)))
+        for command in ("build-patent-pack", "verify-patent-pack"):
+            with patch("tools.cli._read_json", side_effect=AssertionError("must require synthetic before reading")):
+                self.assertEqual(rejected, self.call_main(self.local_args(command, options=["--output", "pack"])))
+        self.assertEqual(rejected, self.call_main(["connector-status", "--PRIVATE_ARGUMENT"]))
+
+    def test_local_patent_ir_build_and_independent_verification(self):
+        from evals.test_phase_b_patent import OmmlAndPatentIntakeTests
+
+        spec, intake, ir = OmmlAndPatentIntakeTests._pack_fixture(self.root)
+        report = self.local_report("check-patent-ir", ir)
+        self.assertTrue(report["ready_for_prose_drafting"])
+        skeleton = self.local_report("check-patent-ir", ir, options=["--skeleton"])
+        self.assertEqual("dyz-patent-draft-skeleton-v1", skeleton["schema"])
+        self.assertEqual(report["input_hash"], skeleton["ir_input_hash"])
+        self.assertEqual("not_performed", skeleton["professional_review"])
+        summary = self.local_report("build-patent-pack", {
+            "document_spec": spec, "intake_payload": intake, "ir_payload": ir,
+        })
+        self.assertTrue((self.root / summary["body_docx"]).is_file())
+        self.assertEqual("not_performed", summary["external_action"])
+        anchored_hash = core.sha256_bytes(core.canonical_bytes(summary) + b"\n")
+        unanchored = self.local_report("verify-patent-pack", {"document_spec": spec})
+        self.assertEqual("self_consistent_only_unanchored", unanchored["integrity"])
+        verify = self.local_args("verify-patent-pack")
+        report = self.local_report("verify-patent-pack", options=[*LOCAL_COMMANDS["verify-patent-pack"],
+                                                               "--expected-summary-sha256", anchored_hash])
+        self.assertEqual("externally_anchored", report["integrity"])
+        self.assertEqual(anchored_hash, report["summary_sha256"])
+        self.assertTrue(report["ir_verified"])
+        self.assertEqual((2, "", "contract_rejected\n"),
+                         self.call_main([*verify, "--expected-summary-sha256", "0" * 64]))
+
+    def test_local_jurisdictions_and_strategy_branches(self):
+        for jurisdiction in ("us", "ep"):
+            with self.subTest(jurisdiction=jurisdiction):
+                report = self.local_report("check-jurisdiction", {"claims": [{"id": 1, "text": "A sensor."}]},
+                                           options=["--jurisdiction", jurisdiction])
+                self.assertEqual(jurisdiction.upper(), report["jurisdiction"])
+                self.assertEqual("not_determined", report["legal_conclusion"])
+        cases = (
+            ("non-filing", "dyz-patent-no-go-reassessment-v1", {
+                "project_id": "SYN", "narrowed_claim_summary": "Synthetic sensor", "detectability": "unknown",
+                "design_around_paths": [],
+            }),
+            ("fto", "dyz-fto-four-track-matrix-v1", {
+                "product_id": "SYN", "jurisdiction": "US", "as_of": NOW,
+                "patents": [{"patent_id": "SYN-PAT", "legal_status": "unknown",
+                             "elements": [{"element_id": "E1", "state": "not_observed_unknown"}]}],
+            }),
+            ("sep", "dyz-sep-dual-handoff-v1", {
+                "standard_id": "SYN", "standard_version": "1", "organization_policy": "synthetic reference",
+                "clause_links": [{"clause_id": "C1", "normative": True, "related_patent_ids": [],
+                                  "filing_support_verified": False, "technical_alternatives": []}],
+            }),
+        )
+        for kind, schema, payload in cases:
+            with self.subTest(kind=kind):
+                report = self.local_report("check-strategy", payload, options=["--kind", kind])
+                self.assertEqual(schema, report["schema"])
+                self.assertEqual("not_performed", report["professional_review"])
+
+    def test_local_visual_capture_template_and_trial_reports(self):
+        from evals.test_phase_d_ux import _make_png
+        from tools import documents
+
+        report = self.local_report("check-visual-ledger", {
+            "artifact_id": "SYN", "artifact_sha256": "a" * 64, "total_pages": 2,
+            "pages": [{"page": 1, "status": "inspected", "observer_kind": "ai_page_observation",
+                       "image_sha256": "b" * 64}],
+        })
+        self.assertEqual("partial_visual_coverage", report["overall_status"])
+
+        png = _make_png()
+        (self.root / "shot.png").write_bytes(png)
+        capture = self.local_report("check-capture-manifest", {
+            "schema": "dyz-screenshot-capture-manifest-v1", "tool": "synthetic capture", "software_version": "1",
+            "captures": [{"id": "cap1", "operation_id": "op1", "path": "shot.png", "sha256": core.sha256_bytes(png),
+                          "captured_at": NOW, "visible_state": "fixture", "permission_decision": "allow",
+                          "authority_evidence": "SYN-EV"}],
+        })
+        self.assertEqual(1, capture["capture_count"])
+        self.assertFalse(capture["browser_executed_by_verifier"])
+
+        template = self.root / "template.docx"
+        original = documents.make_docx([{"id": "Intro", "kind": "heading1", "text": "Synthetic"}], [],
+                                       profile="dyz-standard-internal-v2")
+        template.write_bytes(original)
+        before = set(self.root.iterdir())
+        audit = self.local_report("inspect-template", source=template.name)
+        self.assertEqual("audited_ready_for_declarative_mapping", audit["status"])
+        self.assertEqual(core.sha256_bytes(original), audit["template_sha256"])
+        self.assertEqual(original, template.read_bytes())
+        self.assertEqual(before, set(self.root.iterdir()))
+
+        trial = self.local_report("check-trial-upgrade", {
+            "combination_id": "SYN", "trial_records": [], "current_artifact_hashes": {"draft.md": "a" * 64},
+            "expected_expert_role": "patent_attorney",
+        })
+        self.assertFalse(trial["eligible_for_upgrade"])
+        self.assertEqual("synthetic_helper_only", trial["recommended_support_level"])
+
+    def test_local_root_parent_segment_unknown_keys_and_nonfinite_json_are_rejected(self):
+        rejected = (2, "", "contract_rejected\n")
+        parent = str(self.root / "case" / ".." / "sibling")
+        self.assertIn("..", Path(parent).parts)
+        for command in ("inspect-template", "check-capture-manifest"):
+            with self.subTest(command=command):
+                self.assertEqual(rejected, self.call_main(
+                    [command, "--root", parent, "--input", "control.json", *LOCAL_COMMANDS[command]]))
+        (self.root / "control.json").write_bytes(core.canonical_bytes(
+            {"claims": [{"id": 1, "text": "A sensor."}], "undeclared_field": "secret"}))
+        self.assertEqual(rejected, self.call_main(self.local_args("check-jurisdiction")))
+        (self.root / "control.json").write_bytes(core.canonical_bytes({
+            "combination_id": "SYN", "trial_records": [], "undeclared_field": "secret",
+        }))
+        self.assertEqual(rejected, self.call_main(self.local_args("check-trial-upgrade")))
+        with patch("tools.cli._run_local_command", return_value={"value": float("nan")}):
+            code, out, err = self.call_main(self.local_args("check-visual-ledger"))
+        self.assertEqual((2, ""), (code, out))
+        self.assertNotIn("NaN", err)
+        self.assertNotIn(str(self.root), err)
+
+    def test_trial_upgrade_forwards_registered_packs(self):
+        report = self.local_report("check-trial-upgrade", {
+            "combination_id": "SYN",
+            "trial_records": [],
+            "current_artifact_hashes": {"draft.md": "a" * 64},
+            "expected_expert_role": "patent_attorney",
+            "registered_packs": {"SYN-PACK": {"schema": "registered"}},
+        })
+        self.assertIn("eligible_for_upgrade", report)
+        self.assertIsInstance(report["eligible_for_upgrade"], bool)
+
+    def test_local_root_blank_nul_and_drive_relative_are_rejected(self):
+        rejected = (2, "", "contract_rejected\n")
+        for root in ("", "   ", "a\x00b", "D:skills", "D:", "C:foo\\bar"):
+            with self.subTest(root=root):
+                self.assertEqual(rejected, self.call_main(
+                    ["check-visual-ledger", "--root", root, "--input", "control.json"]))
+
+    def test_dump_json_rejects_nonfinite_numbers(self):
+        from tools import cli
+
+        with self.assertRaises(ValueError):
+            cli._dump_json({"value": float("nan")})
+        with patch("tools.cli.catalog", return_value=[{"value": float("inf")}]):
+            code, out, err = self.call_main(["list"])
+        self.assertEqual((2, ""), (code, out))
+        self.assertNotIn("Infinity", err)
+
+    def test_standard_ancestor_stat_oserror_rejects_link(self):
+        import stat as statmod
+        from argparse import Namespace
+        from tools import cli
+
+        (self.root / "task.json").write_text('{"sensitivity":"synthetic"}', encoding="utf-8")
+        args = Namespace(synthetic=True, authorization=None, authorization_sha256=None,
+                         root=str(self.root), input="task.json", output="pack", verify=False)
+        ancestor = self.root.parent
+        ancestor_key = os.path.normcase(str(ancestor))
+        real_lstat = Path.lstat
+        real_stat = Path.stat
+        faked = set()
+
+        def lstat(path, *extra, **kwargs):
+            if os.path.normcase(str(path)) == ancestor_key:
+                faked.add(ancestor_key)
+                return type("Info", (), {
+                    "st_mode": statmod.S_IFLNK, "st_nlink": 1, "st_file_attributes": 0,
+                })()
+            return real_lstat(path, *extra, **kwargs)
+
+        def stat(path, *extra, **kwargs):
+            if os.path.normcase(str(path)) in faked:
+                raise OSError(errno.EIO, "stat failed")
+            return real_stat(path, *extra, **kwargs)
+
+        with (patch.object(Path, "lstat", lstat),
+              patch.object(Path, "stat", stat),
+              patch.object(core, "is_macos_system_root_symlink",
+                           lambda item: os.path.normcase(str(item)) == ancestor_key)):
+            with self.assertRaises(core.ContractError) as caught:
+                cli._read_standard_input(args)
+        self.assertEqual("standard_link_rejected", str(caught.exception))
+
+    def test_connector_status_has_no_egress_and_separates_supported_from_allowed(self):
+        from tools import connectors
+
+        with (patch("tools.connectors.base._default_transport", side_effect=AssertionError("must not connect")),
+              patch("socket.getaddrinfo", side_effect=AssertionError("must not resolve names"))):
+            code, out, err = self.call_main(["connector-status"])
+        self.assertEqual((0, ""), (code, err))
+        status = json.loads(out)
+        self.assertEqual(0, status["network_requests"])
+        self.assertFalse(status["default_policy"]["opt_in_network"])
+        self.assertEqual([], status["default_policy"]["allowed_hosts"])
+        self.assertEqual(connectors.UsptoOdpConnector.HOST, status["supported_sources"]["uspto_odp"]["host"])
+        self.assertEqual("caller_catalog_snapshot_only", status["supported_sources"]["iso_iec_itu"]["coverage"])
+        self.assertEqual(sorted(connectors.ExternalMcpBridge.SUPPORTED_PROVIDERS),
+                         status["supported_sources"]["external_mcp"]["providers"])
 
     def test_list_all_83_without_inflating_support(self):
         rows = catalog()
@@ -357,6 +606,16 @@ class CliTests(unittest.TestCase):
                                             "--input", "secret.json", "--output", "result.json"])
         self.assertEqual((2, "", "contract_rejected\n"), (code, out, err))
         self.assertFalse((self.root / "result.json").exists())
+
+    def test_only_link_loop_errors_are_classified_as_contract_rejections(self):
+        args = ["import-software-manual", "--root", str(self.root), "--authorization", "control.json",
+                "--authorization-sha256", "0" * 64]
+        for number, expected in ((errno.ELOOP, (2, "", "contract_rejected\n")),
+                                 (errno.EINVAL, (3, "", "local_io_failed\n")),
+                                 (errno.EACCES, (3, "", "local_io_failed\n"))):
+            with self.subTest(number=number), patch.object(Path, "resolve", side_effect=OSError(
+                    number, "synthetic private path")):
+                self.assertEqual(expected, self.call_main(args))
 
     def test_secret_text_never_printed_on_parse_failure(self):
         (self.root / "input.json").write_text("SYNTHETIC_PRIVATE_MARKER", encoding="utf-8")

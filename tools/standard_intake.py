@@ -59,9 +59,15 @@ def _plain_path(path: Path, *, file: bool = False) -> None:
             info = current.lstat()
         except FileNotFoundError:
             continue
-        core.require(not stat.S_ISLNK(info.st_mode)
-                     and not getattr(info, "st_file_attributes", 0) & 0x400,
-                     "standard_intake_link_rejected")
+        is_link = stat.S_ISLNK(info.st_mode) or bool(getattr(info, "st_file_attributes", 0) & 0x400)
+        if is_link:
+            if current != path and core.is_macos_system_root_symlink(current):
+                try:
+                    info = current.stat()
+                except OSError:
+                    raise core.ContractError("standard_intake_link_rejected") from None
+            else:
+                core.require(False, "standard_intake_link_rejected")
         if current == path and file:
             core.require(stat.S_ISREG(info.st_mode) and info.st_nlink == 1,
                          "standard_intake_file_alias_rejected")

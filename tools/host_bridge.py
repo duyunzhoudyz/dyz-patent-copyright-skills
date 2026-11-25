@@ -22,9 +22,12 @@ import threading
 if __package__ in {None, ''}:
     # Explicit file entry point also works from a copied package/foreign cwd.
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from tools.bundle import MANIFEST_NAME, verify_bundle
+from tools.bundle import BundleError, MANIFEST_NAME, _absolute, verify_bundle
+from tools.core import is_macos_system_root_symlink
 
 MAX_FILE = 5_000_000
+MAX_WORKER_STREAM_BYTES = 8_000_000
+TEXT_WRITE_SUFFIXES = frozenset({'.txt', '.md', '.json', '.jsonl', '.csv', '.tsv', '.xml', '.yaml', '.yml', '.toml', '.rst'})
 MAX_SEGMENT = 48_000
 READ_RESPONSE_BUDGET = 32_000
 MAX_LINES = 120
@@ -43,6 +46,8 @@ def _json_bytes(value):
 def _worker_environment():
     # No provider keys, proxy, Python path, account/session or application env.
     keep = {'SYSTEMROOT', 'WINDIR', 'TEMP', 'TMP', 'TMPDIR', 'SYSTEMDRIVE'}
+    if os.name != 'nt':
+        keep |= {'LANG', 'LC_ALL'}
     return {**{key: value for key, value in os.environ.items() if key.upper() in keep},
             'PYTHONDONTWRITEBYTECODE': '1', 'PYTHONIOENCODING': 'utf-8'}
 
@@ -67,20 +72,70 @@ def _regular_chain(path, *, missing=False):
         except FileNotFoundError:
             _require(missing, 'file_missing')
             continue
-        _require(not item.is_symlink() and not (
-            getattr(info, 'st_file_attributes', 0) & stat.FILE_ATTRIBUTE_REPARSE_POINT), 'reparse_path')
+        is_link = item.is_symlink() or bool(
+            getattr(info, 'st_file_attributes', 0) & getattr(stat, 'FILE_ATTRIBUTE_REPARSE_POINT', 0))
+        if is_link:
+            if item != path and is_macos_system_root_symlink(item):
+                try:
+                    info = item.stat()
+                except OSError:
+                    _require(False, 'reparse_path')
+            else:
+                _require(False, 'reparse_path')
         if item != path:
             _require(stat.S_ISDIR(info.st_mode), 'parent_not_directory')
         elif not stat.S_ISDIR(info.st_mode):
             _require(stat.S_ISREG(info.st_mode) and info.st_nlink == 1, 'nonregular_or_aliased_file')
 
+def _collect_worker_output(process, *, limit=MAX_WORKER_STREAM_BYTES, timeout=30):
+    buffers = [bytearray(), bytearray()]
+    errors = [None, None]
+
+    def read_pipe(index, pipe):
+        captured = buffers[index]
+        try:
+            while chunk := pipe.read(min(65536, limit + 1 - len(captured))):
+                captured.extend(chunk)
+                if len(captured) > limit:
+                    errors[index] = 'worker_output_limit_exceeded'
+                    process.kill()
+                    break
+        except OSError:
+            if errors[index] is None:
+                errors[index] = 'worker_output_read_failed'
+
+    readers = [threading.Thread(target=read_pipe, args=(i, pipe), daemon=True)
+               for i, pipe in enumerate((process.stdout, process.stderr))]
+    for reader in readers:
+        reader.start()
+    timed_out = False
+    try:
+        process.wait(timeout=timeout)
+    except subprocess.TimeoutExpired:
+        timed_out = True
+        process.kill()
+        process.wait()
+    for reader in readers:
+        reader.join(timeout=2)
+    _require(not any(reader.is_alive() for reader in readers), 'worker_output_read_failed')
+    if timed_out:
+        error = 'worker_timeout_partial_output_may_remain'
+    elif 'worker_output_limit_exceeded' in errors:
+        error = 'worker_output_limit_exceeded'
+    else:
+        error = next((error for error in errors if error), None)
+    for buffer in buffers:
+        del buffer[limit:]
+    return buffers[0], buffers[1], error
+
 
 class HostToolBridge:
     def __init__(self, package, workspace, control, expected_manifest_sha256, *, max_calls=120,
                  image_views=(), record_payloads=False):
-        self.package = Path(os.path.abspath(package))
-        self.workspace = Path(os.path.abspath(workspace))
-        self.control = Path(os.path.abspath(control))
+        try:
+            self.package, self.workspace, self.control = map(_absolute, (package, workspace, control))
+        except BundleError:
+            raise BridgeError('unsafe_path') from None
         for path in (self.package, self.workspace, self.control):
             _regular_chain(path)
             _require(path.is_dir(), 'root_not_directory')
@@ -255,7 +310,7 @@ class HostToolBridge:
         raw = a['text'].encode('utf-8')
         _require(len(raw) <= MAX_FILE, 'file_size_or_kind')
         path = self._path('workspace', a['path'], writing=True, missing=True)
-        _require(path.suffix.lower() not in {'.docx', '.png', '.pdf', '.exe', '.dll', '.bat', '.cmd', '.ps1', '.com'}, 'text_file_required')
+        _require(path.suffix.lower() in TEXT_WRITE_SUFFIXES, 'text_file_required')
         expected = a.get('expected_sha256')
         if expected is None:
             _require(not path.exists(), 'destination_exists')
@@ -398,21 +453,14 @@ class HostToolBridge:
         command = [getattr(sys, '_base_executable', None) or sys.executable,
                    '-I', '-S', '-B', '-X', 'utf8', str(worker), str(job)]
         with subprocess.Popen(command, cwd=self.workspace, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                              env=_worker_environment(),
+                              env=_worker_environment(), bufsize=0,
                               creationflags=getattr(subprocess, 'CREATE_NO_WINDOW', 0)) as process:
-            try:
-                stdout, stderr = process.communicate(timeout=30)
-            except subprocess.TimeoutExpired:
-                process.kill()  # Only the handle of this owned local file worker.
-                stdout, stderr = process.communicate()
-                if self.record_payloads:
-                    (self.control / f'tool-{number:04}.stdout').write_bytes(stdout)
-                    (self.control / f'tool-{number:04}.stderr').write_bytes(stderr)
-                raise BridgeError('worker_timeout_partial_output_may_remain') from None
+            stdout, stderr, output_error = _collect_worker_output(process, limit=MAX_WORKER_STREAM_BYTES)
             returncode, worker_pid = process.returncode, process.pid
         if self.record_payloads:
             (self.control / f'tool-{number:04}.stdout').write_bytes(stdout)
             (self.control / f'tool-{number:04}.stderr').write_bytes(stderr)
+        _require(output_error is None, output_error)
         _require(_sha(worker.read_bytes()) == worker_hash, 'worker_source_changed')
         _require(audit.is_file(), 'worker_audit_missing')
         proof = json.loads(audit.read_bytes())

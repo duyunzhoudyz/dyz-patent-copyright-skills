@@ -8,28 +8,146 @@ from __future__ import annotations
 import argparse
 import re
 import sys
+import unicodedata
 from pathlib import Path
 
 from .core import ContractError, canonical_bytes, digest, require, safe_path, sha256_bytes, strict_json_loads, write_new_json
-from .fidelity import MAX_ATOMS, MAX_LOGIC_WORK, _compare
+from .fidelity import MAX_ATOMS, MAX_LOGIC_WORK, _check_nesting, _compare
 
-VERSION = "2.0"
+VERSION = "2.1"
 MAX_BYTES = 500_000
 MAX_CLAUSES = 256
+MAX_ANCHOR_DEPTH = 16
+MAX_ANCHOR_PAYLOAD = 512
+ANCHOR_START = re.compile(r"\[(FORMULA|TABLE|FIG):")
+ANCHOR_ID = re.compile(r"[A-Za-z0-9_.-]{1,40}(?=[:\]])")
+MATH_SCRIPT = re.compile(r"[_^]\{[^{}]*\}")
 HEADINGS = {"权利要求书", "权利要求", "独立权利要求", "从属权利要求", "说明书", "技术领域", "背景技术",
-            "发明内容", "具体实施方式", "摘要", "附图说明", "发明名称"}
+            "发明内容", "具体实施方式", "摘要", "附图说明", "发明名称", "description", "detailed description",
+            "summary", "summary of the invention", "background", "background of the invention", "technical field",
+            "abstract", "brief description of the drawings", "title", "field of the invention"}
+CLAIM_HEADINGS = {"权利要求书", "权利要求", "独立权利要求", "从属权利要求", "claims", "independent claims",
+                  "dependent claims", "what is claimed is", "what is claimed is:"}
+HEADINGS.update(CLAIM_HEADINGS)
 NOTICE = "合成示例；内部工作稿，待专业审阅，不得据此提交或外发。"
 UNCERTAIN = re.compile(r"未知|未给(?:出|定)?|未(?:记载|说明|提供|确认|核实)|尚不明确|待(?:确认|核实|补证)|可能|假设|推测|建议|拟议|是否|不作限定|[？?]")
 COMPLEX = re.compile(r"除非|否则|当且仅当|至少|至多|仅当|或者|以及|(?<!所)有时")
-NEGATION = re.compile(r"并非|并不|不是|不|未|无|非|禁止|不得")
+NEGATION = re.compile(r"并非|并不|不是|不|未|无|非|禁止|不得|排除|避免|弃用|禁用")
 CONDITIONAL = re.compile(r"只有|仅在|一旦|如果|若|当|才|则|即可|必然|时|之后|以后|须|必须")
+EN_UNCERTAIN = re.compile(r"(?i)(?<![A-Za-z0-9_])(?:unknown|tbd|todo|fixme|to\s+confirm|unconfirmed|unspecified|pending|may|might|perhaps|probably|optional|optionally|assumed|proposed|unclear|unverified)(?![A-Za-z0-9_])")
+EN_COMPLEX = re.compile(r"(?i)(?<![A-Za-z0-9_])(?:if\s+and\s+only\s+if|not\s+only\s+if|unless|otherwise|except|at\s+least|at\s+most|whereas|wherein|provided\s+that|or)(?![A-Za-z0-9_])")
+EN_NEGATION = re.compile(
+    r"(?i)(?<![A-Za-z0-9_])(?:not|never|without|no|cannot|(?:can|won|don|doesn|didn|isn|aren|wasn|weren|shouldn|wouldn|couldn|haven|hasn|hadn|mustn)['’]t"
+    r"|prohibited|forbidden|neither|nor|exclud(?:e|es|ed|ing)|deprecat(?:e|es|ed|ing)|rather\s+than|instead\s+of|avoid(?:s|ed|ing)?)(?![A-Za-z0-9_])")
+EN_CONDITIONAL = re.compile(r"(?i)(?<![A-Za-z0-9_])(?:if|once|when|whenever|unless|only\s+if|until|after|before|must)(?![A-Za-z0-9_])")
 CLAIM = re.compile(r"^(\d{1,3})\s*[.．、]\s*(.+)$")
-PARENT = re.compile(r"^根据权利要求\s*(\d+)\s*所述(?:的)?(?P<label>[^，,：:]{1,40})[，,：:]\s*(?:其特征在于[，,：:]\s*)?")
-FRAGMENTS = re.compile(r"[^。；;\n！？!?：:]+[。；;！？!?：:]*")
+PARENT = re.compile(r"^(?:根据|如|依据)?权利要求\s*(\d+)\s*所述(?:的)?(?P<label>[^，,：:]{1,40})[，,：:]\s*(?:其特征在于[，,：:]\s*)?")
+CN_PARENT_REF = re.compile(
+    r"(?:根据|如|依据)权利要求|权利要求\s*\d+|权利要求\s*[一二三四五六七八九十]+"
+    r"|(?:上一|前一项|以上|任一|任意|前述|上述|多项)[^。；;\n]{0,8}权利要求"
+)
+EN_PARENT = re.compile(
+    r"(?i)^(?:the\s+)?(?:method|system|apparatus|device|controller|assembly|structure)\s+"
+    r"(?:of|according\s+to|as\s+claimed\s+in|as\s+recited\s+in|as\s+defined\s+in)\s+claim\s+(\d+)"
+    r"(?!\s*(?:(?:and|or|to|through|thru|plus)\b|[-–—/&+;~]|,\s*(?:\d+|claims?\b|and\b|or\b)))\s*,?\s*(?:wherein\s+|further\s+)?"
+)
+EN_PARENT_REF = re.compile(
+    r"(?i)\b(?:claims?\s+\d+|(?:any|either|each|the|one)\s+(?:(?:one|more)\s+)?(?:of\s+)?(?:the\s+)?(?:preceding|previous|prior|earlier|above|foregoing)\s+claims?"
+    r"|(?:preceding|previous|prior|earlier|above|foregoing)\s+claims?|any\s+(?:one\s+)?of\s+(?:the\s+)?claims?)\b"
+)
+# 在锚点遮罩上切句以保留偏移；编号 Eq. 标签中的点不作为句末。
+FRAGMENTS = re.compile(
+    r"(?:[^。；;\n！？!?：:.]|\.(?!\s|$)|(?<=(?i:\bEq))\.(?=[ \t]+[(（]?[ \t]*\d))+"
+    r"(?:[。；;！？!?：:]|\.(?=\s|$))*")
 COMBINATION = re.compile(r"^(?:同一方案|同一实施方式|原创合成(?P<device>\S{1,12})仅有这一种结构)[：:]")
+_NONFIRST_NUMBER = r"0*(?:[2-9]\d*|1\d+)(?!\d)"
+_NONFIRST_ORDINAL = rf"(?:[二三四五六七八九十百零][一二三四五六七八九十百零]*|一[百千][一二三四五六七八九十百零]*|{_NONFIRST_NUMBER})"
+ALTERNATIVE_SCOPE = re.compile(
+    rf"(?i)(?:实施(?:方式|例)\s*[（(]?\s*{_NONFIRST_ORDINAL}|第{_NONFIRST_ORDINAL}(?:个)?实施(?:方式|例)"
+    r"|(?:另一|其他|其它|替代|备选)(?:个)?(?:实施(?:方式|例)|方案|结构)"
+    r"|\b(?:alternative|other|another|second|third|fourth|fifth|sixth|seventh|eighth|ninth|tenth)\s+(?:embodiment|example|design)s?\b"
+    rf"|(?<!\bfirst\s)\b(?:embodiment|example)\b\s*[（(]?\s*(?:{_NONFIRST_NUMBER}|[ivx]{{2,}}|(?-i:[A-HJ-Z])"
+    r"|[a-hj-z](?=\s*(?:[）)：:。.,，；;！？!?]|$)))\b)")
+BACKGROUND_SCOPE = re.compile(
+    r"(?i)(?:(?:技术)?背景|现有技术|已有技术|对比(?:实施)?例|比较(?:实施)?例|对照(?:实施)?例"
+    r"|(?:technical\s+)?background\b|(?:the\s+)?prior[ -]art\b|comparative\s+(?:example|embodiment)\b)")
+SECTION_NUMBER = re.compile(r"^(?:(?:\d+(?:[.．]\d+)*|[一二三四五六七八九十]+)(?:[.．、]\s*|\s+)|[（(][一二三四五六七八九十\d]+[）)]\s*)")
+_CN_FORMULA_OBJECT = r"公式|算式|方程|表达式|计算式|关系式"
+FORMULA_SCOPE_CUE = re.compile(rf"(?i){_CN_FORMULA_OBJECT}|(?:上述|前述|[该此本])\s*式|\b(?:formulas?|equations?|expressions?)\b")
+FORMULA_FORWARD_CUE = re.compile(r"(?i)以下|下列|如下|\b(?:following|below)\b")
+FORMULA_BACKREF = re.compile(rf"(?i)上述|该|此|前述|本(?=\s*(?:{_CN_FORMULA_OBJECT}|式))|\b(?:the\s+above|said|this|that|these|those)\b")
+FORMULA_COLLECTIVE = re.compile(
+    rf"(?i)(?:全部|所有|两(?:个|条|项|式)|各(?:个|条|项|式))[^，,。；;：:]{{0,8}}(?:{_CN_FORMULA_OBJECT}|式)"
+    rf"|(?:{_CN_FORMULA_OBJECT}|式)(?:\s*均|\s*都|\s*全部)"
+    r"|\b(?:formulas|equations|expressions)\b|\b(?:all|both)\s+(?:of\s+)?(?:the\s+)?(?:above|said|these|those)\b"
+)
+FORMULA_REPLACEMENT = re.compile(r"(?i)[，,]\s*(?:改用|而改用|(?:and\s+)?(?:instead\s+use|use\s+instead))$")
+FORMULA_LABEL = re.compile(
+    r"(?i)(?:计算关系|数学关系|关系式|公式|算式|方程|表达式)(?:为|是)?"
+    r"|(?:the\s+)?(?:formula|equation|expression|calculation)\s+is"
+    r"|公式\s*[一二三四五六七八九十]+"
+    r"|(?:公式|式|formula|equation|eq\.?)\s*(?:\d+|\(\s*\d+\s*\)|（\s*\d+\s*）)")
 QUALIFIER = re.compile(r"所述|上述|该(?=装置|系统|设备|方案)")
 UNCERTAIN_SCOPE = re.compile(r"上述|前述|该规则|本规则")
 MEMBERSHIP = re.compile(r"^(?P<owner>.+?)(?:包括|具有)(?P<members>.+)$")
+
+
+def _anchors(line):
+    """每个保留前缀必须有合法 ID、深度和闭合；不回退为普通说明文字。"""
+    pos = 0
+    while token := ANCHOR_START.search(line, pos):
+        identity = ANCHOR_ID.match(line, token.end())
+        require(identity is not None, "formula_anchor_malformed")
+        pos = identity.end()
+        payload = None
+        if line[pos] == ":":
+            begin = pos + 1
+            depth = 1
+            for pos in range(begin, min(len(line), begin + MAX_ANCHOR_PAYLOAD + 1)):
+                if line[pos] == "[":
+                    depth += 1
+                    require(depth <= MAX_ANCHOR_DEPTH, "formula_anchor_nesting_exceeded")
+                    require(not ANCHOR_START.match(line, pos), "formula_anchor_malformed")
+                elif line[pos] == "]":
+                    depth -= 1
+                    if not depth:
+                        break
+            require(not depth and pos > begin, "formula_anchor_malformed")
+            payload = line[begin:pos]
+        pos += 1
+        yield token.start(), pos, token[1], identity[0], payload
+
+
+def _anchor_mask(line, anchors):
+    parts, pos = [], 0
+    for start, end, *_ in anchors:
+        parts.extend((line[pos:start], " " * (end - start)))
+        pos = end
+    parts.append(line[pos:])
+    return "".join(parts)
+
+
+def _anchor_relation(anchor):
+    _, _, kind, identity, payload = anchor
+    if kind == "FORMULA" and payload is not None:
+        return _formula_content(identity, payload)
+    return _relation("anchor", anchor_kind=kind, anchor_id=identity, anchor_payload=(payload or "").strip())
+
+
+def _record_negated_formula(coverage, row, expression):
+    if expression is not None:
+        coverage.append({**_location(row), "state": "original_formula_negated", "expression": expression})
+
+
+def _formula_key(expression):
+    if isinstance(expression, dict) and (expression.get("kind") == "formula_content"
+                                         or expression.get("anchor_kind") == "FORMULA"):
+        return expression["anchor_id"], expression.get("structure_sha256")
+    return None
+
+
+def _format_free(text):
+    return text if text.isascii() else "".join(ch for ch in text if unicodedata.category(ch) != "Cf")
 
 
 def _plain(text):
@@ -85,6 +203,39 @@ def _relation(kind, **values):
     return {"kind": kind, **values}
 
 
+def _norm_en(text: str) -> str:
+    """句首首字母大小写归一，同时保留技术代号（如 T1 / CPU / D1）的大小写。"""
+    s = re.sub(r"\s+", " ", text).strip()
+    if len(s) >= 2 and s[0].isupper() and (s[1].islower() or s[1] == " "):
+        return s[0].lower() + s[1:]
+    return s
+
+
+def _formula_content(anchor_id, latex):
+    from . import omml
+    try:
+        formula = omml.inspect_omml(omml.latex_to_omml_element(latex))
+    except ContractError:
+        return None
+    if formula["valid"]:
+        return _relation("formula_content", anchor_id=anchor_id, structure_sha256=formula["structure_sha256"])
+    return None
+
+
+def _is_bare_formula(value):
+    # Math identifiers inside commands or grouped scripts are not English prose.
+    value = value.strip().rstrip("。.;；").rstrip()
+    if not re.search(r"[=<>_^\\]", value):
+        return False
+    prose = re.sub(r"\\[A-Za-z]+|(?<=\[)[A-Za-z]+(?=\])", "_", value)
+    for _ in range(MAX_ANCHOR_DEPTH):
+        prose, count = re.subn(r"\{[^{}]*\}", "_", prose)
+        if not count:
+            break
+    return (not re.search(r"\b[A-Za-z]{2,}\b\s+[A-Za-z]|\b[A-Za-z]\b\s+[A-Za-z]{2,}\b", prose)
+            and _formula_content(None, value) is not None)
+
+
 def _expression(text, aliases=(), context=None):
     """保留关系类型及角色；只有条件关系才编码为有限逻辑公式。"""
     context = context or {}
@@ -92,7 +243,76 @@ def _expression(text, aliases=(), context=None):
     text = re.sub(r"[，,]?并且$", "", text)
     text = re.sub(r"^(?:本实施方式的|一种)", "", text)
     text = re.sub(r"[，,]\s*其特征在于$", "", text)
-    if not text or UNCERTAIN.search(text) or COMPLEX.search(text) or "并且" in text:
+    prose = MATH_SCRIPT.sub(" ", text)
+    # 有限英文技术句式子集：先于关系抽取拦截不确定/复杂/否定/嵌套条件，防误放行。
+    if re.search(r"[A-Za-z]", text) and not re.search(r"[\u4e00-\u9fff]", text):
+        en_low = text.strip()
+        if not en_low or EN_UNCERTAIN.search(prose) or EN_COMPLEX.search(prose) or EN_NEGATION.search(prose):
+            return None
+        if EN_PARENT_REF.search(en_low):
+            return None
+        en_only_if_prefix = re.fullmatch(r"(?i)only if ([^,]+?),\s*(?:then\s+)?(.+)", en_low)
+        if en_only_if_prefix:
+            left, right = _norm_en(en_only_if_prefix[1]), _norm_en(en_only_if_prefix[2])
+            if (left and right and left != right
+                    and not EN_CONDITIONAL.search(MATH_SCRIPT.sub(" ", left))
+                    and not EN_CONDITIONAL.search(MATH_SCRIPT.sub(" ", right))):
+                return {"implies": [right, left]}
+            return None
+        en_only_if_infix = re.fullmatch(r"(?i)(.+?)\s+only if\s+(.+)", en_low)
+        if en_only_if_infix:
+            right, left = _norm_en(en_only_if_infix[1].rstrip(" ,")), _norm_en(en_only_if_infix[2].lstrip(" ,"))
+            if (left and right and left != right
+                    and not EN_CONDITIONAL.search(MATH_SCRIPT.sub(" ", left))
+                    and not EN_CONDITIONAL.search(MATH_SCRIPT.sub(" ", right))):
+                return {"implies": [right, left]}
+            return None
+        en_if = re.fullmatch(r"(?i)(?:if|once)\s+([^,]+?),\s*(?:then\s+)?(.+)", en_low)
+        if en_if:
+            left, right = _norm_en(en_if[1]), _norm_en(en_if[2])
+            if (left and right and left != right
+                    and not EN_CONDITIONAL.search(MATH_SCRIPT.sub(" ", left))
+                    and not EN_CONDITIONAL.search(MATH_SCRIPT.sub(" ", right))):
+                return {"implies": [left, right]}
+            return None
+        if EN_CONDITIONAL.search(prose):
+            return None
+        en_order = re.fullmatch(r"(?i)([A-Za-z][A-Za-z0-9_]*)\s+is\s+less\s+than\s+([A-Za-z][A-Za-z0-9_]*)", en_low)
+        if en_order:
+            return _relation("order", left=en_order[1], operator="<", right=en_order[2])
+        en_purpose = re.fullmatch(r"(?i)(.+?)\s+is\s+configured\s+to\s+(.+)", en_low)
+        if en_purpose:
+            return _relation("purpose", subject=_norm_en(en_purpose[1]), action=_norm_en(en_purpose[2]))
+        en_member = re.fullmatch(r"(?i)(.+?)\s+(?:comprises|includes)\s+(.+)", en_low)
+        if en_member:
+            # 仅当每项均以不定/计数限定词开头且不含介词短语或动词/分词限定时才拆分，防剥离后置修饰语或介词宾语！
+            obj = en_member[2]
+            raw_parts = [
+                p.strip() for p in re.split(
+                    r",\s*and\s+|,\s*|\s+and\s+(?=(?:a|an|one|two|three|first|second|plurality)\b)",
+                    obj,
+                ) if p.strip()
+            ]
+            det_re = re.compile(r"(?i)^(?:a|an|one|two|three|first|second|plurality)\b")
+            prep_or_verb_re = re.compile(
+                r"(?i)\b(?:of|in|on|at|to|for|with|by|from|between|into|through|under|over|near|around|against|upon|within|without"
+                r"|above|below|across|along|inside|outside|beside|behind|beyond|via|per|than|that|which|where|whose"
+                r"|made|held|set|built|cut|driven|bound|is|are|was|were|has|have|had|\w+(?:ing|ed))\b"
+            )
+            has_comma = "," in obj
+            has_and = bool(re.search(r"(?i)(?:,\s*|\s+)and\s+", obj))
+            if (len(raw_parts) > 1
+                    and (not has_comma or has_and)
+                    and all(det_re.match(p) and not prep_or_verb_re.search(p) for p in raw_parts)):
+                items = [_norm_en(p) for p in raw_parts]
+            else:
+                items = [_norm_en(obj)]
+            return _relation("membership", owner=_norm_en(en_member[1]), members=sorted(items))
+        return _norm_en(en_low)
+    if (not text or UNCERTAIN.search(text) or COMPLEX.search(text) or "并且" in text
+            or (re.search(r"[A-Za-z]", prose)
+                and (EN_UNCERTAIN.search(prose) or EN_NEGATION.search(prose)
+                     or EN_COMPLEX.search(prose) or EN_CONDITIONAL.search(prose)))):
         return None
     if text.startswith("并非"):
         proposition = _expression(text[2:], aliases, context)
@@ -243,9 +463,19 @@ def _views(expr):
 
 
 def _segments(fragment, aliases, context):
-    """整句条件优先；只在完整识别失败时重新解析同级并列项。"""
-    if (_expression(fragment, aliases, context) is not None or not re.search(r"[，,]|并且", fragment)
-            or "并且" in fragment and CONDITIONAL.search(fragment)):
+    """整句条件优先；只在完整识别失败且整句不含不确定/例外/否定/英文条件复杂词时重新解析同级并列项。"""
+    prose = MATH_SCRIPT.sub(" ", fragment)
+    has_ascii = bool(re.search(r"[A-Za-z]", prose))
+    if (_expression(fragment, aliases, context) is not None
+            or not re.search(r"[，,]|并且", fragment)
+            or ("并且" in fragment and CONDITIONAL.search(fragment))
+            or UNCERTAIN.search(fragment)
+            or COMPLEX.search(fragment)
+            or re.search(r"但|但是|然而|不过|仅限|除了|除外|并非|并不|不得|无|未|非|不(?!是真实申请)", fragment)
+            or re.search(r"(?:[，,]|并且)[^。；;\n]*?禁止", fragment)
+            or re.match(r"^\s*在[^，,。；;\n]{1,40}(?:状态|情况|条件|模式)下[，,]", fragment)
+            or (has_ascii and (EN_UNCERTAIN.search(prose) or EN_COMPLEX.search(prose)
+                               or EN_CONDITIONAL.search(prose) or EN_NEGATION.search(prose)))):
         return [(0, fragment)]
     parts = list(re.finditer(r".+?(?:[，,](?:并且)?|并且|$)", fragment))
     result, index = [], 0
@@ -266,98 +496,266 @@ def _segments(fragment, aliases, context):
 
 
 def _clauses(text, artifact_id, issues, *, original=False, aliases=(), context=None, coverage=None):
+    raw_text, text = text, _format_free(text)
     result, claims, current, offset = [], [], None, 0
     context = context or _context(text)
     coverage = coverage if coverage is not None else []
+    issue_start, coverage_start = len(issues), len(coverage)
     scope, scope_counter = None, 0
+    excluded_level = None
+    paragraph_excluded = dependent_formula = False
+    restricted_formula = pending_formula = listed_formula = None
+    recent_formulas = []
+    after_claim_break = claims_section = description_section = False
+    standalone_independent = False
+    standalone_row = None
     paragraph = 0
     for mark in re.finditer(r"[？?]+", text):
         issues.append({"code": "original_uncertainty_marker" if original else "final_clause_unparsed_or_uncertain",
                        "artifact_id": artifact_id, "start": mark.start(), "end": mark.end(), "quote": mark[0]})
     for line in text.splitlines(keepends=True):
         raw = line.rstrip("\r\n")
+        raw_anchors = list(_anchors(raw))
         clean = raw.strip().replace("**", "")
-        title = re.sub(r"^#{1,6}\s+", "", clean).strip()
-        structural = title in HEADINGS or (clean.startswith("#") and title in context.get("devices", []))
+        heading = re.match(r"^(#{1,6})\s+", clean)
+        title = clean[heading.end():].strip() if heading else clean
+        section_title = SECTION_NUMBER.sub("", title)
+        title_key = section_title.casefold()
+        structural = title_key in HEADINGS or (heading and title in context.get("devices", []))
+        if original and (heading or structural):
+            level = len(heading[1]) if heading else 1
+            if ALTERNATIVE_SCOPE.search(section_title) or BACKGROUND_SCOPE.search(section_title):
+                excluded_level = level if excluded_level is None else min(level, excluded_level)
+            elif excluded_level is not None and level <= excluded_level and title_key in HEADINGS:
+                excluded_level = None
+        if heading or structural:
+            standalone_independent = title_key == "独立权利要求" and not claims_section
+            current = scope = pending_formula = restricted_formula = listed_formula = None
+            recent_formulas.clear()
+            paragraph_excluded = dependent_formula = after_claim_break = False
         if structural or raw.strip() == NOTICE:
             coverage.append({"artifact_id": artifact_id, "start": offset, "end": offset + len(raw),
                              "quote": raw, "state": "structure" if structural else "notice"})
-            current = None
+            if structural and (not claims_section or title_key in HEADINGS):
+                claims_section = title_key in CLAIM_HEADINGS
+                description_section = not claims_section
+                after_claim_break = False
             offset += len(line)
             continue
         if not clean:
             paragraph += 1
             scope = None
+            paragraph_excluded = dependent_formula = False
+            restricted_formula = listed_formula = None
+            after_claim_break |= current is not None
+            current = None
             offset += len(line)
             continue
         content_start = len(raw) - len(raw.lstrip())
         if clean.startswith("#"):
             content_start += len(re.match(r"#{1,6}\s*", raw[content_start:])[0])
         content = raw[content_start:]
-        number = CLAIM.match(content.replace("**", ""))
+        visible = content.replace("**", "")
+        number = CLAIM.match(visible) if not heading else None
         if number:
+            after_claim_break = False
+            if (scope or "").startswith("orig-claim-"):
+                scope = None
+                if not (pending_formula or listed_formula):
+                    restricted_formula = None
+            if claims_section:
+                recent_formulas.clear()
             identity, claim_text = int(number[1]), number[2]
-            content_start = raw.find(claim_text) if claim_text in raw else content_start
-            content = raw[content_start:]
-            independent = re.match(r"^一种(?:method|system|device|方法|系统|装置|设备)方案[，,]", content)
+            prefix_end = number.start(2)
+            independent = re.match(r"^一种(?:method|system|device|方法|系统|装置|设备)方案[，,]", claim_text)
             if independent:
-                content_start += len(independent[0])
-                content = raw[content_start:]
-            parent = PARENT.match(content)
+                prefix_end += independent.end()
+                claim_text = visible[prefix_end:]
+            parent = PARENT.match(claim_text)
+            en_parent = EN_PARENT.match(claim_text) if parent is None else None
             parents = []
-            if parent and parent["label"] not in {"另一", "其他", "任一", "任意", "多个"}:
+            dependent_formula = bool(CN_PARENT_REF.search(claim_text) or EN_PARENT_REF.search(claim_text))
+            if (parent
+                    and "权利要求" not in parent["label"]
+                    and not re.search(r"另一|其他|其它|任一|任意|多个|多项|或|至|到", parent["label"])
+                    and not CN_PARENT_REF.search(claim_text[parent.end():])):
                 parents = [int(parent[1])]
-                content_start += len(parent[0])
-                content = raw[content_start:]
-            elif "根据权利要求" in content:
+                prefix_end += parent.end()
+            elif en_parent and not EN_PARENT_REF.search(claim_text[en_parent.end():]):
+                parents = [int(en_parent[1])]
+                prefix_end += en_parent.end()
+            elif dependent_formula:
                 issues.append({"code": "claim_reference_unsupported", "artifact_id": artifact_id,
                                "claim_id": identity, "start": offset, "end": offset + len(raw)})
+            if visible != content and prefix_end < len(visible):
+                positions = [item.start() for item in re.finditer(r"\*\*|.", content) if item[0] != "**"]
+                content_start += positions[prefix_end]
+            else:
+                content_start += len(content) if prefix_end == len(visible) else prefix_end
+            content = raw[content_start:]
             current = {"id": identity, "artifact_id": artifact_id, "parent_ids": parents, "clause_indexes": []}
             claims.append(current)
+            if original and not parents:
+                scope = f"orig-claim-{identity}"
             coverage.append({"artifact_id": artifact_id, "start": offset, "end": offset + content_start,
                              "quote": raw[:content_start], "state": "claim_prefix", "claim_id": identity})
-        elif "根据权利要求" in clean and not original:
+        elif (CN_PARENT_REF.search(clean) or EN_PARENT_REF.search(clean)) and not original:
             issues.append({"code": "claim_number_or_reference_unsupported", "artifact_id": artifact_id,
                            "start": offset, "end": offset + len(raw)})
-        for match in FRAGMENTS.finditer(content):
-            combination = COMBINATION.fullmatch(match[0].strip()) if original else None
-            prefix = _plain(match[0])
+        anchor_matches = []
+        for start, end, *anchor in raw_anchors:
+            require(start >= content_start, "formula_anchor_in_structural_prefix")
+            anchor_matches.append((start - content_start, end - content_start, *anchor))
+        bare_formula = not anchor_matches and _is_bare_formula(content.strip())
+        anchor_index = 0
+        formula_intro = False
+        for match in FRAGMENTS.finditer(_anchor_mask(content, anchor_matches)):
+            literal = content[match.start():match.end()]
+            anchors = []
+            while anchor_index < len(anchor_matches) and anchor_matches[anchor_index][0] < match.end():
+                anchors.append(anchor_matches[anchor_index])
+                anchor_index += 1
+            formulas = [anchor for anchor in anchors if anchor[2] == "FORMULA"]
+            prose = MATH_SCRIPT.sub(" ", match[0]).replace("**", "")
+            prefix = _plain(prose).strip()
+            combination = COMBINATION.fullmatch(literal.strip()) if original else None
             if combination:
                 scope_counter += 1
                 scope = f"scope-{scope_counter}"
+                recent_formulas.clear()
+                pending_formula = listed_formula = None
                 coverage.append({"artifact_id": artifact_id, "start": offset + content_start + match.start(),
-                                 "end": offset + content_start + match.end(), "quote": match[0],
+                                 "end": offset + content_start + match.end(), "quote": literal,
                                  "state": "structure", "scope_id": scope})
                 continue
-            if original and re.match(r"^(?:实施(?:方式|例)[一二三四\d]+|(?:另一|其他|其它)(?:个)?(?:方案|实施方式|结构))", prefix):
-                scope_counter += 1
-                scope = f"alternative-{scope_counter}"
-            if original and re.match(r"一种[^，,。；;：:]+(?:[，,])?包括", prefix):
-                scope_counter += 1
-                scope = f"device-{scope_counter}"
-            for local, fragment in _segments(match[0], aliases, context):
+            colon = prose.rstrip().endswith(("：", ":"))
+            label = not prefix or FORMULA_LABEL.fullmatch(prefix)
+            formula_item = bare_formula or (label and formulas and len(formulas) == len(anchors))
+            label_only = label and prefix and not anchors
+            carried = pending_formula or listed_formula
+            # A colon can carry an exclusion across blank lines until its item arrives.
+            if formula_item:
+                listed_formula, pending_formula = carried, None
+                formula_intro = False
+            elif label_only and colon and carried:
+                pending_formula = carried
+            elif not label_only:
+                carried = listed_formula = None
+                if not formula_intro:
+                    pending_formula = None
+                if number:
+                    recent_formulas.clear()
+            source_constraint = bool(carried and label_only)
+            formula_backref = replacement = False
+            negative = cue = False
+            if original and not bare_formula:
+                if ALTERNATIVE_SCOPE.search(prefix):
+                    scope_counter += 1
+                    scope = f"alternative-{scope_counter}"
+                    paragraph_excluded = True
+                    recent_formulas.clear()
+                    if colon and not formulas:
+                        pending_formula = "excluded"
+                        formula_intro = True
+                if BACKGROUND_SCOPE.search(prefix):
+                    paragraph_excluded = True
+                    recent_formulas.clear()
+                    if colon and not formulas:
+                        pending_formula = "excluded"
+                        formula_intro = True
+                if re.match(r"一种[^，,。；;：:]+(?:[，,])?包括", prefix) and not (scope or "").startswith("orig-claim-"):
+                    scope_counter += 1
+                    scope = f"device-{scope_counter}"
+                declaration = prefix.startswith("以下全部为原创合成练习材料") or prefix == "不是真实申请"
+                negative = not declaration and (NEGATION.search(prose) or EN_NEGATION.search(prose))
+                formula_cue = FORMULA_SCOPE_CUE.search(prose)
+                cue = formula_cue or FORMULA_FORWARD_CUE.search(prose)
+                formula_backref = bool(negative and formula_cue and FORMULA_BACKREF.search(prose)
+                                       and not FORMULA_FORWARD_CUE.search(prose))
+                if formula_backref:
+                    targeted = (recent_formulas if FORMULA_COLLECTIVE.search(prose) else
+                                next(([row] for row in reversed(recent_formulas) if row["expression"] is not None), []))
+                    for prior in targeted:
+                        _record_negated_formula(coverage, prior, prior["expression"])
+                        prior.update(expression=None, contextual=True)
+                    replacement = bool((len(anchors) == len(formulas) == 1 or (colon and not anchors))
+                                       and FORMULA_REPLACEMENT.search(prefix))
+                if negative and (cue or colon or formulas) and not replacement:
+                    if colon and not formulas:
+                        pending_formula = "negated"
+                        # A colon with a forward cue may be followed by an inline explanation.
+                        formula_intro = not formula_backref
+                    elif not formula_backref or formulas:
+                        restricted_formula = "negated"
+                elif cue and (UNCERTAIN.search(prose) or EN_UNCERTAIN.search(prose)) and not restricted_formula:
+                    restricted_formula = "uncertain"
+                source_constraint |= declaration or bool(negative and (cue or colon or formulas) and not (formulas and replacement))
+            excluded_formula = original and bool(formulas) and (
+                excluded_level is not None or paragraph_excluded or dependent_formula or restricted_formula or carried)
+            scoped_out = excluded_level is not None or paragraph_excluded or dependent_formula or carried == "excluded"
+            if excluded_formula and not scoped_out and (restricted_formula == "negated" or carried == "negated"):
+                for anchor in formulas:
+                    a_start, a_end = anchor[:2]
+                    base = offset + content_start
+                    _record_negated_formula(coverage, {"artifact_id": artifact_id, "start": base + a_start,
+                                                     "end": base + a_end, "quote": content[a_start:a_end]},
+                                            _anchor_relation(anchor))
+            segments = [(0, literal)] if bare_formula or anchors else _segments(literal, aliases, context)
+            for local, fragment in segments:
                 if not _plain(fragment):
                     continue
                 start = offset + content_start + match.start() + local
                 value = _plain(fragment)
+                anchor = anchors[0] if len(anchors) == 1 and (not prefix or (formulas and (label or replacement))) else None
+                if anchor is not None and prefix and _plain(content[anchor[1]:match.end()].replace("**", "")).strip():
+                    anchor = None  # 只认可前置的中性公式标签，不忽略公式后的自然语言。
                 # 原文的材料声明不是技术事实，也不能为最终技术标题提供豁免。
-                contextual = original and (UNCERTAIN.search(value) or value in {"也没有其他方案", "不是真实申请"}
-                                           or value.startswith("以下全部为原创合成练习材料")
+                words = prose if anchors else MATH_SCRIPT.sub(" ", value)
+                is_uncertain_val = not bare_formula and bool(UNCERTAIN.search(words) or EN_UNCERTAIN.search(words))
+                contextual = original and (bare_formula or excluded_formula or is_uncertain_val or source_constraint
+                                           or value == "也没有其他方案"
                                            or value.startswith("没有尺寸"))
+                formula_only_context = False
+                if contextual or bare_formula:
+                    expr = None
+                elif anchor is not None:
+                    expr = _anchor_relation(anchor)
+                else:
+                    expr = None if anchors else _expression(fragment, aliases, context)
+                    if original and expr is None and negative and not cue and not re.search(r"[,，]", value):
+                        contextual = formula_only_context = True
                 if contextual:
                     coverage.append({"artifact_id": artifact_id, "start": start, "end": start + len(fragment),
-                                     "quote": fragment, "state": "unknown" if UNCERTAIN.search(value) else "source_constraint",
+                                     "quote": fragment, "state": ("formula_source_excluded" if bare_formula or excluded_formula
+                                                                   else "unknown" if is_uncertain_val else "source_constraint"),
                                      "scope_id": scope})
-                expr = None if contextual else _expression(fragment, aliases, context)
                 row = {"artifact_id": artifact_id, "start": start, "end": start + len(fragment),
                        "quote": fragment, "expression": expr, "paragraph": paragraph,
                        "combined": scope is not None, "scope_id": scope,
                        "contextual": bool(contextual), "claim_id": current["id"] if current else None}
+                if formula_backref:
+                    row["formula_backref"] = True
+                if formula_only_context:
+                    row["formula_only_context"] = True
+                if original and formulas:
+                    if expr is None or (recent_formulas and recent_formulas[-1]["paragraph"] != paragraph):
+                        recent_formulas.clear()
+                    if expr is not None:
+                        recent_formulas.append(row)
+                if current is None and (claims_section or after_claim_break or description_section):
+                    row["prose_boundary"] = ("claims_section" if claims_section else
+                                             "description_section" if description_section else "after_claim_break")
+                    if (standalone_independent and isinstance(expr, dict) and expr.get("kind") == "membership"
+                            and prefix.startswith("一种") and expr["owner"] in context["devices"]):
+                        standalone_row = row
                 result.append(row)
                 if current is not None:
                     current["clause_indexes"].append(len(result) - 1)
                 require(len(result) <= MAX_CLAUSES, "final_text_clause_budget")
         offset += len(line)
+    # 兼容显式“独立权利要求”标题下仅有的一条装置构成句，不豁免编号权项后的散文。
+    if standalone_row is not None and len(result) == 1 and not claims:
+        standalone_row.pop("prose_boundary")
     # 编号和从属引语也是已解释的正文结构；未进入任何行的字符不能静默消失。
     intervals = [(row["start"], row["end"]) for row in result]
     intervals += [(row["start"], row["end"]) for row in coverage if row["artifact_id"] == artifact_id]
@@ -374,6 +772,14 @@ def _clauses(text, artifact_id, issues, *, original=False, aliases=(), context=N
                 if state == "uncovered":
                     issues.append({"code": "original_text_uncovered" if original else "final_text_uncovered",
                                    "artifact_id": artifact_id, "start": position, "end": position + 1})
+    if raw_text != text:
+        # 仅对解析视图消除格式字符；回证必须仍能按原文偏移逐字重读。
+        positions = [pos for pos, ch in enumerate(raw_text) if unicodedata.category(ch) != "Cf"]
+        for row in (*result, *coverage[coverage_start:], *issues[issue_start:]):
+            start, end = positions[row["start"]], positions[row["end"] - 1] + 1
+            row.update(start=start, end=end)
+            if "quote" in row:
+                row["quote"] = raw_text[start:end]
     return result, claims
 
 
@@ -496,12 +902,20 @@ def _unsupported_reason(expr, originals):
     return "final_clause_not_supported"
 
 
-def _audit(texts, sources):
-    require(isinstance(texts, dict) and bool(texts), "final_texts_required")
+def _audit(texts, sources, *, formula_blocks=None, heading_ids=()):
+    formula_blocks = {} if formula_blocks is None else formula_blocks
+    require(isinstance(texts, dict) and bool(texts or formula_blocks), "final_texts_required")
+    require(not texts.keys() & formula_blocks.keys(), "final_artifact_duplicate")
     require(isinstance(sources, list) and 0 < len(sources) <= 64, "final_original_sources_required")
-    require(len(canonical_bytes(texts)) <= MAX_BYTES, "final_text_byte_budget")
+    manuscripts = texts | formula_blocks
+    _check_nesting(manuscripts, "final_gate_input_nesting_exceeded", max_bytes=MAX_BYTES,
+                   budget_code="final_text_byte_budget")
+    _check_nesting(sources, "final_gate_input_nesting_exceeded", max_bytes=MAX_BYTES,
+                   budget_code="final_source_byte_budget")
+    require(len(canonical_bytes(manuscripts)) <= MAX_BYTES, "final_text_byte_budget")
     require(len(canonical_bytes(sources)) <= MAX_BYTES, "final_source_byte_budget")
     issues, originals, identities, source_coverage = [], [], set(), []
+    formula_only_sources = []
     for source in sources:
         require(isinstance(source, dict), "final_source_object_required")
         for key in ("id", "version", "text", "sha256"):
@@ -511,23 +925,71 @@ def _audit(texts, sources):
         identities.add(source["id"])
         require(source["sha256"] == sha256_bytes(source["text"].encode("utf-8")), "final_source_hash_mismatch")
         source_issues = []
-        context = _context(source["text"])
+        source_prose = _format_free(source["text"])
+        context = _context(source_prose)
         clauses, source_claims = _clauses(source["text"], source["id"], source_issues, original=True,
                                           aliases=context["aliases"], context=context, coverage=source_coverage)
-        if any(row["parent_ids"] for row in source_claims) or "根据权利要求" in source["text"]:
-            # 原文从属范围不能拆成独立事实；该上下文尚未支持时整份拒绝。
-            source_issues.append({"code": "original_claim_dependency_unsupported"})
-            issues.append({"code": "original_claim_dependency_unsupported", "document_id": source["id"]})
-        # 未解析原句可能含否定、例外或冲突，不能挑出邻近肯定句作为独立证明。
-        expressions = [row["expression"] for row in clauses]
+        # 对非互斥实施方式原句（含未分作用域、scope-*、device-*）及独立权项核查否定矛盾（不误跨 alternative-* 互斥实施例）。
+        unscoped_orig = [row["expression"] for row in clauses
+                         if row["scope_id"] is None and row["claim_id"] is None and row["expression"] is not None]
+        non_alt_orig = [row["expression"] for row in clauses
+                        if not (row["scope_id"] or "").startswith("alternative-")
+                        and row["claim_id"] is None and row["expression"] is not None]
         if any(isinstance(item, dict) and item.get("kind") == "negation"
-               and _proof(item["proposition"], [other for other in expressions if other is not item],
-                          [MAX_LOGIC_WORK])["relation"] == "entailed" for item in expressions):
+               and _proof(item["proposition"], [other for other in non_alt_orig if other is not item],
+                          [MAX_LOGIC_WORK])["relation"] == "entailed" for item in non_alt_orig):
             issues.append({"code": "original_statements_conflict", "document_id": source["id"]})
+        for sclaim in source_claims:
+            if not sclaim["parent_ids"]:
+                ind_exprs = [clauses[idx]["expression"] for idx in sclaim["clause_indexes"]
+                             if clauses[idx]["expression"] is not None]
+                combined_ind = non_alt_orig + ind_exprs
+                if any(isinstance(item, dict) and item.get("kind") == "negation"
+                       and _proof(item["proposition"], [other for other in combined_ind if other is not item],
+                                  [MAX_LOGIC_WORK])["relation"] == "entailed" for item in combined_ind):
+                    issues.append({"code": "original_statements_conflict", "document_id": source["id"],
+                                   "claim_id": sclaim["id"]})
+        inherited_claim_groups = []
+        if (any(row["parent_ids"] for row in source_claims)
+                or CN_PARENT_REF.search(source_prose)
+                or EN_PARENT_REF.search(source_prose)):
+            # 解析单一父项无环从属链，并将从属子句严格绑定到全部继承前提，防中间概括漏父项限定。
+            src_by_id = {}
+            dep_valid = bool(source_claims)
+            for sclaim in source_claims:
+                cid = sclaim["id"]
+                if cid in src_by_id or len(sclaim["parent_ids"]) > 1:
+                    dep_valid = False
+                    break
+                pid = sclaim["parent_ids"][0] if sclaim["parent_ids"] else None
+                if pid is not None and (pid not in src_by_id or pid >= cid):
+                    dep_valid = False
+                    break
+                own_rows = [clauses[idx] for idx in sclaim["clause_indexes"]]
+                if not own_rows or any(r["expression"] is None and not r["contextual"] for r in own_rows):
+                    dep_valid = False
+                    break
+                parent_rows = list(src_by_id[pid]["all_rows"]) if pid is not None else []
+                src_by_id[cid] = {"all_rows": parent_rows + own_rows, "own_rows": own_rows, "parent_id": pid}
+            if not dep_valid:
+                source_issues.append({"code": "original_claim_dependency_unsupported"})
+                issues.append({"code": "original_claim_dependency_unsupported", "document_id": source["id"]})
+            else:
+                for cid, entry in sorted(src_by_id.items()):
+                    if entry["parent_id"] is not None:
+                        inherited_claim_groups.append((cid, entry["all_rows"], entry["own_rows"]))
+                # 仅独立项的条款留在普通原句组中；从属项子句不得脱离父项被单独引用。
+                dep_clause_starts = {
+                    row["start"] for _, _, own_rows in inherited_claim_groups for row in own_rows
+                }
+                clauses = [row for row in clauses if row["start"] not in dep_clause_starts]
         if source_issues or any(row["expression"] is None and not row["contextual"] for row in clauses):
             issues.append({"code": "original_text_not_fully_parsed", "document_id": source["id"]})
+        elif any(row.get("formula_only_context") for row in clauses):
+            formula_only_sources.append(source["id"])
         # 回指的不确定性可能跨段撤销前文；范围无法唯一确定时不择取肯定句。
-        unresolved_scope = any(row["contextual"] and UNCERTAIN_SCOPE.search(row["quote"]) for row in clauses)
+        unresolved_scope = any(row["contextual"] and not row.get("formula_backref")
+                               and UNCERTAIN_SCOPE.search(_format_free(row["quote"])) for row in clauses)
         groups = {}
         for row in clauses:
             key = row["scope_id"] or f"clause-{row['start']}"
@@ -546,18 +1008,68 @@ def _audit(texts, sources):
                     supported.append(member_relation)
                     derivations.append({"rule": "single_structure_component_subjects", "expression": member_relation,
                                         "citations": [_location(row) for row in group if row["expression"] is not None]})
+            conflict_pool = supported if key.startswith("alternative-") else (supported + unscoped_orig)
             if any(isinstance(expr, dict) and expr.get("kind") == "negation"
-                   and _proof(expr["proposition"], [other for other in supported if other is not expr],
-                              [MAX_LOGIC_WORK])["relation"] == "entailed" for expr in supported):
+                   and _proof(expr["proposition"], [other for other in conflict_pool if other is not expr],
+                              [MAX_LOGIC_WORK])["relation"] == "entailed" for expr in conflict_pool):
                 issues.append({"code": "original_statements_conflict", "document_id": source["id"], "scope_id": key})
                 supported = []
             originals.append({"document": source, "paragraph": group[0]["paragraph"], "scope_id": key,
                               "clauses": group, "combined": bool(group[0]["scope_id"]),
                               "expressions": [] if unresolved_scope else supported,
-                              "derivations": derivations, "context": context})
+                              "derivations": derivations, "context": context, "requires_inherited": []})
+        for cid, all_rows, own_rows in inherited_claim_groups:
+            req_exprs = [r["expression"] for r in all_rows if r not in own_rows and r["expression"] is not None]
+            full_exprs = [r["expression"] for r in all_rows if r["expression"] is not None]
+            chain_pool = full_exprs + non_alt_orig
+            chain_conflict = any(
+                isinstance(expr, dict) and expr.get("kind") == "negation"
+                and _proof(expr["proposition"], [other for other in chain_pool if other is not expr],
+                           [MAX_LOGIC_WORK])["relation"] == "entailed"
+                for expr in chain_pool
+            )
+            if chain_conflict:
+                issues.append({"code": "original_statements_conflict", "document_id": source["id"],
+                               "scope_id": f"orig-claim-chain-{source['id']}-{cid}"})
+            originals.append({
+                "document": source,
+                "paragraph": own_rows[0]["paragraph"],
+                "scope_id": f"orig-claim-chain-{source['id']}-{cid}",
+                "clauses": all_rows,
+                "combined": True,
+                "expressions": [] if (unresolved_scope or chain_conflict) else full_exprs,
+                "derivations": [],
+                "context": context,
+                "requires_inherited": req_exprs,
+            })
+    # 跨原文文件核查非互斥实施例语句（含原文从属权项链）间的否定矛盾（不误跨 alternative-* 互斥方案）。
+    cross_orig_exprs = [
+        expr for item in originals
+        if not item["scope_id"].startswith("alternative-") and not item.get("requires_inherited")
+        for expr in item["expressions"]
+    ]
+    if any(isinstance(expr, dict) and expr.get("kind") == "negation"
+           and _proof(expr["proposition"], [other for other in cross_orig_exprs if other is not expr],
+                      [MAX_LOGIC_WORK])["relation"] == "entailed" for expr in cross_orig_exprs):
+        issues.append({"code": "original_statements_conflict"})
+        for item in originals:
+            if not item["scope_id"].startswith("alternative-"):
+                item["expressions"] = []
+    for item in originals:
+        if item["scope_id"].startswith("orig-claim-chain-") and item["expressions"]:
+            chain_cross = item["expressions"] + cross_orig_exprs
+            if any(isinstance(expr, dict) and expr.get("kind") == "negation"
+                   and _proof(expr["proposition"], [other for other in chain_cross if other is not expr],
+                              [MAX_LOGIC_WORK])["relation"] == "entailed" for expr in chain_cross):
+                issues.append({"code": "original_statements_conflict",
+                               "document_id": item["document"]["id"], "scope_id": item["scope_id"]})
+                item["expressions"] = []
     all_clauses, all_claims, remaining, by_id, coverage = [], [], [MAX_LOGIC_WORK], {}, []
     claim_groups, current_claim_group = [], []
-    for artifact_id, text in texts.items():
+    negated_formulas = {_formula_key(row["expression"])
+                        for row in source_coverage if row["state"] == "original_formula_negated"}
+    formula_bindings = []
+    for artifact_id, text in manuscripts.items():
         require(isinstance(artifact_id, str) and artifact_id.strip() and isinstance(text, str) and text.strip(),
                 "final_artifact_text_required")
         # 仅合并各原文共同认可的唯一名称；不会从另一份原文借用歧义别名。
@@ -569,17 +1081,36 @@ def _audit(texts, sources):
         aliases = sorted(set.intersection(*(set(item["aliases"]) for item in contexts))) if contexts else []
         context["references"] = {key: value for item in contexts for key, value in item["references"].items()
                                  if all(other["references"].get(key) == value for other in contexts)}
-        clauses, claims = _clauses(text, artifact_id, issues, aliases=aliases, context=context, coverage=coverage)
-        if not clauses and text.strip() != NOTICE:
+        is_formula_block = artifact_id in formula_blocks
+        heading_text = _format_free(text).strip() if artifact_id in heading_ids else None
+        if is_formula_block:
+            expr = _formula_content(artifact_id, _format_free(text))
+            clauses, claims = [{"artifact_id": artifact_id, "start": 0, "end": len(text), "quote": text,
+                                "expression": expr, "paragraph": 0, "scope_id": None, "combined": False,
+                                "contextual": False, "claim_id": None}], []
+        elif heading_text and (heading_text.casefold() in HEADINGS or heading_text in context["devices"]):
+            coverage.append({"artifact_id": artifact_id, "start": 0, "end": len(text), "quote": text,
+                             "state": "structure"})
+            continue
+        else:
+            clauses, claims = _clauses(text, artifact_id, issues, aliases=aliases, context=context, coverage=coverage)
+        if not clauses and _format_free(text).strip() != NOTICE:
             issues.append({"code": "artifact_technical_text_missing", "artifact_id": artifact_id})
         require(len(all_clauses) + len(clauses) <= MAX_CLAUSES, "final_text_clause_budget")
         for row in clauses:
             row["support"] = []
             expr = row["expression"]
             if expr is None:
-                issues.append({"code": "final_clause_unparsed_or_uncertain", **_location(row)})
+                issues.append({"code": "final_formula_content_not_supported" if is_formula_block else
+                               "final_clause_unparsed_or_uncertain", **_location(row)})
                 continue
+            formula_content = isinstance(expr, dict) and expr.get("kind") == "formula_content"
+            formula_key = _formula_key(expr)
             for original in originals:
+                if formula_key is not None and (expr not in original["expressions"] or original["requires_inherited"]
+                                                or formula_key in negated_formulas
+                                                or original["scope_id"].startswith("alternative-")):
+                    continue
                 proof = _proof(expr, original["expressions"], remaining)
                 if proof["relation"] == "entailed" and not proof.get("vacuous", False):
                     relevant = [item for item in original["clauses"] if item["expression"] is not None
@@ -591,10 +1122,25 @@ def _audit(texts, sources):
                     row["support"].append({"document_id": original["document"]["id"],
                                            "paragraph": original["paragraph"], "scope_id": original["scope_id"],
                                            "combined": original["combined"],
+                                           "requires_inherited": original.get("requires_inherited", []),
                                            "citations": [_location(item) for item in relevant],
                                            "derivations": original["derivations"]})
+                    if relevant and all(item.get("prose_boundary") in {"description_section", "after_claim_break"} for item in relevant):
+                        row["support"][-1]["separate_prose"] = True
             if not row["support"]:
-                issues.append({"code": _unsupported_reason(expr, originals), **_location(row)})
+                issues.append({"code": "final_formula_content_not_supported" if formula_content else
+                               _unsupported_reason(expr, originals), **_location(row)})
+            elif all(s.get("requires_inherited") for s in row["support"]):
+                # 仅由原文从属链支持但未落入含父项限定的权项时，稍后在权项级核对是否满足继承前提。
+                row["needs_inherited_check"] = True
+            if ((row.get("prose_boundary") == "claims_section")
+                    or (row.get("prose_boundary") == "after_claim_break"
+                        and not any(s.get("separate_prose") for s in row["support"]))):
+                issues.append({"code": "claim_paragraph_boundary_unconfirmed", **_location(row)})
+            if is_formula_block and row["support"]:
+                formula_bindings.append({"block_id": artifact_id, "structure_sha256": expr["structure_sha256"],
+                                         "source_scopes": [{"document_id": s["document_id"], "scope_id": s["scope_id"]}
+                                                           for s in row["support"]]})
         # 不同完整工件（例如答复与替换稿）可各自从1编号；拆成块的连续权项仍共享父项。
         if claims and claims[0]["id"] == 1 and by_id:
             claim_groups.append(current_claim_group)
@@ -635,20 +1181,55 @@ def _audit(texts, sources):
                     issues.append({"code": "dependent_combination_not_supported_together", "artifact_id": artifact_id,
                                    "claim_id": claim["id"], "parent_id": parent})
             claim["all_clauses"] = inherited + own
+            claim_exprs = [r["expression"] for r in claim["all_clauses"] if r["expression"] is not None]
+            for row in own:
+                if row.get("needs_inherited_check"):
+                    satisfied = False
+                    for sup in row["support"]:
+                        reqs = sup.get("requires_inherited", [])
+                        if not reqs or all(_proof(req, claim_exprs, remaining)["relation"] == "entailed" for req in reqs):
+                            satisfied = True
+                            break
+                    if not satisfied:
+                        issues.append({"code": "inherited_original_limitation_omitted",
+                                       "artifact_id": artifact_id, "claim_id": claim["id"], **_location(row)})
             by_id[claim["id"]] = claim
             all_claims.append({key: claim[key] for key in ("artifact_id", "id", "parent_ids")})
+        # 非权项段落中若直接引用了依赖原文从属链的子句，同样必须满足同工件内全部继承前提。
+        claim_clause_ids = {idx for claim in claims for idx in claim["clause_indexes"]}
+        non_claim_exprs = [r["expression"] for i, r in enumerate(clauses)
+                           if i not in claim_clause_ids and r["expression"] is not None]
+        for idx, row in enumerate(clauses):
+            if idx not in claim_clause_ids and row.get("needs_inherited_check"):
+                satisfied = any(
+                    not sup.get("requires_inherited")
+                    or all(_proof(req, non_claim_exprs, remaining)["relation"] == "entailed"
+                           for req in sup["requires_inherited"])
+                    for sup in row["support"]
+                )
+                if not satisfied:
+                    issues.append({"code": "inherited_original_limitation_omitted", **_location(row)})
         all_clauses.extend(clauses)
     claim_groups.append(current_claim_group)
     if any(group != list(range(1, len(group) + 1)) for group in claim_groups):
         issues.append({"code": "claim_numbering_gap_or_order"})
     if not all_clauses:
         issues.append({"code": "final_technical_text_missing"})
-    input_binding = {"input_hash": digest({"texts": texts, "sources": sources}),
-                     "text_bindings": {key: sha256_bytes(value.encode("utf-8")) for key, value in texts.items()},
+    if formula_only_sources and any(row["expression"] is not None and _formula_key(row["expression"]) is None
+                                    for row in all_clauses):
+        # 独立否定句可与公式无关，但不能因此为未完整解析的普通技术正文放行。
+        issues.extend({"code": "original_text_not_fully_parsed", "document_id": sid} for sid in formula_only_sources)
+    inputs = {"texts": texts, "sources": sources}
+    if formula_blocks:
+        inputs["formula_blocks"] = formula_blocks
+    if heading_ids:
+        inputs["heading_ids"] = sorted(heading_ids)
+    input_binding = {"input_hash": digest(inputs),
+                     "text_bindings": {key: sha256_bytes(value.encode("utf-8")) for key, value in manuscripts.items()},
                      "source_bindings": [{key: row[key] for key in ("id", "version", "sha256")} for row in sources]}
     return {"contract_version": VERSION, "status": "blocked" if issues else "checked",
             "input_binding": input_binding, "input_hash": input_binding["input_hash"],
-            "text_bindings": {key: sha256_bytes(value.encode("utf-8")) for key, value in texts.items()},
+            "text_bindings": input_binding["text_bindings"],
             "source_bindings": [{key: row[key] for key in ("id", "version", "sha256")} for row in sources],
             "clauses": all_clauses, "claims": all_claims, "issues": issues,
             "context_coverage": coverage, "source_coverage": source_coverage,
@@ -656,8 +1237,10 @@ def _audit(texts, sources):
                                            "unparsed" if row["expression"] is None else "unsupported"}
                                           for row in all_clauses],
             "logic_work_units": MAX_LOGIC_WORK - remaining[0],
-            "scope": "bounded_typed_chinese_relations_and_single_parent_claims",
+            "scope": "bounded_chinese_and_english_relations_single_parent_claims_and_typed_anchors",
             "coverage": "complete_supplied_text_in_supported_subset" if not issues else "incomplete_or_rejected",
+            **({"formula_blocks_verified": len(formula_bindings), "formula_bindings": formula_bindings}
+               if formula_blocks else {}),
             "dependent_addition_check": "typed_relations_and_finite_implication_only",
             "source_authenticity": "not_verified", "natural_language_verified": False,
             "professional_review": "not_performed", "external_action": "not_performed"}
@@ -667,10 +1250,9 @@ def _location(row):
     return {key: row[key] for key in ("artifact_id", "start", "end", "quote")}
 
 
-def audit_final_text(texts: dict[str, str], sources: list[dict]) -> dict:
-    """重读实际字符生成验收报告；不采信调用者公式、分类或历史passed。"""
+def _audit_safely(texts, sources, **kwargs):
     try:
-        return _audit(texts, sources)
+        return _audit(texts, sources, **kwargs)
     except (ContractError, UnicodeError, RecursionError, TypeError, KeyError, ValueError) as exc:
         code = str(exc) if isinstance(exc, ContractError) else "final_gate_input_invalid"
         return {"contract_version": VERSION, "status": "blocked", "issues": [{"code": code}],
@@ -679,11 +1261,282 @@ def audit_final_text(texts: dict[str, str], sources: list[dict]) -> dict:
                 "professional_review": "not_performed", "external_action": "not_performed"}
 
 
-def require_final_text(texts: dict[str, str], sources: list[dict]) -> dict:
-    """失败直接抛错，调用者必须在写出最终正文／候选清单前调用。"""
-    report = audit_final_text(texts, sources)
+def audit_final_text(texts: dict[str, str], sources: list[dict]) -> dict:
+    """重读实际字符生成验收报告；不采信调用者公式、分类或历史passed。"""
+    return _audit_safely(texts, sources)
+
+
+def _require_checked(report):
     if report["status"] != "checked":
         error = ContractError("final_text_gate_blocked")
+        error.report = report
+        raise error
+    return report
+
+
+def require_final_text(texts: dict[str, str], sources: list[dict]) -> dict:
+    """失败直接抛错，调用者必须在写出最终正文／候选清单前调用。"""
+    return _require_checked(audit_final_text(texts, sources))
+
+
+def require_final_document(blocks: list[dict], sources: list[dict]) -> dict:
+    """审计已解析的正文块；公式块必须与同一原文范围的有效锚点匹配。"""
+    require(isinstance(blocks, list), "final_document_blocks_invalid")
+    texts, formula_blocks, heading_ids = {}, {}, set()
+    for block in blocks:
+        require(isinstance(block, dict) and all(isinstance(block.get(k), str) for k in ("id", "kind", "text")),
+                "final_document_block_invalid")
+        identity, kind, text = block["id"], block["kind"], block["text"]
+        require(identity not in texts and identity not in formula_blocks, "final_artifact_duplicate")
+        if kind == "formula":
+            formula_blocks[identity] = text
+        else:
+            texts[identity] = text
+            if kind in {"heading1", "heading2", "heading3", "heading4"}:
+                heading_ids.add(identity)
+    return _require_checked(_audit_safely(texts, sources, formula_blocks=formula_blocks, heading_ids=heading_ids))
+
+
+_OA_OVERCLAIM = re.compile(
+    r"(?i)审查员已(?:同意|确认|认可)|examiner\s+(?:conceded|agreed|confirmed)"
+    r"|绝对具有新颖性|全球可授权|globally\s+patentable|guaranteed\s+(?:grant|allowance)"
+)
+_OA_PLACEHOLDER = re.compile(
+    r"(?i)(?<![A-Za-z0-9_])(?:TODO|TBD|FIXME|TO\s*CONFIRM)(?![A-Za-z0-9_])|待确认|待补证|待核实|待补充确认"
+)
+_OA_PARAGRAPH_BREAK = re.compile(r"\r?\n[^\S\r\n]*\r?\n|\u2029")
+
+
+def _oa_paragraphs(body):
+    def paragraph(start, end):
+        raw = body[start:end]
+        return raw.strip(), start + len(raw) - len(raw.lstrip())
+
+    start = 0
+    for match in _OA_PARAGRAPH_BREAK.finditer(body):
+        text, offset = paragraph(start, match.start())
+        if text:
+            yield text, offset
+        start = match.end()
+    text, offset = paragraph(start, len(body))
+    if text:
+        yield text, offset
+
+
+def audit_oa_response(
+    *,
+    replacement_texts: dict[str, str],
+    original_sources: list[dict],
+    notice_opinions: list[dict],
+    arguments: list[dict],
+    cited_references: list[dict] | None = None,
+    extra_response_texts: dict[str, str] | None = None,
+    replacement_required: bool = False,
+) -> dict:
+    """校验替换稿和实际答复；`response:<意见ID>` 须逐段匹配论证，并包含逐字核对的引文。"""
+    try:
+        return _audit_oa_response(
+            replacement_texts, original_sources, notice_opinions, arguments, cited_references,
+            extra_response_texts, replacement_required,
+        )
+    except (ContractError, UnicodeError, RecursionError, TypeError, KeyError, ValueError) as exc:
+        code = str(exc) if isinstance(exc, ContractError) else "oa_input_invalid"
+        return {"contract_version": VERSION, "gate_mode": "oa_dual_track", "status": "blocked",
+                "input_hash": None,
+                "amendment_support_track": {"status": "not_performed", "issues": []},
+                "argument_evidence_track": {"status": "blocked", "issues": [{"code": code}]},
+                "legal_persuasiveness_verified": False, "professional_review": "not_performed",
+                "external_action": "not_performed"}
+
+
+def _audit_oa_response(replacement_texts, original_sources, notice_opinions, arguments, cited_references,
+                       extra_response_texts, replacement_required):
+    cited_references = [] if cited_references is None else cited_references
+    extra_response_texts = {} if extra_response_texts is None else extra_response_texts
+    inputs = {"replacement_texts": replacement_texts, "original_sources": original_sources,
+              "notice_opinions": notice_opinions, "arguments": arguments, "cited_references": cited_references,
+              "extra_response_texts": extra_response_texts, "replacement_required": replacement_required}
+    _check_nesting(inputs, "oa_input_nesting_exceeded", max_bytes=MAX_BYTES, budget_code="oa_input_byte_budget")
+    encoded = canonical_bytes(inputs)
+    require(len(encoded) <= MAX_BYTES, "oa_input_byte_budget")
+    require(type(replacement_required) is bool, "oa_replacement_required_boolean")
+    require(isinstance(replacement_texts, dict), "oa_replacement_texts_invalid")
+    arg_issues: list[dict] = []
+
+    if not isinstance(original_sources, list) or not isinstance(cited_references, list):
+        arg_issues.append({"code": "oa_sources_list_required"})
+        original_sources = []
+        cited_references = []
+    if not isinstance(notice_opinions, list) or not isinstance(arguments, list):
+        arg_issues.append({"code": "oa_opinions_and_arguments_list_required"})
+        notice_opinions = []
+        arguments = []
+
+    if replacement_required and not replacement_texts:
+        amendment_report = {
+            "contract_version": VERSION, "status": "blocked",
+            "issues": [{"code": "oa_replacement_text_missing"}], "claims": [], "clauses": [],
+        }
+    elif replacement_texts:
+        amendment_report = audit_final_text(replacement_texts, original_sources)
+    else:
+        amendment_report = {
+            "contract_version": VERSION, "status": "not_applicable", "issues": [], "claims": [], "clauses": [],
+        }
+
+    doc_index: dict[str, dict] = {}
+    for group_name, docs in (("original", original_sources), ("prior_art", cited_references)):
+        for doc in docs:
+            if (not isinstance(doc, dict) or not all(isinstance(doc.get(k), str) and doc[k].strip()
+                    for k in ("id", "text", "sha256", "version", "role")) or doc["role"] != group_name):
+                arg_issues.append({"code": "oa_reference_invalid", "group": group_name})
+                continue
+            if doc["id"] in doc_index:
+                arg_issues.append({"code": "oa_reference_duplicate", "document_id": doc["id"]})
+                continue
+            if doc["sha256"] != sha256_bytes(doc["text"].encode("utf-8")):
+                arg_issues.append({"code": "oa_reference_hash_mismatch", "document_id": doc["id"]})
+                continue
+            doc_index[doc["id"]] = doc
+
+    opinion_ids: set[str] = set()
+    for row in notice_opinions:
+        if not isinstance(row, dict) or not isinstance(row.get("id"), str) or not row["id"].strip():
+            arg_issues.append({"code": "oa_notice_opinion_invalid"})
+            continue
+        oid = row["id"].strip()
+        if oid in opinion_ids:
+            arg_issues.append({"code": "oa_notice_opinion_duplicate", "opinion_id": oid})
+            continue
+        opinion_ids.add(oid)
+    if not opinion_ids:
+        arg_issues.append({"code": "oa_notice_opinions_required"})
+
+    # Only the actual, opinion-keyed response may carry checked argument paragraphs.
+    opinion_response_keys = {"response:" + oid for oid in opinion_ids}
+    if not isinstance(extra_response_texts, dict):
+        arg_issues.append({"code": "oa_extra_response_texts_invalid"})
+        extra_response_texts = {}
+    else:
+        for rkey, rtext in extra_response_texts.items():
+            if not isinstance(rkey, str) or rkey not in opinion_response_keys:
+                arg_issues.append({"code": "oa_response_unknown_opinion"})
+                continue
+            if not isinstance(rtext, str) or not rtext.strip():
+                arg_issues.append({"code": "oa_response_text_invalid", "key": str(rkey)})
+                continue
+            visible = _format_free(rtext)
+            if _OA_OVERCLAIM.search(visible):
+                arg_issues.append({"code": "oa_unverified_concession_or_overclaim", "response_key": str(rkey)})
+            if _OA_PLACEHOLDER.search(visible):
+                arg_issues.append({"code": "oa_unresolved_placeholder_in_response", "response_key": str(rkey)})
+
+    paragraphs: dict[str, list[tuple[str, list, dict, bool]]] = {}
+    checked_args = []
+    for arg in arguments:
+        if not isinstance(arg, dict) or not isinstance(arg.get("opinion_id"), str) or not isinstance(arg.get("text"), str):
+            arg_issues.append({"code": "oa_argument_record_invalid"})
+            continue
+        oid = arg["opinion_id"].strip()
+        if oid not in opinion_ids:
+            arg_issues.append({"code": "oa_argument_unknown_opinion", "opinion_id": oid})
+            continue
+        text = arg["text"].strip()
+        if not text:
+            arg_issues.append({"code": "oa_argument_text_empty", "opinion_id": oid})
+            continue
+        issue_count = len(arg_issues)
+        visible = _format_free(text)
+        if _OA_OVERCLAIM.search(visible):
+            arg_issues.append({"code": "oa_unverified_concession_or_overclaim", "opinion_id": oid})
+        if _OA_PLACEHOLDER.search(visible):
+            arg_issues.append({"code": "oa_unresolved_placeholder_in_argument", "opinion_id": oid})
+        citations = arg.get("citations", [])
+        if not isinstance(citations, list) or not citations:
+            arg_issues.append({"code": "oa_argument_citations_missing", "opinion_id": oid})
+        verified_cites = []
+        for cite in citations if isinstance(citations, list) else []:
+            if (not isinstance(cite, dict)
+                    or not {"document_id", "start", "end", "quote"} <= set(cite)
+                    or not isinstance(cite["document_id"], str)):
+                arg_issues.append({"code": "oa_citation_fields_invalid", "opinion_id": oid})
+                continue
+            doc = doc_index.get(cite["document_id"])
+            if doc is None:
+                arg_issues.append({"code": "oa_citation_document_unknown", "opinion_id": oid,
+                                   "document_id": cite["document_id"]})
+                continue
+            s, e, quote = cite["start"], cite["end"], cite["quote"]
+            if not (type(s) is int and type(e) is int and isinstance(quote, str)
+                    and len(quote.strip()) >= 2
+                    and 0 <= s < e <= len(doc["text"])
+                    and doc["text"][s:e] == quote):
+                arg_issues.append({"code": "oa_citation_quote_mismatch", "opinion_id": oid,
+                                   "document_id": cite["document_id"]})
+                continue
+            response_offset = text.find(quote)
+            if response_offset == -1:
+                arg_issues.append({"code": "oa_citation_quote_missing_in_response_paragraph", "opinion_id": oid,
+                                   "document_id": cite["document_id"]})
+                continue
+            verified_cites.append({"document_id": cite["document_id"], "start": s, "end": e,
+                                   "response_start": response_offset, "response_end": response_offset + len(quote)})
+        checked = {"opinion_id": oid, "verified_citations": 0,
+                   "disposition": arg.get("disposition", "argued")}
+        paragraphs.setdefault(oid, []).append((text, verified_cites, checked, len(arg_issues) == issue_count))
+        checked_args.append(checked)
+
+    addressed = set()
+    for oid in sorted(opinion_ids):
+        key = "response:" + oid
+        body = extra_response_texts.get(key)
+        if not isinstance(body, str) or not body.strip():
+            arg_issues.append({"code": "oa_actual_response_missing", "opinion_id": oid})
+            continue
+        bound = paragraphs.get(oid, [])
+        actual = list(_oa_paragraphs(body))
+        if [text for text, _ in actual] != [text for text, _, _, _ in bound]:
+            arg_issues.append({"code": "oa_actual_response_argument_mismatch", "opinion_id": oid})
+            continue
+        for (text, offset), (_, citations, checked, _) in zip(actual, bound):
+            checked.update(response_key=key, response_start=offset, response_end=offset + len(text),
+                           verified_citations=len(citations),
+                           citation_bindings=[{**cite, "response_start": offset + cite["response_start"],
+                                               "response_end": offset + cite["response_end"]} for cite in citations])
+        if all(valid for _, _, _, valid in bound):
+            addressed.add(oid)
+
+    missing_opinions = sorted(opinion_ids - addressed)
+    if missing_opinions:
+        arg_issues.append({"code": "oa_opinions_unaddressed", "opinion_ids": missing_opinions})
+
+    amendment_ok = amendment_report["status"] in {"checked", "not_applicable"}
+    argument_ok = not arg_issues
+    overall = "checked" if (amendment_ok and argument_ok) else "blocked"
+    return {
+        "contract_version": VERSION,
+        "gate_mode": "oa_dual_track",
+        "status": overall,
+        "input_hash": sha256_bytes(encoded),
+        "amendment_support_track": amendment_report,
+        "argument_evidence_track": {
+            "status": "checked" if argument_ok else "blocked",
+            "opinions_total": len(opinion_ids),
+            "opinions_addressed": len(addressed),
+            "missing_opinions": missing_opinions,
+            "arguments": checked_args,
+            "issues": arg_issues,
+        },
+        "legal_persuasiveness_verified": False,
+        "professional_review": "not_performed",
+        "external_action": "not_performed",
+    }
+
+
+def require_oa_response(**kwargs) -> dict:
+    report = audit_oa_response(**kwargs)
+    if report["status"] != "checked":
+        error = ContractError("oa_dual_track_gate_blocked")
         error.report = report
         raise error
     return report

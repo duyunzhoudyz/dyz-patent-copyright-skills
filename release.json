@@ -9,6 +9,11 @@
   "commercial_contact": null,
   "security_contact": null,
   "supported_platforms": ["Windows"],
-  "supported_python": ["3.11"],
+  "supported_python": ["3.11", "3.13", "3.14"],
+  "verified_platforms": ["Windows"],
+  "verified_python": ["3.11", "3.13", "3.14"],
+  "target_ci_platforms": ["Windows", "Linux", "macOS"],
+  "target_ci_python": ["3.11", "3.12", "3.13", "3.14"],
+  "platform_verification_note": "Locally verified on Windows with Python 3.11, 3.13 and 3.14; Windows Python 3.12 and hosted Linux/macOS Actions matrix (Python 3.11-3.14) are configured in .github/workflows/ci.yml and awaiting live hosted CI runs.",
   "capability_support": "synthetic_helper_only"
 }

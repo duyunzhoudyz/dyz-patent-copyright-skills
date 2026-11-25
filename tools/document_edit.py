@@ -220,9 +220,13 @@ def _simple_structure(parts, trees, relationships, main):
     if page_parts:
         # 只为本生成器已验证的静态页眉与PAGE页脚开窄口；域仍不可作为编辑目标。
         from tools.documents import _standard_header_footer, document_profile
-        known = _standard_header_footer(document_profile("dyz-standard-internal-v2"))
+        known_profiles = (
+            _standard_header_footer(document_profile("dyz-standard-internal-v2")),
+            _standard_header_footer(document_profile("dyz-standard-internal-v3")),
+        )
         require(page_parts == {"word/header1.xml", "word/footer1.xml"}
-                and all(parts["word/" + name + "1.xml"] == value for name, value in known.items()),
+                and any(all(parts["word/" + name + "1.xml"] == value for name, value in known.items())
+                        for known in known_profiles),
                 "edit_header_footer_unsupported")
         for name in ("header", "footer"):
             require(sum(row["source"] == main and row["id"] == name
