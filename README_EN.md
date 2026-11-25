@@ -1,182 +1,236 @@
 <!-- README_SYNC: source=working-tree; updated=2026-11-25 -->
-<p><a href="./README.md">简体中文</a> · English</p>
+<p align="center">
+  <a href="./README.md">简体中文</a> · English
+</p>
+
+<div align="center">
 
 # dyz-patent-copyright-skills
 
-**Agent Skills and local tools for patent, software-copyright and technical-standard work: the model drafts and checks only against the material you supply, lists source support and gaps item by item, and every output is an internal candidate awaiting professional review.**
+**Agent Skills and pure-stdlib local tools for patent attorneys, in-house IP/R&D teams, software-copyright preparers and technical-standards drafters: the model drafts and checks strictly against supplied material, lists source support and gaps item by item, and every output stays an internal candidate awaiting professional review.**
 
-If this approach is useful to you, give it a [Star](https://github.com/duyunzhoudyz/dyz-patent-copyright-skills/stargazers) to bookmark it and to help others with the same problem find it.
+If this traceable workflow is useful to you, add a [Star](https://github.com/duyunzhoudyz/dyz-patent-copyright-skills/stargazers) to bookmark the repository and help practitioners with the same problem find it.
 
 [![Stars](https://img.shields.io/github/stars/duyunzhoudyz/dyz-patent-copyright-skills?style=flat&logo=github)](https://github.com/duyunzhoudyz/dyz-patent-copyright-skills/stargazers)
 [![CI](https://github.com/duyunzhoudyz/dyz-patent-copyright-skills/actions/workflows/ci.yml/badge.svg)](https://github.com/duyunzhoudyz/dyz-patent-copyright-skills/actions/workflows/ci.yml)
-[![Issues](https://img.shields.io/github/issues/duyunzhoudyz/dyz-patent-copyright-skills)](https://github.com/duyunzhoudyz/dyz-patent-copyright-skills/issues)
-[![Version](https://img.shields.io/badge/version-0.1.0a1-blue)](CHANGELOG.md)
-[![Status](https://img.shields.io/badge/status-unpublished%20candidate-orange)](RELEASE.md)
-![Python](https://img.shields.io/badge/python-3.11%20%7C%203.13%20%7C%203.14%20(CI%20target%203.11--3.14)-3776AB)
-![Platform](https://img.shields.io/badge/platform-Windows%20verified%20%7C%20Linux%2FmacOS%20CI%20pending-0078D6)
-[![License](https://img.shields.io/badge/license-PolyForm%20Noncommercial%201.0.0-blue)](LICENSE)
+[![Issues](https://img.shields.io/github/issues/duyunzhoudyz/dyz-patent-copyright-skills?style=flat)](https://github.com/duyunzhoudyz/dyz-patent-copyright-skills/issues)
+[![Version](https://img.shields.io/badge/version-0.1.0a1-1f6feb?style=flat)](CHANGELOG.md)
+[![Status](https://img.shields.io/badge/status-unpublished%20candidate-d97706?style=flat)](RELEASE.md)
+[![Python](https://img.shields.io/badge/python-3.11--3.14%20stdlib-3776AB?style=flat&logo=python&logoColor=white)](RELEASE.md)
+[![Platform](https://img.shields.io/badge/platform-Windows%20verified%20%7C%20CI%203x4%20pending-0078D6?style=flat)](RELEASE.md)
+[![License](https://img.shields.io/badge/license-PolyForm%20Noncommercial%201.0.0%20%7C%20Source%20Available-1f6feb?style=flat)](LICENSE)
 
 [![Stargazers](https://bytecrank.com/nastyox/reporoster/php/stargazersSVG.php?user=duyunzhoudyz&repo=dyz-patent-copyright-skills)](https://github.com/duyunzhoudyz/dyz-patent-copyright-skills/stargazers)
 
-> **Status:** `0.1.0a1` is a pre-release candidate: no tag or GitHub Release has been cut, and the proposed tag is `v0.1.0-alpha.1`. All 83 catalog entries across 11 capability domains are rated `synthetic_helper_only`: methods, synthetic examples and limited checks are available, which is neither full professional capability nor a promise that any filing will succeed. Scope and open items are in the [release notes](RELEASE.md); changes are in the [changelog](CHANGELOG.md).
+<p>
+  <a href="#quick-start">Quick start</a> ·
+  <a href="#reproducible-examples">Examples</a> ·
+  <a href="#pick-a-skill-entry-point">Six Skills</a> ·
+  <a href="#local-cli-and-mcp-tools">CLI &amp; MCP</a> ·
+  <a href="#verification-status-and-limits">Verification &amp; limits</a> ·
+  <a href="#how-it-relates-to-similar-skills">Similar skills</a>
+</p>
+
+</div>
+
+> **Candidate status and maturity boundary:** `0.1.0a1` is the first public trial candidate on the `main` branch (proposed tag `v0.1.0-alpha.1`; no Git tag or GitHub Release has been published yet). All 83 catalog entries across 11 capability domains remain `synthetic_helper_only`: structured drafting methods, synthetic fixtures and bounded local tools are available, which do not represent complete professional capability, legal opinions, practitioner substitution or official approval. Scope and open maintainer facts are tracked in [RELEASE.md](RELEASE.md) and [release.json](release.json); stage changes are in [CHANGELOG.md](CHANGELOG.md).
 >
-> **Language:** the skills, their resources and the linked documents are written in Chinese. This file is the English entry point.
+> **Language:** The skills, resources and linked documents are written in Chinese. This file is the English entry point.
 
 ## What problem it addresses
 
-Ask a large model to write a patent draft, software-copyright filing material or a standard clause, and the prose usually reads well. The trouble is in what you cannot see: a parameter the source never mentioned, "only if" polished into "once", "shall" softened to "should", or something nobody searched for reported as "none found". The sentence reads almost the same; the claim scope, the registered facts or the strength of the requirement has changed.
+When a language model drafts a patent specification, software-copyright filing material or a standard clause directly, the prose usually reads smoothly while hiding consequential edits: an invented parameter, "only if" turned into "once", "shall" softened into "should", or an unsearched question reported as "none found". The sentences look similar on the surface, yet claim scope, registered facts or normative requirement strength has already shifted.
 
-This project turns those risks into practices you can check:
-
-| Common practice | What happens here |
+| Common practice | How this repository handles it |
 | --- | --- |
-| One general prompt covers patents, software copyright and standards | Three lines of work judge separately; evidence, versions and tools are shared, routed through six Skill entry points |
-| The model fills in a parameter, an experiment or a source | Only the supplied material is used; what is missing is listed as a gap, and unknown, unchecked and not-applicable are recorded separately |
-| Polishing quietly changes a limitation or the strength of a requirement | The patent final-text gate compares against the source; a sentence that changes the limiting relation is blocked |
-| The deliverable is a chat transcript | An editable Word file, a source-line map and separate internal notes, which can be read back and verified after generation |
-| A check script finishes and the result says "passed" | Results are marked `needs_review`, everything not done is listed as `not_performed`, and professional sign-off is recorded separately |
+| One general prompt covers patents, software copyright and standards | Three professional tracks judge independently while sharing evidence, versions and local tools through six Skill entry points |
+| The model fills in missing parameters, test results or citations | Drafting stays within supplied material; missing items become explicit gaps, with unknown, unchecked and not-applicable recorded separately |
+| Polishing patent text flips a limitation or drops source basis | The patent track checks technical schemes, claim scope and original support independently; patent final-text gate 2.1 compares candidates against source text and blocks inverted necessary/sufficient conditions |
+| Drafting or revising standards softens requirement strength or introduces circular definitions | The standards track checks normative requirement strength ("shall"/"should"/"may"), references and circular definitions independently, without mixing in patent rules or replacing testing and committee approval |
+| Output stays inside a chat transcript | Produces an editable Word document, figures, a source-line map and separate internal notes that can be read back and verified |
+| A script finishes and reports "passed" | Outputs stay marked `needs_review`, skipped or unexecuted checks are recorded as `not_performed`, and professional sign-off stays separate |
 
-**A good fit:** patent attorneys, in-house IP and R&D teams, people preparing software-registration material and standards drafters who already use an agent that can read local files and need traceable internal working drafts.
-**Not a fit:** anyone looking for one-click, ready-to-file documents, or for a replacement for the judgement of attorneys, lawyers or standards bodies.
+**Good fit:** Patent attorneys, in-house IP and R&D teams, software-copyright preparers and technical-standards drafters who already use a local file-capable agent host (such as Claude Code, Cursor, Codex or Trae) and want traceable internal working drafts.
 
-## An example you can reproduce
+**Not a fit:** Teams expecting one-click, ready-to-file submissions, or looking to replace the judgment of licensed practitioners, legal counsel or standards bodies.
 
-The results below were produced on 2026-11-17 on Windows with Python 3.11.15.
+## Reproducible examples
 
-**The final-text gate.** A patent final text is compared with the original application text before it is handed over. Both rows use the same source sentence:
+Both examples below were verified locally on 2026-11-25 on Windows with Python 3.14.6, with zero external packages and zero network access.
 
-| Source text | Candidate final text | Result |
-| --- | --- | --- |
-| 只有记录已写入，才允许确认。 (Confirmation is allowed only if the record has been written.) | 只有记录已写入，才允许确认。 (unchanged) | `checked` |
-| 只有记录已写入，才允许确认。 (Confirmation is allowed only if the record has been written.) | 一旦记录已写入，就允许确认。 (Once the record has been written, confirmation is allowed.) | `blocked` |
+### Example 1: patent final-text gate catching condition inversion
 
-The second row turns a necessary condition into a sufficient one. It reads almost the same, the limiting relation is different, and the gate stops it. `blocked` means the gate could not find support in the source text; it is not a finding that no basis exists. The gate covers a limited syntax only, see [What this release does not do](#what-this-release-does-not-do).
+Before a patent candidate is handed over, the gate compares it against the original application text. Both rows below use the same Chinese source sentence:
 
-**A closed file loop.** Step 3 of the [Quick start](#quick-start) builds a review pack from the synthetic patent example in this repository and reads it back:
+| Source text | Candidate final text | Gate status | Why |
+| --- | --- | --- | --- |
+| 只有记录已写入，才允许确认。 (Confirmation is allowed only if the record has been written.) | 只有记录已写入，才允许确认。 (unchanged) | `checked` | Matches the source limiting relation |
+| 只有记录已写入，才允许确认。 (Confirmation is allowed only if the record has been written.) | 一旦记录已写入，就允许确认。 (Once the record is written, confirmation is allowed.) | `blocked` | Necessary condition flipped into a sufficient condition |
 
-| File | Content |
+Run this pure-stdlib one-liner from the repository root to reproduce it directly (expected output: `ok: checked bad: blocked`):
+
+```powershell
+python -B -X utf8 -c "from tools import patent_gate; from tools.core import sha256_bytes; s='只有记录已写入，才允许确认。'; orig=[{'id':'O1','version':'1','role':'original','text':s,'sha256':sha256_bytes(s.encode())}]; print('ok:', patent_gate.audit_final_text({'claims':s}, orig)['status'], 'bad:', patent_gate.audit_final_text({'claims':'一旦记录已写入，就允许确认。'}, orig)['status'])"
+```
+
+`blocked` means the gate could not confirm support in the source text; it is not a legal determination. The gate covers a finite syntax subset only; see [What this release does not do](#what-this-release-does-not-do).
+
+### Example 2: closed Word review pack separating body and internal notes
+
+Step 3 of [Quick start](#quick-start) assembles a review pack from the repository's synthetic patent fixture and verifies it on read-back, generating seven files:
+
+| File path | Role |
 | --- | --- |
-| `body/document.docx` | Editable Word body |
-| `body/GatewayFigures.svg` | Editable figures |
-| `body/source.txt` | Body text |
-| `internal/source-map.json` | Source-line map |
-| `internal/notes.txt` | Internal notes, kept out of the body |
-| `internal/quality-review.json` | Quality-check record |
-| `manifest.json` | Pack manifest and status |
+| `body/document.docx` | Editable Word body kept clean of internal notes |
+| `body/GatewayFigures.svg` | Editable vector figures |
+| `body/source.txt` | Body source text |
+| `internal/source-map.json` | Paragraph-to-source line mapping |
+| `internal/notes.txt` | Internal drafting and review notes kept outside `body/` |
+| `internal/quality-review.json` | Quality checks and unexecuted items record |
+| `manifest.json` | Pack inventory, hashes and review status |
 
 <table>
   <tr>
-    <td width="40%" valign="top"><img src="skills/dyz-patent/resources/cn-gateway-flow.png" alt="Figures of the synthetic patent example: system roles and the handling of a pending batch"></td>
-    <td valign="top"><img src="skills/dyz-software/resources/harbor-delivery-v1.3/gui-sorted.png" alt="Screenshot of demo software v1.3 used by the synthetic software-copyright example"></td>
+    <td width="42%" valign="top"><img src="skills/dyz-patent/resources/cn-gateway-flow.png" alt="Synthetic patent example figure showing system roles and pending batch handling"></td>
+    <td valign="top"><img src="skills/dyz-software/resources/harbor-delivery-v1.3/gui-sorted.png" alt="Screenshot of synthetic demo software v1.3 used by the software-copyright fixture"></td>
   </tr>
   <tr>
-    <td>Figures of the synthetic patent example</td>
-    <td>Screenshot of demo software v1.3 used by the synthetic software-copyright example</td>
+    <td>Synthetic patent fixture figure (shipped with the repository)</td>
+    <td>Synthetic software-copyright demo v1.3 screenshot (shipped with the repository)</td>
   </tr>
 </table>
 
-Both images are synthetic example resources shipped with the repository. They contain no real case.
+Both images are synthetic example assets bundled with the repository and contain no real case or client material.
 
 ## Quick start
 
-Environment: **Python 3.11–3.14 standard library**, with zero mandatory pip dependencies for the core tools. The locally verified baseline is Windows with Python 3.11, 3.13 and 3.14; Windows Python 3.12 and Ubuntu / macOS (Python 3.11 / 3.12 / 3.13 / 3.14) have cross-platform guards and CI matrix definitions awaiting live hosted Actions runs. Download the complete source tree or a trusted complete bundle, keep `tools/`, `skills/` and `references/` in their relative positions, and run commands from the root; see the 3-minute playbooks in [quickstarts.md](skills/dyz-workbench/resources/quickstarts.md).
+Runtime requirement: **Python 3.11 to 3.14 standard library**, with zero mandatory pip dependencies. Clone the complete source tree or unpack a verified complete local bundle, keep `tools/`, `skills/` and `references/` in their relative layout, and run commands from the root directory. Full 3-minute playbooks across patents, software copyright, standards and MCP setup are in [quickstarts.md](skills/dyz-workbench/resources/quickstarts.md).
 
-**1. Check the interpreter**
+### Step 1: check Python and inspect the 83-capability catalog
 
 ```powershell
 python --version
-```
-
-It should print 3.11.x through 3.14.x (locally verified on 3.11, 3.13 and 3.14; 3.12 awaits hosted CI).
-
-**2. View help, list the capability catalog and run a synthetic rehearsal**
-
-```powershell
 python -B -X utf8 -m tools help
 python -B -X utf8 -m tools list
-python -B -X utf8 -m tools demo --synthetic --root . --output synthetic-demo.json
 ```
 
-`list` prints a JSON catalog with 83 entries; `demo` prints `result_written`.
+`python --version` should report `3.11.x` through `3.14.x`. `help` prints all available CLI subcommands, and `list` prints the 83-entry `synthetic_helper_only` JSON catalog across 11 domains.
 
-**3. Build a synthetic Word review pack and read it back**
+### Step 2: run the built-in synthetic rehearsal and offline connector check
+
+```powershell
+python -B -X utf8 -m tools demo --synthetic --root . --output synthetic-demo.json
+python -B -X utf8 -m tools connector-status
+```
+
+`demo` writes `synthetic-demo.json` under the root directory and prints `result_written`. `connector-status` prints `status: "offline_by_default"` with `network_requests: 0`.
+
+### Step 3: build and read back a synthetic Word review pack
 
 ```powershell
 python -B -X utf8 -m tools.documents --synthetic --root . --input skills/dyz-rendering/resources/document-example.json --output patent-review-pack
 python -B -X utf8 -m tools.documents --synthetic --root . --input skills/dyz-rendering/resources/document-example.json --output patent-review-pack --verify
 ```
 
-They print `document_written_needs_review` and `document_verified_needs_review`. The output targets must not exist beforehand and must be inside `--root`; in the repository root they are ignored by Git. PDF is an explicit optional conversion that needs a local LibreOffice and is not required for a first try.
+The two commands print `document_written_needs_review` and `document_verified_needs_review`. The output path must not exist beforehand and must stay under `--root` (in the repository root it is ignored by Git). PDF conversion is an explicit optional step requiring a local LibreOffice installation and is not needed for initial evaluation.
 
-**4. Connect an agent host via standard MCP (stdio) or the local installer**
+### Step 4: preview a local host installation plan and MCP config snippet
+
+The two commands below print a JSON dry-run installation plan and an MCP (`stdio`) client configuration snippet to stdout. They **do not write to disk and never modify global host configuration**. Both commands accept `claude-code`, `cursor`, `codex`, `trae` and `generic` for `--host`; `tools.mcp_server --print-config --host codex` prints a TOML snippet, while the other hosts and `tools.install --plan` print JSON.
 
 ```powershell
-# Preview an isolated bundle install and print a client MCP config snippet (never modifies global host config)
-python -B -X utf8 -m tools.install --target D:/dyz-installed --host claude-code --plan
+python -B -X utf8 -m tools.install --target ./dyz-installed-preview --host claude-code --plan
 python -B -X utf8 -m tools.mcp_server --print-config --host claude-code
 ```
 
-For pure text drafting, you can also have any file-capable agent load `skills/dyz-patent/SKILL.md` directly and ask for an internal working draft grounded strictly in supplied material. No JSON has to be filled in for a text task. For software copyright or standards, use the matching entry below.
+For plain-text drafting or review, you can also point any local file-capable agent straight at `skills/dyz-patent/SKILL.md` (or another track below) and ask for an internal working draft grounded strictly in your supplied material, without writing JSON first.
 
-## Pick an entry point by task
+## Pick a Skill entry point
 
-| What you need to do | Entry point | Internal candidates you can hand over |
+| Task | Skill entry point | Internal candidates produced |
 | --- | --- | --- |
-| Draft or revise a patent text from technical material | [Patent](skills/dyz-patent/SKILL.md) | Technical facts, comparison with given documents, claims and description, figures, support back-check |
-| Handle notices, responses, protection and rights questions | [Procedure and rights](skills/dyz-procedure/SKILL.md) | Notice triage, response and replacement text, support and procedural impact, hand-over |
-| Prepare software-copyright material | [Software copyright](skills/dyz-software/SKILL.md) | Scope and contribution, source selection, operation and design description, same-version fields and missing items |
-| Draft or revise a technical standard | [Technical standards](skills/dyz-standards/SKILL.md) | Scope, terms, clauses, verification plan, drafting notes, comments and revision impact |
-| Check a final file or fix an export defect | [Rendering and review](skills/dyz-rendering/SKILL.md) | Source-to-output comparison, separation of body and internal material, display and print check records |
-| Resume a project or route across lines of work | [Shared workbench](skills/dyz-workbench/SKILL.md) | Known facts, version dependencies, open questions and a note for the receiving role |
+| Draft or revise patent text from technical material | [Patent](skills/dyz-patent/SKILL.md) | Technical facts, comparison against supplied references, claims and description, figures, support back-check |
+| Handle office actions, responses, protection strategy and rights | [Procedure and rights](skills/dyz-procedure/SKILL.md) | Notice triage, response and replacement text, support and procedural impact, strategy hand-over |
+| Prepare software-copyright filing or dispute material | [Software copyright](skills/dyz-software/SKILL.md) | Scope and contributions, source selection, user and design manuals, same-version fields and missing items |
+| Draft or revise technical standards | [Technical standards](skills/dyz-standards/SKILL.md) | Scope, terms, normative clauses, verification plan, drafting notes, comment disposition and revision impact |
+| Verify final documents or diagnose export defects | [Rendering and review](skills/dyz-rendering/SKILL.md) | Source-to-output verification, separation of body and internal notes, display and print check records |
+| Resume a project or route across tracks | [Shared workbench](skills/dyz-workbench/SKILL.md) | Known facts, version dependencies, open questions and hand-over notes for receiving roles |
 
-You can start with a small task, for example "fix this one item against the given original and list the body text and figures it affects". Facts already known are not collected again, and material you did not supply is not invented. Do not copy a single Skill directory out and treat it as a self-contained install: the six entry points share one directory tree.
+You can start with a narrow task such as fixing one item against an original draft and listing every affected paragraph and figure. All six skills share one `tools/` and `references/` directory tree; do not copy a single Skill folder out as a standalone install.
 
-### More local entry points
+## Local CLI and MCP tools
 
-- [3-minute quickstart playbooks](skills/dyz-workbench/resources/quickstarts.md): copy-paste rehearsals across patent, software, standards and MCP setup.
-- [Complete bundle guide](skills/dyz-workbench/resources/package-use.md): layout, on-demand loading, freezing and recovery.
-- [Local file tools](skills/dyz-workbench/resources/host-bridge.md) and standard MCP server: `python -B -m tools.host_bridge --describe` or `python -B -m tools.mcp_server --describe`; multi-host local installer via `python -B -m tools.install`.
-- Patent engineering upgrades: claim-fact IR pre-check (`tools/patent_ir.py`), patent gate 2.1 (dependent-claim inheritance, structured anchors, finite English relations and dual-track OA auditing in `tools/patent_gate.py`), three-axis intake (`tools/patent_intake.py`), native Word OMML equations (`tools/omml.py`), US/EP claim analyzers (`tools/jurisdiction_analyzers.py`), and no-go / FTO / SEP hand-over packs (`tools/procedure_strategy.py`).
-- [Authorised local software material](skills/dyz-software/resources/tools.md#软件成品链与集中采集): multi-stack read-only discovery, 3-batch intake (`software_intake.collect_batch`), PNG ancillary metadata stripping & capture manifest validation (`tools/media_prep.py`), plus DOCX generation.
-- [Five-document loop for standards](skills/dyz-standards/resources/tools.md#五文书闭环与本地入口): v3 layout profile (native OMML formulas in DOCX output), declarative external template mapper (`tools/template_mapper.py`), 6-dimension review with circular-definition detection, and terminology standard specimen.
-- Opt-in read-only external data connectors (`tools/connectors/`, default offline with hard budgets), multimodal visual coverage ledger (`tools/visual_ledger.py`), expert trial-pack builder & 3-consecutive-case upgrade gate (`tools/trial_pack.py`), and offline unseen-task blind benchmark harness (`evals/benchmark_harness.py`).
-- [File assembly](skills/dyz-rendering/resources/tools.md) and [read-back of an edited Word file](skills/dyz-rendering/resources/docx-readback.md).
-- [Limited public patent-search appendix](skills/dyz-patent/resources/cn-gateway-search.md): research resource separating actual queries, publication versions and document-by-document comparison.
+### CLI subcommands (`python -B -X utf8 -m tools <subcommand>`)
 
-## How it is organised
+| Group | Subcommands | Purpose and limits |
+| --- | --- | --- |
+| Exploration and synthetic runs | `help`, `list`, `demo`, `run`, `preview` | CLI help, 83-item catalog, built-in disclosure rehearsal, single-capability synthetic runs and static HTML snapshot previews |
+| Patent and strategy checks (new) | `check-patent-ir`, `build-patent-pack`, `verify-patent-pack`, `check-jurisdiction`, `check-strategy` | Claim-fact IR validation and draft skeleton, synthetic patent pack build and external summary SHA-256 read-back, bounded US/EP claim checks, and no-go / FTO / SEP strategy tracks |
+| Visual, template and governance checks (new) | `check-visual-ledger`, `check-capture-manifest`, `inspect-template`, `check-trial-upgrade`, `connector-status` | Page-observation coverage ledger, capture manifest and cleaned PNG validation, read-only DOCX/DOTX template safety inspection, 3-consecutive-case trial gate checks (never auto-upgrades support level) and default-offline connector status |
+| Authorized local software pipeline | `software-intake`, `discover-software`, `prepare-software`, `import-software-manual`, `build-software`, `export-software`, `software-batch` | Batched intake, authorized candidate discovery, local preparation, manual revision import, DOCX/PDF builds and isolated batch index; no automatic outbound sending |
+| Technical standards pipeline | `standard-intake`, `prepare-standard`, `migrate-standard-comments`, `standard-pdf` | Five-document v2 intake, generation and verification, explicit comment-table migration, and authorized PDF conversion with per-page evidence |
+
+Run `python -B -X utf8 -m tools help` for top-level command usage, or `python -B -X utf8 -m tools help <topic>` for argument help on a specific subcommand.
+
+### Standard MCP server, local installer and `HostToolBridge` 10-tool contract
+
+| Module / area | Details and entry points |
+| --- | --- |
+| `tools/mcp_server.py` | Pure-stdlib JSON-RPC 2.0 `stdio` server supporting both `Content-Length` framing and NDJSON. It refuses to start bare: pass `--catalog-only` explicitly to expose only the read-only `dyz_catalog` tool, or bind a verified runtime bundle, workspace, control directory and out-of-band manifest hash (`--package`, `--workspace`, `--control`, `--manifest-sha256`) to expose the 10 `HostToolBridge` tools. Run `python -B -X utf8 -m tools.mcp_server --describe` to inspect all 11 tool schemas. |
+| `HostToolBridge` 10 tools | `case_read`, `case_write`, `case_info`, `case_copy`, `case_image`, `case_documents`, `case_docx_review`, `case_fidelity`, `case_standard_package`, `case_software`. Startup verifies the bundle manifest and, when supplied, an out-of-band manifest hash; at runtime, package scope is read-only for manifest-listed files and `bundle-manifest.json` checked against loaded hashes; workspace reads stay inside `input/`, `work/` and `output/` with writes limited to `work/` and `output/`, subject to path-boundary and symlink/reparse checks; see [host-bridge.md](skills/dyz-workbench/resources/host-bridge.md). |
+| `tools/install.py` | Cross-platform local installer and tamper verifier supporting `--plan` dry runs, isolated 309-file bundle installs with `skills-manifest.json` and host MCP snippets, and `--verify` against out-of-band hashes without modifying global host configuration. |
+| Domain tools and resources | Patent gate 2.1 (`tools/patent_gate.py`), native Word OMML equations (`tools/omml.py`), default-offline connector policy adapters (`tools/connectors/`), [authorized software material pipeline](skills/dyz-software/resources/tools.md#软件成品链与集中采集), [standards five-document loop and v3 layout](skills/dyz-standards/resources/tools.md#五文书闭环与本地入口), [document assembly](skills/dyz-rendering/resources/tools.md), [edited Word read-back](skills/dyz-rendering/resources/docx-readback.md) and the [limited public patent-search appendix](skills/dyz-patent/resources/cn-gateway-search.md). |
+
+## Architecture and domain boundaries
 
 ```mermaid
 flowchart LR
-    a["Your material<br/>disclosure / source code / draft standard"] --> b["Six Skill entry points<br/>intake, routing, drafting methods"]
-    b --> c["Internal candidate<br/>body kept apart from internal notes"]
-    c --> d["Local tools<br/>source-support gate, generation, read-back"]
-    d --> e["needs_review<br/>unchecked items listed"]
-    e --> f["Professional review and sign-off<br/>not done inside this project"]
+    input["Your material<br/>disclosure / source code / draft standard"] --> skills["Six Skill entry points<br/>routing, intake and drafting methods"]
+    skills --> draft["Internal candidate<br/>body separated from internal notes"]
+    draft --> tools["Local tools<br/>source gate, assembly and read-back"]
+    tools --> review["needs_review<br/>gaps and unchecked items listed"]
+    review --> signoff["Professional review and sign-off<br/>outside this project"]
 ```
 
-| Subsystem / layer | Responsible for | Does not replace |
+| Subsystem / layer | Owns | Does not replace |
 | --- | --- | --- |
-| Patent | Search, disclosure, patentable space, claims, description and drawings, review, office-action responses, infringement/FTO, portfolio management | Software-copyright registration judgement, standards consensus and publication approval |
-| Software copyright | Ownership and versions, real source code and documents, deposit and registration, corrections and changes, copyright-dispute material | Patentability, scope of protection and non-infringement conclusions |
-| Technical standards | System research, project proposal, terms and clauses, test verification, comment handling, international adoption, submission hand-over and revision | Essentiality determination, approval by the organisation, product certification |
-| Shared base layer | Material and evidence, permissions, terms and versions, diffs, drawing and export, review records, evaluation runs | Any professional determination; rules, pass conditions and sign-off belong to each professional subsystem |
+| Patent | Search, disclosures, patentable space, claims, descriptions and figures, review, office-action responses, infringement/FTO and portfolio work | Software-copyright registration decisions, standards consensus or publication approval |
+| Software copyright | Ownership and versions, actual source code and manuals, deposit and registration materials, corrections, changes and dispute evidence | Patentability, claim scope or non-infringement conclusions |
+| Technical standards | System studies, proposals, terminology and clauses, verification basis, comment handling, international adoption, submission hand-over and revision | Patent essentiality determinations, committee approval or product certification |
+| Shared base layer | Evidence records, permissions, terminology and versions, diffs, drawing and export, review logs and evaluation runs | Any professional judgment; domain rules, pass criteria and sign-off stay with each professional subsystem |
 
-One project may reuse authorised evidence, but the status, versions, disclosure scope and deliverables of the three lines of work stay independent. A process hint inside a Skill is not technical isolation. The approval design for cross-subsystem disclosure and outbound release is in [cross-subsystem hand-over and disclosure approval](docs/disclosure-and-handoff.md).
+One project can reuse authorized evidence across tracks, while statuses, versions, disclosure scopes and deliverables remain independent. Prompt instructions inside a Skill are not technical isolation; see [cross-subsystem hand-over and disclosure approval](docs/disclosure-and-handoff.md).
 
-## What this release does not do
+## Verification status and limits
 
-- **Windows Python 3.12, hosted Linux/macOS CI and cross-platform Office/PDF rendering are not live-verified yet.** Core standard-library tools and release checks are locally verified on Windows with Python 3.11, 3.13 and 3.14 with cross-platform guards; the full Windows / Ubuntu / macOS × Python 3.11 / 3.12 / 3.13 / 3.14 matrix is defined in `.github/workflows/ci.yml` awaiting hosted runs, and physical LibreOffice/Poppler page verification remains Windows-baselined.
-- **Patent gate 2.1 and US/EP analyzers cover finite rule subsets only.** Dependent-claim inheritance, structured anchors, finite English relations, dual-track OA checks and US/EP structural cues are still bounded checks, not full legal examination or equivalence determinations. On `blocked`, keep the original and hand over only an internal working draft marked as not fully checked.
-- **Offline by default; no live external API calls or paid blind benchmarks executed.** `tools/connectors/` stay offline unless explicitly enabled with policy and hard budgets; `evals/benchmark_harness.py` is verified on offline fixtures only and makes no claim of live market leadership.
-- **A tool result is not a professional conclusion.** `checked`, zero issues, a generated Word file or a literally identical PDF does not prove that something can be filed, registered or certified, or that an organisation has approved it. All 83 catalog entries remain `synthetic_helper_only`.
-- **It takes no real-world action for you.** There is no real filing, automatic outbound sending, signing or payment, and no operating-system-level isolation. Formal filing, public consultation, publication, sealing, fee payment and anything requiring a professional licence need their own confirmation of authority and qualification.
-- **Local tools do not make the model offline.** If the model runs in the cloud, your material still enters the host's data path. Confirm that unpublished technology, source code and restricted standards may be handled that way before loading them.
-- **Host integration stays opt-in and local.** `tools/mcp_server.py` and `tools/install.py` provide standard stdio MCP transport and printable config snippets without touching global host configuration; real model round-trip stability depends on the specific host and model.
-- **Synthetic entry points handle synthetic examples only.** A real case must not be relabelled as synthetic; real software and patent materials must use their own authorised entry points.
+### Current baseline vs unexecuted checks
 
-## Complete local bundle
+| Dimension | Status | Exact scope |
+| --- | --- | --- |
+| Declared baseline in `release.json` | Current declaration | `release.json` currently declares Windows with Python `3.11`, `3.13` and `3.14` as its verified baseline (`verified_platforms: ["Windows"]`, `verified_python: ["3.11", "3.13", "3.14"]`), with the hosted CI target matrix configured for Windows / Ubuntu / macOS × Python `3.11`, `3.12`, `3.13` and `3.14` (`target_ci_platforms` / `target_ci_python`), matching `quickstarts.md` and `package-use.md`. |
+| Local 4-version supplementary regression (2026-11-25) | Local supplementary run | On local Windows, Python `3.11.15`, `3.12.13`, `3.13.14` and `3.14.6` all passed the full **2,139 / 2,139** local unit test suite, `compileall` exit `0` and `evals/release_check.py` exit `0` (`source_candidates: 415`, `bundle_source_files: 309`, 6 skill entries, 83 catalog entries). This is a local supplementary record and has not upgraded the `release.json` declaration. |
+| Hosted GitHub Actions CI | Pending first run | `.github/workflows/ci.yml` defines a **12-job** matrix (Windows / Ubuntu / macOS × Python 3.11 / 3.12 / 3.13 / 3.14) with SHA-pinned actions, `contents: read`, `persist-credentials: false` and concurrency cancellation. Hosted Linux, macOS and Windows workflow runs have not yet executed in the public repository. |
+| Explicitly not performed | Not executed | Live external network requests (`tools/connectors/` stay offline by default and permit read-only requests only under explicit disclosure approval binding host, purpose, normalized query, pagination scope and expiry plus hard budget caps; no live network requests have been executed locally), cross-platform Office / LibreOffice / Poppler visual page checks, blind human evaluations on paid models (`evals/benchmark_harness.py` is fixture-checked offline only), licensed practitioner sign-off, and filling the three `null` maintainer contact fields (`license_holder`, `commercial_contact`, `security_contact`) in `release.json`. |
 
-To hand over only what is needed at run time, build a bundle from the fixed whitelist and pin its manifest hash:
+### What this release does not do
+
+- Tool output is not professional sign-off. A `checked` status, zero issues, a valid Word file or matching PDF text does not prove a filing can be submitted, registered, certified or approved; all 83 catalog entries remain `synthetic_helper_only`.
+- Patent gate 2.1 and the US/EP claim analyzers cover bounded rule subsets only. Dependent-claim inheritance, structural anchors, finite English conditional patterns, dual-track office-action checks and US/EP cues do not constitute full legal examination or equivalence analysis. On `blocked`, preserve the original and hand over an internal draft explicitly marked incomplete.
+- Offline by default, with no real-world external filings and no OS-level sandboxing. Optional connectors (`tools/connectors/`) stay offline by default and permit read-only requests only under explicit disclosure approval (binding host, purpose, normalized query, pagination scope and expiry) and hard budget caps; no live network requests have been executed locally. The tools perform no formal filings, automated outbound transfers, signing or payments; regulated actions require separate authority and qualification checks.
+- Local tools do not make a cloud model offline. If your host calls a remote model, supplied material still travels along the host's data path. Confirm data-handling rules before loading unpublished inventions, source code or restricted standards.
+- Host discovery and cross-platform layout verification depend on your environment. `tools/mcp_server.py` and `tools/install.py` leave global host settings untouched; live model round-trip stability and Linux/macOS LibreOffice/Poppler pagination remain to be verified in target environments.
+- Synthetic entry points accept synthetic fixtures only. Never relabel real case files as synthetic; use authorized local entry points for real software and standards material.
+
+## Source repository and complete local bundle
+
+The repository separates the **Git source tree (`source_candidates: 415` on branch `main`)** from the **fixed runtime bundle whitelist (`bundle_source_files: 309`)**:
+
+| Scope | File count | Included | Excluded |
+| --- | --- | --- | --- |
+| Git source repository | `source_candidates: 415` | Six skills and runnable assets, `tools/`, authorized `references/`, whitelisted design docs, `evals/` tests and fixtures, `.github/` CI workflow, `README_EN.md`, license and release metadata | Local work logs, competitor snapshots, historical model transcripts, `outputs/`, `tmp/`, local editor config and private cases |
+| Complete local runtime bundle | `bundle_source_files: 309` | Six entry points, shared `tools/`, runtime assets, whitelisted docs and license files, plus `bundle-manifest.json` | Development tests, synthetic test fixtures, CI definitions and release checkers (these development materials are not distributed with the local bundle); `README_EN.md` also ships with the source repository only and is not on the bundle whitelist |
+
+To hand over only runtime files, build a bundle from the fixed whitelist and verify it against an out-of-band manifest SHA-256 (the destination must not exist and its parent directory must exist):
 
 ```powershell
 python -B -X utf8 -m tools.bundle --destination D:/dyz-local-bundle
@@ -184,48 +238,38 @@ $dyzManifestSha = (Get-FileHash -LiteralPath D:/dyz-local-bundle/bundle-manifest
 python -B -X utf8 -m tools.bundle --verify D:/dyz-local-bundle --manifest-sha256 $dyzManifestSha
 ```
 
-The build prints `bundle_created`; verification returns JSON with `"status": "matched"`. The destination must not exist and its parent directory must. The current build is the local complete runtime-bundle whitelist of 309 source files, not the Git source repository's total file count (the current source_candidates count is 415). The manifest is authoritative for the exact number.
+Building prints `bundle_created`, and verification prints JSON containing `"status": "matched"`. Store the manifest hash outside the bundle and verify downloads against the publisher's hash rather than recomputing an expected value from the untrusted copy. Internal consistency alone does not authenticate origin, licensing or professional quality. See [package-use.md](skills/dyz-workbench/resources/package-use.md) for layout, on-demand loading, freezing and recovery details.
 
-- Whoever builds the bundle keeps the manifest hash outside the bundle. A downloader verifies against the hash the publisher provides and should not recompute the "expected" value from the bundle under verification.
-- Verification without an external hash proves internal consistency only. Neither form authenticates the source, the licence or professional quality.
-- The bundle contains the six entry points, the shared tools, the resources actually used and the licence files. The source repository additionally keeps runnable tests, synthetic fixtures and the CI definition; these development materials are not distributed with the local bundle (Chinese original: 这些开发材料不随本地包分发). The English `README_EN.md` also ships with the source repository only and is not on the bundle whitelist at present.
-
-Layout, on-demand loading, freezing and recovery are described in the [complete bundle guide](skills/dyz-workbench/resources/package-use.md).
+`.gitignore` uses an explicit whitelist for the root directory and `docs/`, and `.gitattributes` disables line-ending conversion to preserve exact byte bindings for source maps and fixtures. Never commit client source code, unfiled disclosures, IDs, seal material or restricted full-text standards; keep private case files in a separate directory or the ignored `private/` directory. Git ignore rules are neither encryption nor access control, so check the tracked file list before pushing.
 
 ## How it relates to similar skills
 
-Several public skills already do part of this work well. The table is based on a static reading of fixed commits taken on 2026-11-02. Nothing was run in a shared environment, and it is not a ranking of results.
+Several public skills handle parts of this workflow well. The comparison below comes from a static source reading of fixed commits taken on 2026-11-02; no upstream project was executed in a shared environment, and this table is not a performance ranking:
 
-| Area | Representative projects (fixed commits) | Worth learning from | Emphasis here |
+| Area | Representative projects (fixed commits) | Worth studying from source inspection | Emphasis in this repository |
 | --- | --- | --- | --- |
-| Patent | [paper2patent](https://github.com/7toCR/paper2patent/tree/53d0a2d2cbd8db6de824dfed86aab1763caa7142), [patent-disclosure-skill](https://github.com/handsomestWei/patent-disclosure-skill/tree/0b95b547f78c2a0dd0e4e71eb43a88841c99c936) | Chaining claims, figures, DOCX/PDF and separate drafting notes; several task routes | Source support, document-by-document comparison, change impact and procedural hand-over |
-| Software copyright | [SoftwareCopyright-Skill](https://github.com/Fokkyp/SoftwareCopyright-Skill/tree/1159f6d280783616e1247f768690eac97c1a3f6e), [software-certificate-skill](https://github.com/IvanCodesDev/software-certificate-skill/tree/ee7d4636f35210767adc0b5689f8678c68e6f7e6) | Chaining source selection and documents; real screenshots and rebuilding after a change | Separating expression, rights and licence; source selection; same-version facts and version impact |
-| Technical standards | [gbt-standard-docx-skill](https://github.com/zhangzhangco/gbt-standard-docx-skill/tree/a3af82bc790b0dcf9c2eb8c7123df46311da68da) | DOCX templates, cross-references and a comment-sheet workflow | Clauses with their verification basis, comment handling and revision impact, IP hand-over before publication |
+| Patent | [paper2patent](https://github.com/7toCR/paper2patent/tree/53d0a2d2cbd8db6de824dfed86aab1763caa7142), [patent-disclosure-skill](https://github.com/handsomestWei/patent-disclosure-skill/tree/0b95b547f78c2a0dd0e4e71eb43a88841c99c936) | Chaining claims, figures, DOCX/PDF export and separate drafting notes; clear multi-task routing | Source-support chains, document-by-document comparison, change-impact tracking and procedural hand-over |
+| Software copyright | [SoftwareCopyright-Skill](https://github.com/Fokkyp/SoftwareCopyright-Skill/tree/1159f6d280783616e1247f768690eac97c1a3f6e), [software-certificate-skill](https://github.com/IvanCodesDev/software-certificate-skill/tree/ee7d4636f35210767adc0b5689f8678c68e6f7e6) | Chaining source selection and document assembly; real UI screenshots and partial rebuilds after changes | Separating expression, rights and licenses; same-version fact consistency and version invalidation |
+| Technical standards | [gbt-standard-docx-skill](https://github.com/zhangzhangco/gbt-standard-docx-skill/tree/a3af82bc790b0dcf9c2eb8c7123df46311da68da) | DOCX templates, cross-references and comment-disposition workflows | Linking clauses to verification evidence, comment impact tracking and pre-publication IP hand-over |
 
-"More complete engineering than the reference projects" is a goal of this work, not a claim made today. The full comparison is in the [GitHub side-by-side comparison](docs/github-skill-comparison-20261102.md) and its [fixed-version source index](docs/github-skill-comparison-20261102-sources.json); licences and reuse limits are in the [third-party notices](THIRD-PARTY-NOTICES.md). No upstream implementation has been imported.
+Comparison boundary: upstream self-descriptions, static commit reading, local tool execution and controlled same-condition evaluations are separate categories. Neither the local unit-test count (2,139), repository stars nor specification length is presented as a claim of engineering or professional writing superiority. Full static analysis is in [docs/github-skill-comparison-20261102.md](docs/github-skill-comparison-20261102.md) and [docs/github-skill-comparison-20261102-sources.json](docs/github-skill-comparison-20261102-sources.json), with license and reuse boundaries in [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md). No upstream implementation code has been imported.
 
-## What the repository contains
+## Documentation, contributing and security
 
-Git manages only what is meant for distribution on GitHub: the six Skills and their necessary resources, `tools/`, the authorised `references/`, runnable tests and synthetic fixtures, the CI definition, usage and licence documents, and the stable design documents whitelisted in `.gitignore`. `.gitignore` is a whitelist for the root and for `docs/`, so a new top-level file or design document has to be added explicitly. `.gitattributes` turns off line-ending conversion to preserve the exact bytes that source maps and synthetic examples are bound to. The Word, PDF and image sets inside a Skill are runnable resources and must not be excluded as temporary output because of their extension.
+### Core design documentation
 
-Process plans, the construction ledger, competitor-research snapshots, historical model answers, `outputs/`, `tmp/` and local configuration stay with the maintainer.
-
-Do not put client source code, unfiled invention disclosures, identity documents, seal material or restricted full-text standards into the public repository. Keep private case material in a separate directory or in the ignored `private/`. A Git ignore rule is neither encryption nor access control; check the actual tracked list before pushing.
-
-## Documentation
-
-- [Global capability blueprint](docs/capability-blueprint.md): 11 capability domains, 83 top-level capability IDs, the division of the three professions and the adaptation limits.
-- [Capability contracts and coverage matrix](docs/capability-contracts.md): inputs, outputs, responsibilities and acceptance requirements. Specification coverage does not mean a capability is implemented.
-- [Cross-subsystem hand-over and disclosure approval](docs/disclosure-and-handoff.md): permissions, versions, sign-off, outbound release and incident handling.
-- [Roadmap and quality gates](docs/roadmap-and-quality.md): long-term goals, dependencies and verification limits. A plan is not current support.
+- [Global capability blueprint](docs/capability-blueprint.md): 11 domains, 83 top-level capability IDs, three-track ownership and adaptation boundaries.
+- [Capability contracts and coverage matrix](docs/capability-contracts.md): inputs, outputs, responsibilities and acceptance criteria (specification coverage is not implementation completion).
+- [Cross-subsystem hand-over and disclosure approval](docs/disclosure-and-handoff.md): permissions, versions, sign-off, outbound controls and incident handling.
+- [Roadmap and quality gates](docs/roadmap-and-quality.md): long-term targets, dependencies and verification limits (a plan is not current support).
 - [Project development standards](docs/development-standards.md): conventions for directories, skills, rules, code and layered verification.
-- [Reference-project source analysis](docs/reference-analysis.md): fixed-version sources, licences and reuse limits.
+- [Reference-project source analysis](docs/reference-analysis.md): fixed-version sources, licenses and reuse boundaries.
 
-## Contributing and security reports
+### Contributing and local checks
 
-Issues and pull requests that improve the methods, documents, synthetic examples and local tools are welcome; the process is in the [contributing guide](CONTRIBUTING.md). An original contribution to be merged requires the contributor's own agreement to the [contributor licence](CONTRIBUTOR-LICENSE.md): contributors keep their copyright and grant the project the rights needed for commercial relicensing. The actual receiving licensor has not been set before publication; until then, discussion and review are possible, and external patches that require a grant of rights are not merged.
+Issues and pull requests improving methods, documentation, synthetic fixtures and local tools are welcome; see [CONTRIBUTING.md](CONTRIBUTING.md). Original contributions intended for merge require explicit contributor agreement to [CONTRIBUTOR-LICENSE.md](CONTRIBUTOR-LICENSE.md) (contributors retain copyright while granting rights needed for commercial relicensing) plus `Signed-off-by`. Until the real receiving licensor is filled in [release.json](release.json), external patches may be discussed and reviewed, while patches requiring a rights grant are not merged.
 
-Local checks for contributors:
+Run the same three checks configured in `.github/workflows/ci.yml` from the source root before opening a PR (the full suite usually takes a few minutes):
 
 ```powershell
 python -B -X utf8 evals/release_check.py
@@ -233,16 +277,18 @@ python -B -X utf8 -m unittest discover -s evals -q
 python -B -X utf8 -m compileall -q tools evals skills
 ```
 
-The CI definition in the repository (`.github/workflows/ci.yml`) configures the same three steps across a 12-job matrix: Windows, Ubuntu and macOS × Python 3.11, 3.12, 3.13 and 3.14. Hosted CI has not run in a public repository yet; only Windows with Python 3.11, 3.13 and 3.14 has been locally verified so far. The full test run usually takes a few minutes.
+### Security reporting
 
-Sensitive issues follow the [security reporting policy](SECURITY.md). A private reporting channel has not been set up yet, so do not post reproduction payloads, client material or credentials in a public issue.
+Sensitive security issues follow [SECURITY.md](SECURITY.md). Because `security_contact` in `release.json` is not configured yet, do not post reproduction payloads, client material, unpublished inventions or credentials in public issues or pull requests.
 
-## License
+## License and commercial authorization
 
-Original content is licensed under the [PolyForm Noncommercial License 1.0.0](LICENSE). The project is source-available and is not open source as defined by the OSI. Use beyond what that licence permits requires a written commercial licence obtained in advance; see the [commercial licensing notes](COMMERCIAL-LICENSE.md). Being an individual does not by itself make commercial use free. Third-party material remains under its own licences.
+Original content in this repository is **Source Available** under the [PolyForm Noncommercial License 1.0.0](LICENSE) with separate commercial licensing. Subject to the notice-preservation conditions in [LICENSE](LICENSE), permitted purposes cover noncommercial purposes, personal uses without anticipated commercial application (including personal research, experiment and testing for the benefit of public knowledge, plus personal study and hobby projects), and use by noncommercial organizations expressly named in the license (charitable organizations, educational institutions, public research organizations, public safety or health organizations, environmental protection organizations and government institutions) regardless of the source of funding or obligations resulting from the funding (commercial entities themselves still require separate commercial authorization). The full text of [LICENSE](LICENSE) governs and is not narrowed by this summary.
 
-The licensor and the commercial contact are to be filled in by the maintainer before publication and are not set at present.
+Being an individual does not by itself make commercial use free. Any commercial use outside what [LICENSE](LICENSE) permits (including internal company IP or R&D workflows, paid client services by law firms or patent agencies, commercial SaaS integration or commercial redistribution) requires prior written commercial authorization; see [COMMERCIAL-LICENSE.md](COMMERCIAL-LICENSE.md) for common scenarios and licensing terms. Third-party research materials and limited EPO public data remain under their respective original licenses; see [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
+
+The real licensor identity and commercial contact channel are left unset in [release.json](release.json) for the maintainer to fill in before formal publication.
 
 ---
 
-If this project saves you a detour, a [Star](https://github.com/duyunzhoudyz/dyz-patent-copyright-skills/stargazers) makes it easy to find again. For problems and ideas, open an [issue](https://github.com/duyunzhoudyz/dyz-patent-copyright-skills/issues) or a pull request as described in the contributing guide.
+If this repository saves you time on patent, software-copyright or standards drafts, add a [Star](https://github.com/duyunzhoudyz/dyz-patent-copyright-skills/stargazers) to find it again easily. For defects or suggestions, open an [issue](https://github.com/duyunzhoudyz/dyz-patent-copyright-skills/issues) or submit a pull request following the contributing guide.
