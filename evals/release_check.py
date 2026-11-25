@@ -19,6 +19,11 @@ from tools import bundle  # noqa: E402
 from tools.cli import catalog  # noqa: E402
 
 REQUIRED_FACTS = ("license_holder", "repository_url", "commercial_contact", "security_contact")
+_RELEASE_FACT_PLACEHOLDER = re.compile(
+    r"待填写|待确认|未填写|待补|占位|TODO|PLACEHOLDER|example\.(?:com|org|net)"
+    r"|\b(?:tbd|none|null|unknown|n/a|测试)\b",
+    re.I,
+)
 FORBIDDEN_PREFIXES = (".references/", "private/", "outputs/", "tmp/", ".breezell/", "evals/workflows/")
 COMPARISON_REPORTS = frozenset({
     "竞品对比/README.md",
@@ -37,7 +42,7 @@ PLATFORM_TO_RUNNER = {
     "macOS": "macos-latest",
 }
 EXPECTED_VERIFIED_PLATFORMS = ["Windows"]
-EXPECTED_VERIFIED_PYTHON = ["3.11", "3.13", "3.14"]
+EXPECTED_VERIFIED_PYTHON = ["3.11", "3.12", "3.13", "3.14"]
 EXPECTED_TARGET_CI_PLATFORMS = ["Windows", "Linux", "macOS"]
 EXPECTED_TARGET_CI_PYTHON = ["3.11", "3.12", "3.13", "3.14"]
 
@@ -631,6 +636,7 @@ def inspect_release(*, publication=False):
     errors, warnings = [], []
     facts_missing = []
     metadata = None
+    publication_status = None
     try:
         metadata = json.loads((ROOT / "release.json").read_text(encoding="utf-8"),
                               object_pairs_hook=_object)
@@ -638,11 +644,17 @@ def inspect_release(*, publication=False):
             raise ValueError("metadata_object_required")
         if metadata.get("version") != __version__:
             errors.append("version_mismatch")
-        match = re.fullmatch(r"(\d+\.\d+\.\d+)a(\d+)", __version__)
-        if not match or metadata.get("proposed_tag") != f"v{match[1]}-alpha.{match[2]}":
+        match = re.fullmatch(r"([0-9]+\.[0-9]+\.[0-9]+)(?:a([0-9]+))?", __version__)
+        expected_tag = None
+        if match:
+            suffix = f"-alpha.{match[2]}" if match[2] is not None else ""
+            expected_tag = f"v{match[1]}{suffix}"
+        if expected_tag is None or metadata.get("proposed_tag") != expected_tag:
             errors.append("proposed_tag_mismatch")
+        publication_status = metadata.get("publication_status")
+        if publication_status == "published_release" and match and match[2] is not None:
+            errors.append("published_alpha_not_allowed")
         expected = {
-            "publication_status": "unpublished_candidate",
             "license": "PolyForm-Noncommercial-1.0.0",
             "contributions": "accepted_subject_to_explicit_contributor_license",
             "verified_platforms": EXPECTED_VERIFIED_PLATFORMS,
@@ -653,7 +665,8 @@ def inspect_release(*, publication=False):
             "supported_python": EXPECTED_VERIFIED_PYTHON,
             "capability_support": "synthetic_helper_only",
         }
-        if any(metadata.get(key) != value for key, value in expected.items()):
+        if (publication_status not in ("unpublished_candidate", "published_release")
+                or any(metadata.get(key) != value for key, value in expected.items())):
             errors.append("release_scope_mismatch")
         vp = metadata.get("verified_platforms")
         vpy = metadata.get("verified_python")
@@ -675,7 +688,7 @@ def inspect_release(*, publication=False):
             if value is None or value == "":
                 facts_missing.append(key)
             elif (not isinstance(value, str) or not value.strip()
-                  or re.search(r"待填写|待确认|TODO|PLACEHOLDER|example\.(?:com|org|net)", value, re.I)):
+                  or _RELEASE_FACT_PLACEHOLDER.search(value)):
                 errors.append("release_fact_invalid:" + key)
         repository = metadata.get("repository_url")
         if isinstance(repository, str) and repository:
@@ -692,7 +705,7 @@ def inspect_release(*, publication=False):
 
     if facts_missing:
         warnings.append("publication_facts_missing:" + ",".join(facts_missing))
-        if publication:
+        if publication or publication_status == "published_release":
             errors.append("publication_facts_incomplete")
     if not ((3, 11) <= sys.version_info[:2] <= (3, 14)):
         errors.append("python_311_to_314_required")

@@ -14,8 +14,8 @@ If this traceable workflow is useful to you, add a [Star](https://github.com/duy
 [![Stars](https://img.shields.io/github/stars/duyunzhoudyz/dyz-patent-copyright-skills?style=flat&logo=github)](https://github.com/duyunzhoudyz/dyz-patent-copyright-skills/stargazers)
 [![CI](https://github.com/duyunzhoudyz/dyz-patent-copyright-skills/actions/workflows/ci.yml/badge.svg)](https://github.com/duyunzhoudyz/dyz-patent-copyright-skills/actions/workflows/ci.yml)
 [![Issues](https://img.shields.io/github/issues/duyunzhoudyz/dyz-patent-copyright-skills?style=flat)](https://github.com/duyunzhoudyz/dyz-patent-copyright-skills/issues)
-[![Version](https://img.shields.io/badge/version-0.1.0a1-1f6feb?style=flat)](CHANGELOG.md)
-[![Status](https://img.shields.io/badge/status-unpublished%20candidate-d97706?style=flat)](RELEASE.md)
+[![Version](https://img.shields.io/badge/version-0.1.0-1f6feb?style=flat)](CHANGELOG.md)
+[![Status](https://img.shields.io/badge/status-released-2ea44f?style=flat)](RELEASE.md)
 [![Python](https://img.shields.io/badge/python-3.11--3.14%20stdlib-3776AB?style=flat&logo=python&logoColor=white)](RELEASE.md)
 [![Platform](https://img.shields.io/badge/platform-Windows%20verified%20%7C%20CI%203x4%20pending-0078D6?style=flat)](RELEASE.md)
 [![License](https://img.shields.io/badge/license-PolyForm%20Noncommercial%201.0.0%20%7C%20Source%20Available-1f6feb?style=flat)](LICENSE)
@@ -33,7 +33,7 @@ If this traceable workflow is useful to you, add a [Star](https://github.com/duy
 
 </div>
 
-> **Candidate status and maturity boundary:** `0.1.0a1` is the first public trial candidate on the `main` branch (proposed tag `v0.1.0-alpha.1`; no Git tag or GitHub Release has been published yet). All 83 catalog entries across 11 capability domains remain `synthetic_helper_only`: structured drafting methods, synthetic fixtures and bounded local tools are available, which do not represent complete professional capability, legal opinions, practitioner substitution or official approval. Scope and open maintainer facts are tracked in [RELEASE.md](RELEASE.md) and [release.json](release.json); stage changes are in [CHANGELOG.md](CHANGELOG.md).
+> **Release status and maturity boundary:** `0.1.0` is the first formal release on the `main` branch (release tag `v0.1.0`, released `2026-11-25`). All 83 catalog entries across 11 capability domains remain `synthetic_helper_only`: structured drafting methods, synthetic fixtures and bounded local tools are available, which do not represent complete professional capability, legal opinions, practitioner substitution or official approval. Release scope, verified baselines and maintainer metadata are recorded in [RELEASE.md](RELEASE.md) and [release.json](release.json); changes are in [CHANGELOG.md](CHANGELOG.md).
 >
 > **Language:** The skills, resources and linked documents are written in Chinese. This file is the English entry point.
 
@@ -207,10 +207,9 @@ One project can reuse authorized evidence across tracks, while statuses, version
 
 | Dimension | Status | Exact scope |
 | --- | --- | --- |
-| Declared baseline in `release.json` | Current declaration | `release.json` currently declares Windows with Python `3.11`, `3.13` and `3.14` as its verified baseline (`verified_platforms: ["Windows"]`, `verified_python: ["3.11", "3.13", "3.14"]`), with the hosted CI target matrix configured for Windows / Ubuntu / macOS × Python `3.11`, `3.12`, `3.13` and `3.14` (`target_ci_platforms` / `target_ci_python`), matching `quickstarts.md` and `package-use.md`. |
-| Local 4-version supplementary regression (2026-11-25) | Local supplementary run | On local Windows, Python `3.11.15`, `3.12.13`, `3.13.14` and `3.14.6` all passed the full **2,139 / 2,139** local unit test suite, `compileall` exit `0` and `evals/release_check.py` exit `0` (`source_candidates: 415`, `bundle_source_files: 309`, 6 skill entries, 83 catalog entries). This is a local supplementary record and has not upgraded the `release.json` declaration. |
-| Hosted GitHub Actions CI | Pending first run | `.github/workflows/ci.yml` defines a **12-job** matrix (Windows / Ubuntu / macOS × Python 3.11 / 3.12 / 3.13 / 3.14) with SHA-pinned actions, `contents: read`, `persist-credentials: false` and concurrency cancellation. Hosted Linux, macOS and Windows workflow runs have not yet executed in the public repository. |
-| Explicitly not performed | Not executed | Live external network requests (`tools/connectors/` stay offline by default and permit read-only requests only under explicit disclosure approval binding host, purpose, normalized query, pagination scope and expiry plus hard budget caps; no live network requests have been executed locally), cross-platform Office / LibreOffice / Poppler visual page checks, blind human evaluations on paid models (`evals/benchmark_harness.py` is fixture-checked offline only), licensed practitioner sign-off, and filling the three `null` maintainer contact fields (`license_holder`, `commercial_contact`, `security_contact`) in `release.json`. |
+| Verified local Windows baseline | Verified locally | `release.json` declares Windows with Python `3.11 / 3.12 / 3.13 / 3.14` as the locally verified baseline (`verified_platforms: ["Windows"]`, `verified_python: ["3.11", "3.12", "3.13", "3.14"]`), matching `RELEASE.md`, `quickstarts.md` and `package-use.md`. Across the prior four-version Windows baseline (Python `3.11.15 / 3.12.13 / 3.13.14 / 3.14.6`), all `2,139` unit tests, `compileall` and `evals/release_check.py` passed; the full suite is re-run on the final merged release commit before tagging, so final totals follow that run. |
+| Hosted GitHub Actions CI | Pending first run | `.github/workflows/ci.yml` defines a **12-job** matrix (Windows / Ubuntu / macOS × Python `3.11 / 3.12 / 3.13 / 3.14`) with SHA-pinned actions, `contents: read`, `persist-credentials: false` and concurrency cancellation. Hosted Linux, macOS and Windows workflow runs have not yet executed in the public repository. |
+| Explicitly not performed | Not executed | Live external network requests (`tools/connectors/` stays offline by default and permits read-only requests only under explicit disclosure approval binding host, purpose, normalized query, pagination scope and expiry plus hard budget caps; no live network requests have been executed locally), cross-platform Office / LibreOffice / Poppler visual page checks, blind human evaluations on paid models (`evals/benchmark_harness.py` is fixture-checked offline only) and licensed practitioner sign-off. |
 
 ### What this release does not do
 
@@ -252,7 +251,7 @@ Several public skills handle parts of this workflow well. The comparison below c
 | Software copyright | [SoftwareCopyright-Skill](https://github.com/Fokkyp/SoftwareCopyright-Skill/tree/1159f6d280783616e1247f768690eac97c1a3f6e), [software-certificate-skill](https://github.com/IvanCodesDev/software-certificate-skill/tree/ee7d4636f35210767adc0b5689f8678c68e6f7e6) | Chaining source selection and document assembly; real UI screenshots and partial rebuilds after changes | Separating expression, rights and licenses; same-version fact consistency and version invalidation |
 | Technical standards | [gbt-standard-docx-skill](https://github.com/zhangzhangco/gbt-standard-docx-skill/tree/a3af82bc790b0dcf9c2eb8c7123df46311da68da) | DOCX templates, cross-references and comment-disposition workflows | Linking clauses to verification evidence, comment impact tracking and pre-publication IP hand-over |
 
-Comparison boundary: upstream self-descriptions, static commit reading, local tool execution and controlled same-condition evaluations are separate categories. Neither the local unit-test count (2,139), repository stars nor specification length is presented as a claim of engineering or professional writing superiority. Full static analysis is in [docs/github-skill-comparison-20261102.md](docs/github-skill-comparison-20261102.md) and [docs/github-skill-comparison-20261102-sources.json](docs/github-skill-comparison-20261102-sources.json), with license and reuse boundaries in [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md). No upstream implementation code has been imported.
+Comparison boundary: upstream self-descriptions, static commit reading, local tool execution and controlled same-condition evaluations are separate categories. Neither local unit-test counts, repository stars nor specification length is presented as a claim of engineering or professional writing superiority. Full static analysis is in [docs/github-skill-comparison-20261102.md](docs/github-skill-comparison-20261102.md) and [docs/github-skill-comparison-20261102-sources.json](docs/github-skill-comparison-20261102-sources.json), with license and reuse boundaries in [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md). No upstream implementation code has been imported.
 
 ## Documentation, contributing and security
 
@@ -267,7 +266,7 @@ Comparison boundary: upstream self-descriptions, static commit reading, local to
 
 ### Contributing and local checks
 
-Issues and pull requests improving methods, documentation, synthetic fixtures and local tools are welcome; see [CONTRIBUTING.md](CONTRIBUTING.md). Original contributions intended for merge require explicit contributor agreement to [CONTRIBUTOR-LICENSE.md](CONTRIBUTOR-LICENSE.md) (contributors retain copyright while granting rights needed for commercial relicensing) plus `Signed-off-by`. Until the real receiving licensor is filled in [release.json](release.json), external patches may be discussed and reviewed, while patches requiring a rights grant are not merged.
+Issues and pull requests improving methods, documentation, synthetic fixtures and local tools are welcome; see [CONTRIBUTING.md](CONTRIBUTING.md). Original contributions intended for merge require explicit contributor agreement to [CONTRIBUTOR-LICENSE.md](CONTRIBUTOR-LICENSE.md) (contributors retain copyright while granting the receiving licensor named in [release.json](release.json), **杭州溥源智能科技有限公司**, the rights needed for commercial relicensing) plus `Signed-off-by`; external patches without explicit written confirmation are discussed and reviewed only and are not merged beforehand.
 
 Run the same three checks configured in `.github/workflows/ci.yml` from the source root before opening a PR (the full suite usually takes a few minutes):
 
@@ -279,7 +278,7 @@ python -B -X utf8 -m compileall -q tools evals skills
 
 ### Security reporting
 
-Sensitive security issues follow [SECURITY.md](SECURITY.md). Because `security_contact` in `release.json` is not configured yet, do not post reproduction payloads, client material, unpublished inventions or credentials in public issues or pull requests.
+Sensitive security issues follow [SECURITY.md](SECURITY.md). The private security contact recorded in `security_contact` of [release.json](release.json) is `AI4anyone(wechat)`. On first contact, verify maintainer identity and confirm the receiving channel first, then send only sanitized minimum details; never post reproduction payloads, client material, unpublished inventions or credentials in public issues or pull requests.
 
 ## License and commercial authorization
 
@@ -287,7 +286,7 @@ Original content in this repository is **Source Available** under the [PolyForm 
 
 Being an individual does not by itself make commercial use free. Any commercial use outside what [LICENSE](LICENSE) permits (including internal company IP or R&D workflows, paid client services by law firms or patent agencies, commercial SaaS integration or commercial redistribution) requires prior written commercial authorization; see [COMMERCIAL-LICENSE.md](COMMERCIAL-LICENSE.md) for common scenarios and licensing terms. Third-party research materials and limited EPO public data remain under their respective original licenses; see [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
 
-The real licensor identity and commercial contact channel are left unset in [release.json](release.json) for the maintainer to fill in before formal publication.
+Original content is held and commercially licensed by **杭州溥源智能科技有限公司**, with commercial licensing inquiries directed to `402784717@qq.com` (matching [release.json](release.json) and [RELEASE.md](RELEASE.md)). Source availability, downloads, inquiries or reading these notes do not grant a commercial license.
 
 ---
 

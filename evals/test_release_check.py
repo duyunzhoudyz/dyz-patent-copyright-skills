@@ -11,6 +11,14 @@ from unittest.mock import patch
 from evals import release_check
 
 
+SYNTHETIC_FACTS = {
+    "license_holder": "合成测试机构",
+    "repository_url": "https://fixture.invalid/owner/repository",
+    "commercial_contact": "nonnull@fixture.invalid",
+    "security_contact": "synthetic private test channel",
+}
+
+
 class ReleaseCheckTests(unittest.TestCase):
     def setUp(self):
         temporary = tempfile.TemporaryDirectory(prefix="dyz-release-test-")
@@ -36,6 +44,7 @@ class ReleaseCheckTests(unittest.TestCase):
             path.write_text(f"---\nname: {name}\ndescription: synthetic fixture\n---\n", encoding="utf-8")
             self.paths.add(path.relative_to(self.root).as_posix())
         self.metadata = json.loads((release_check.ROOT / "release.json").read_text(encoding="utf-8"))
+        self.metadata["publication_status"] = "unpublished_candidate"
         for key in release_check.REQUIRED_FACTS:
             self.metadata[key] = None
         self.write_metadata()
@@ -64,11 +73,35 @@ class ReleaseCheckTests(unittest.TestCase):
         self.assertEqual(["publication_facts_incomplete"], publication["errors"])
         self.assertEqual(list(release_check.REQUIRED_FACTS), publication["missing_publication_facts"])
 
+    def test_published_release_requires_each_fact_by_default(self):
+        self.metadata.update(SYNTHETIC_FACTS, publication_status="published_release")
+        self.write_metadata()
+        self.assertEqual([], release_check.inspect_release()["errors"])
+        for key in release_check.REQUIRED_FACTS:
+            with self.subTest(key=key):
+                del self.metadata[key]
+                self.write_metadata()
+                report = release_check.inspect_release()
+                self.metadata[key] = SYNTHETIC_FACTS[key]
+                self.assertEqual(["publication_facts_incomplete"], report["errors"])
+                self.assertEqual([key], report["missing_publication_facts"])
+
+    def test_published_alpha_is_rejected(self):
+        self.metadata.update(SYNTHETIC_FACTS, publication_status="published_release",
+                             version="0.1.0a1", proposed_tag="v0.1.0-alpha.1")
+        self.write_metadata()
+        with patch.object(release_check, "__version__", "0.1.0a1"):
+            self.assertEqual(["published_alpha_not_allowed"], release_check.inspect_release()["errors"])
+
+    def test_unknown_publication_status_is_rejected(self):
+        for status in ("unknown", []):
+            with self.subTest(status=status):
+                self.metadata["publication_status"] = status
+                self.write_metadata()
+                self.assertEqual(["release_scope_mismatch"], release_check.inspect_release()["errors"])
+
     def test_supplied_synthetic_facts_pass_structure_without_claiming_authentication(self):
-        self.metadata.update(license_holder="Synthetic Test Owner",
-                             repository_url="https://fixture.invalid/owner/repository",
-                             commercial_contact="synthetic test channel",
-                             security_contact="synthetic private test channel")
+        self.metadata.update(SYNTHETIC_FACTS)
         self.write_metadata()
         report = release_check.inspect_release(publication=True)
         self.assertEqual([], report["errors"])
@@ -111,12 +144,46 @@ class ReleaseCheckTests(unittest.TestCase):
         self.write_metadata()
         self.assertIn("version_mismatch", release_check.inspect_release()["errors"])
 
+    def test_proposed_tag_matches_version_format(self):
+        for version, tag, errors in (
+            ("0.1.0a1", "v0.1.0-alpha.1", []),
+            ("0.1.0", "v0.1.0-alpha.1", ["proposed_tag_mismatch"]),
+            ("0.1.0a1", "v0.1.0", ["proposed_tag_mismatch"]),
+            ("0.1", None, ["proposed_tag_mismatch"]),
+            ("０.1.0", "v０.1.0", ["proposed_tag_mismatch"]),
+            ("0.1.0a１", "v0.1.0-alpha.１", ["proposed_tag_mismatch"]),
+        ):
+            with self.subTest(version=version, tag=tag), patch.object(release_check, "__version__", version):
+                self.metadata.update(version=version, proposed_tag=tag)
+                self.write_metadata()
+                self.assertEqual(errors, release_check.inspect_release()["errors"])
+
     def test_placeholder_contact_and_repository_credentials_are_rejected(self):
         self.metadata.update(security_contact="TODO", repository_url="https://user:synthetic@fixture.invalid/o/r")
         self.write_metadata()
         errors = release_check.inspect_release()["errors"]
         self.assertIn("release_fact_invalid:security_contact", errors)
         self.assertIn("repository_url_invalid", errors)
+
+    def test_release_fact_placeholders_are_rejected(self):
+        self.metadata.update(SYNTHETIC_FACTS, publication_status="published_release")
+        for key, placeholder in (
+            ("license_holder", " TbD "),
+            ("repository_url", "https://fixture.invalid/owner/unknown"),
+            ("commercial_contact", "None"),
+            ("security_contact", "null"),
+            ("security_contact", "N/A"),
+            ("license_holder", "未填写"),
+            ("commercial_contact", "安全渠道待补"),
+            ("security_contact", "占位"),
+            ("security_contact", "[测试]"),
+        ):
+            with self.subTest(key=key, placeholder=placeholder):
+                self.metadata[key] = placeholder
+                self.write_metadata()
+                errors = release_check.inspect_release()["errors"]
+                self.metadata[key] = SYNTHETIC_FACTS[key]
+                self.assertEqual(["release_fact_invalid:" + key], errors)
 
     def test_cli_publication_failure_is_json_and_exit_two(self):
         output = io.StringIO()
@@ -630,15 +697,21 @@ class ReleaseCheckTests(unittest.TestCase):
 class ReleaseIdentityTests(unittest.TestCase):
     def test_real_ci_workflow_and_release_metadata_consistency(self):
         metadata = json.loads((release_check.ROOT / "release.json").read_text(encoding="utf-8"))
+        self.assertEqual("0.1.0", release_check.__version__)
+        self.assertEqual("0.1.0", metadata["version"])
+        self.assertEqual("v0.1.0", metadata["proposed_tag"])
+        self.assertEqual("published_release", metadata["publication_status"])
+        self.assertEqual("https://github.com/duyunzhoudyz/dyz-patent-copyright-skills", metadata["repository_url"])
+        self.assertEqual("synthetic_helper_only", metadata["capability_support"])
         self.assertEqual(["Windows"], metadata["verified_platforms"])
-        self.assertEqual(["3.11", "3.13", "3.14"], metadata["verified_python"])
+        self.assertEqual(["3.11", "3.12", "3.13", "3.14"], metadata["verified_python"])
         self.assertEqual(["Windows", "Linux", "macOS"], metadata["target_ci_platforms"])
         self.assertEqual(["3.11", "3.12", "3.13", "3.14"], metadata["target_ci_python"])
         self.assertEqual(metadata["verified_platforms"], metadata["supported_platforms"])
         self.assertEqual(metadata["verified_python"], metadata["supported_python"])
-        self.assertIsNone(metadata["license_holder"])
-        self.assertIsNone(metadata["commercial_contact"])
-        self.assertIsNone(metadata["security_contact"])
+        self.assertEqual("杭州溥源智能科技有限公司", metadata["license_holder"])
+        self.assertEqual("402784717@qq.com", metadata["commercial_contact"])
+        self.assertEqual("AI4anyone(wechat)", metadata["security_contact"])
         ci_errors = release_check.check_ci_workflow(
             release_check.ROOT / ".github/workflows/ci.yml",
             target_platforms=metadata["target_ci_platforms"],
@@ -651,6 +724,10 @@ class ReleaseIdentityTests(unittest.TestCase):
         pairs = release_check._parse_ci_matrix_include(ci_text.splitlines())
         self.assertEqual(12, len(pairs))
         self.assertEqual(12, len(set(pairs)))
+        # 源码归档没有 Git 索引；仍须通过上面的静态检查。
+        if (release_check.ROOT / ".git").exists():
+            self.assertEqual([], release_check.inspect_release(publication=True)["errors"])
+
     def test_original_six_skill_names_and_descriptions_are_preserved(self):
         # 只锁发现身份；正文可在既定入口下继续改进。
         expected = {

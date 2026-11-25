@@ -14,8 +14,8 @@
 [![Stars](https://img.shields.io/github/stars/duyunzhoudyz/dyz-patent-copyright-skills?style=flat&logo=github)](https://github.com/duyunzhoudyz/dyz-patent-copyright-skills/stargazers)
 [![CI](https://github.com/duyunzhoudyz/dyz-patent-copyright-skills/actions/workflows/ci.yml/badge.svg)](https://github.com/duyunzhoudyz/dyz-patent-copyright-skills/actions/workflows/ci.yml)
 [![Issues](https://img.shields.io/github/issues/duyunzhoudyz/dyz-patent-copyright-skills?style=flat)](https://github.com/duyunzhoudyz/dyz-patent-copyright-skills/issues)
-[![Version](https://img.shields.io/badge/version-0.1.0a1-1f6feb?style=flat)](CHANGELOG.md)
-[![Status](https://img.shields.io/badge/status-unpublished%20candidate-d97706?style=flat)](RELEASE.md)
+[![Version](https://img.shields.io/badge/version-0.1.0-1f6feb?style=flat)](CHANGELOG.md)
+[![Status](https://img.shields.io/badge/status-released-2ea44f?style=flat)](RELEASE.md)
 [![Python](https://img.shields.io/badge/python-3.11--3.14%20stdlib-3776AB?style=flat&logo=python&logoColor=white)](RELEASE.md)
 [![Platform](https://img.shields.io/badge/platform-Windows%20verified%20%7C%20CI%203x4%20pending-0078D6?style=flat)](RELEASE.md)
 [![License](https://img.shields.io/badge/license-PolyForm%20Noncommercial%201.0.0%20%7C%20Source%20Available-1f6feb?style=flat)](LICENSE)
@@ -33,7 +33,7 @@
 
 </div>
 
-> **候选版本与成熟度说明：** 当前代码版本为 `0.1.0a1`（首个公开试用候选，主分支 `main`，拟发布标签 `v0.1.0-alpha.1`，尚未打标签或创建 GitHub Release）。目录中的 11 个能力域、83 项入口全部维持 `synthetic_helper_only`，提供可核查的方法、合成示范与有限本地工具，不代表已完成专业能力、法律结论、执业替代或官方认证。发布范围与待补维护者事实见[发布说明](RELEASE.md)和 [release.json](release.json)，阶段变化见[变更记录](CHANGELOG.md)。
+> **正式版本与成熟度说明：** 当前正式发布版本为 `0.1.0`（主分支 `main`，正式发布标签 `v0.1.0`，发布日期 `2026-11-25`）。目录中的 11 个能力域、83 项入口全部维持 `synthetic_helper_only`，提供可核查的方法、合成示范与有限本地工具，不代表已完成专业能力、法律结论、执业替代或官方认证。发布范围、实测基线与维护者信息见[发布说明](RELEASE.md)和 [release.json](release.json)，版本变化见[变更记录](CHANGELOG.md)。
 
 ## 它解决什么问题
 
@@ -205,10 +205,9 @@ flowchart LR
 
 | 维度 | 当前状态 | 准确范围与说明 |
 | --- | --- | --- |
-| `release.json` 声明基线 | 既有支持口径 | `release.json` 当前声明的已验证支持基线为 Windows 下的 Python `3.11`、`3.13`、`3.14`（`verified_platforms: ["Windows"]`、`verified_python: ["3.11", "3.13", "3.14"]`），托管 CI 目标矩阵为 Windows / Ubuntu / macOS × Python `3.11`、`3.12`、`3.13`、`3.14`（`target_ci_platforms` / `target_ci_python`），与 `quickstarts.md`、`package-use.md` 保持一致。 |
-| 本机四版本补充回归（2026-11-25） | 本地补充实测 | 本机 Windows 上 Python `3.11.15`、`3.12.13`、`3.13.14`、`3.14.6` 四版本均完成全仓 **2,139 / 2,139** 本地单元测试通过、`compileall` 退出 `0`、`evals/release_check.py` 退出 `0`（Git 源码候选 `415` 份，本地运行包白名单 `309` 源文件，6 入口，83 项 catalog）；属本地补充记录，尚未升级 `release.json` 声明。 |
-| 托管 GitHub Actions CI | 待首次实跑 | `.github/workflows/ci.yml` 已配置 Windows / Ubuntu / macOS × Python 3.11 / 3.12 / 3.13 / 3.14 共 **12 组**矩阵（固定 Action SHA、`contents: read`、`persist-credentials: false`、并发取消），托管 Linux / macOS 与 Windows 工作流尚未在公开仓首次实跑。 |
-| 明确未执行项 | 未执行 | 真实外联请求（`tools/connectors/` 默认离线，仅在显式披露授权（绑定主机、用途、规范化查询、分页范围与有效期）与硬预算限额下才允许只读外联，当前本机未执行真实联网请求）、跨平台 Office / LibreOffice / Poppler 实页视觉复核、付费模型真人盲测（`evals/benchmark_harness.py` 仅完成离线夹具协议自检）、人类执业人员专业签核，以及 `release.json` 三项真实维护者联系事实（`license_holder`、`commercial_contact`、`security_contact`）填写。 |
+| Windows 本机已验证基线 | 已实测通过 | `release.json` 声明的已验证基线为 Windows 下的 Python `3.11 / 3.12 / 3.13 / 3.14`（`verified_platforms: ["Windows"]`、`verified_python: ["3.11", "3.12", "3.13", "3.14"]`），与 `RELEASE.md`、`quickstarts.md`、`package-use.md` 一致。先前在 Windows Python `3.11.15 / 3.12.13 / 3.13.14 / 3.14.6` 四版本基线上全仓 `2,139` 项单元测试、`compileall` 与 `evals/release_check.py` 均已通过；发版前将对最终合并提交复跑全仓测试，最新总数以合并后实跑记录为准。 |
+| 托管 GitHub Actions CI | 待首次实跑 | `.github/workflows/ci.yml` 已配置 Windows / Ubuntu / macOS × Python `3.11 / 3.12 / 3.13 / 3.14` 共 **12 组**矩阵（固定 Action SHA、`contents: read`、`persist-credentials: false`、并发取消），托管 Linux / macOS 与托管 Windows 工作流尚未在公开仓首次实跑。 |
+| 明确未执行项 | 未执行 | 真实外联请求（`tools/connectors/` 默认离线，仅在显式披露授权（绑定主机、用途、规范化查询、分页范围与有效期）与硬预算限额下才允许只读外联，当前本机未执行真实联网请求）、跨平台 Office / LibreOffice / Poppler 实页视觉复核、付费模型真人盲测（`evals/benchmark_harness.py` 仅完成离线夹具协议自检）以及人类执业人员专业签核。 |
 
 ### 这一版做不到什么
 
@@ -250,7 +249,7 @@ python -B -X utf8 -m tools.bundle --verify D:/dyz-local-bundle --manifest-sha256
 | 软件版权 | [SoftwareCopyright-Skill](https://github.com/Fokkyp/SoftwareCopyright-Skill/tree/1159f6d280783616e1247f768690eac97c1a3f6e)、[software-certificate-skill](https://github.com/IvanCodesDev/software-certificate-skill/tree/ee7d4636f35210767adc0b5689f8678c68e6f7e6) | 串联选材与文档生成；真实界面截图与版本变化后局部重建 | 表达、权利与许可分流、同版事实一致与版本失效追踪 |
 | 技术标准 | [gbt-standard-docx-skill](https://github.com/zhangzhangco/gbt-standard-docx-skill/tree/a3af82bc790b0dcf9c2eb8c7123df46311da68da) | DOCX 模板、交叉引用与修改意见表工作流 | 条款与验证依据对应、意见处理与修订影响、公开前 IP 交接 |
 
-口径边界：区分上游自述声明、固定提交源码观察、本机工具运行与同条件实测对照。本项目不以本地测试数量（2,139 项）、仓库星数或设计文档篇幅声称工程或专业写作能力全面领先。完整静态对比见[GitHub 横向比较](docs/github-skill-comparison-20261102.md)与[固定版本来源索引](docs/github-skill-comparison-20261102-sources.json)，上游许可与复用边界见[第三方说明](THIRD-PARTY-NOTICES.md)。本项目未引入任何上游实现代码。
+口径边界：区分上游自述声明、固定提交源码观察、本机工具运行与同条件实测对照。本项目不以本地测试数量、仓库星数或设计文档篇幅声称工程或专业写作能力全面领先。完整静态对比见[GitHub 横向比较](docs/github-skill-comparison-20261102.md)与[固定版本来源索引](docs/github-skill-comparison-20261102-sources.json)，上游许可与复用边界见[第三方说明](THIRD-PARTY-NOTICES.md)。本项目未引入任何上游实现代码。
 
 ## 文档、贡献与安全报告
 
@@ -265,7 +264,7 @@ python -B -X utf8 -m tools.bundle --verify D:/dyz-local-bundle --manifest-sha256
 
 ### 参与贡献与本地检查
 
-欢迎通过 [Issues](https://github.com/duyunzhoudyz/dyz-patent-copyright-skills/issues) 和 Pull Requests 改进方法、文档、合成样例与本地工具，具体流程见[贡献指南](CONTRIBUTING.md)。拟合并的原创贡献须由有权贡献者明确同意[贡献许可](CONTRIBUTOR-LICENSE.md)（贡献者保留版权，同时授予项目方商业再许可所需权利）并附 `Signed-off-by`。在 [release.json](release.json) 填明真实授权接收主体前，可以提交讨论和供审阅的补丁，暂不合并需授予权利的外部补丁。
+欢迎通过 [Issues](https://github.com/duyunzhoudyz/dyz-patent-copyright-skills/issues) 和 Pull Requests 改进方法、文档、合成样例与本地工具，具体流程见[贡献指南](CONTRIBUTING.md)。拟合并的原创贡献须由有权贡献者明确同意[贡献许可](CONTRIBUTOR-LICENSE.md)（贡献者保留版权，同时向 [release.json](release.json) 载明的项目授权接收主体 **杭州溥源智能科技有限公司** 授予商业再许可所需权利）并附 `Signed-off-by`；未完成明确书面授权确认的外部补丁仅作讨论和审阅，不先行合并。
 
 提交改动前，请在完整源码根目录运行与 `.github/workflows/ci.yml` 一致的三步检查（全量测试通常需数分钟）：
 
@@ -277,7 +276,7 @@ python -B -X utf8 -m compileall -q tools evals skills
 
 ### 安全与敏感问题报告
 
-敏感安全问题请按[安全报告说明](SECURITY.md)处理。当前 `release.json` 中的 `security_contact` 尚未配置私密渠道，切勿在公开 Issue 或 PR 中附带复现载荷、客户材料、未公开技术或凭证。
+敏感安全问题请按[安全报告说明](SECURITY.md)处理。私密安全报告渠道已配置在 [release.json](release.json) 的 `security_contact` 字段中，当前为 `AI4anyone(wechat)`；首次联系请先核实维护者身份并确认接收方式，再仅发送脱敏后的最小必要信息，切勿在公开 Issue 或 PR 中附带复现载荷、客户材料、未公开技术或凭证。
 
 ## 许可与商业授权
 
@@ -285,7 +284,7 @@ python -B -X utf8 -m compileall -q tools evals skills
 
 个人身份不自动使商业用途免费。超出 [LICENSE](LICENSE) 允许范围的商业用途（包括企业内部研发与 IP 业务流程、代理所或律所收费服务、商业 SaaS 集成或商业再分发）均须事先取得书面商业授权，常见场景与授权路径见[商业授权说明](COMMERCIAL-LICENSE.md)。第三方研究材料与 EPO 有限公开数据继续适用其各自原许可，详见[第三方说明](THIRD-PARTY-NOTICES.md)。
 
-真实授权主体与商业联系渠道待维护者在正式发布前填入 [release.json](release.json)，当前尚未设置。
+本项目原创内容权利人与商业授权主体为 **杭州溥源智能科技有限公司**，商业授权联系邮箱为 `402784717@qq.com`（与 [release.json](release.json) 及[发布说明](RELEASE.md)一致）。源码公开、下载、询价或阅读说明均不代表已获得商业许可。
 
 ---
 
