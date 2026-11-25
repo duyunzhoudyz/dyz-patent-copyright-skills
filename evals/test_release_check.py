@@ -278,12 +278,18 @@ class ReleaseCheckTests(unittest.TestCase):
         errors = release_check.inspect_release()["errors"]
         self.assertIn("ci_setup_python_sha_mismatch", errors)
 
-    def test_unverified_platform_claim_in_release_json_is_rejected(self):
-        self.metadata["supported_platforms"] = ["Windows", "Linux", "macOS"]
-        self.write_metadata()
-        errors = release_check.inspect_release()["errors"]
-        self.assertIn("release_scope_mismatch", errors)
-        self.assertIn("release_platform_subset_mismatch", errors)
+    def test_inconsistent_platform_claims_in_release_json_are_rejected(self):
+        extra_platforms = ["Windows", "Linux", "macOS", "FreeBSD"]
+        for overrides in (
+            {"supported_platforms": extra_platforms},
+            {"supported_platforms": extra_platforms, "verified_platforms": extra_platforms},
+            {"target_ci_platforms": ["Windows", "Linux"]},
+        ):
+            with self.subTest(**overrides), patch.dict(self.metadata, overrides):
+                self.write_metadata()
+                errors = release_check.inspect_release()["errors"]
+                self.assertIn("release_scope_mismatch", errors)
+                self.assertIn("release_platform_subset_mismatch", errors)
 
     def _ci_text(self):
         return (self.root / ".github/workflows/ci.yml").read_text(encoding="utf-8")
@@ -697,13 +703,13 @@ class ReleaseCheckTests(unittest.TestCase):
 class ReleaseIdentityTests(unittest.TestCase):
     def test_real_ci_workflow_and_release_metadata_consistency(self):
         metadata = json.loads((release_check.ROOT / "release.json").read_text(encoding="utf-8"))
-        self.assertEqual("0.1.0", release_check.__version__)
-        self.assertEqual("0.1.0", metadata["version"])
-        self.assertEqual("v0.1.0", metadata["proposed_tag"])
+        self.assertEqual("0.1.1", release_check.__version__)
+        self.assertEqual("0.1.1", metadata["version"])
+        self.assertEqual("v0.1.1", metadata["proposed_tag"])
         self.assertEqual("published_release", metadata["publication_status"])
         self.assertEqual("https://github.com/duyunzhoudyz/dyz-patent-copyright-skills", metadata["repository_url"])
         self.assertEqual("synthetic_helper_only", metadata["capability_support"])
-        self.assertEqual(["Windows"], metadata["verified_platforms"])
+        self.assertEqual(["Windows", "Linux", "macOS"], metadata["verified_platforms"])
         self.assertEqual(["3.11", "3.12", "3.13", "3.14"], metadata["verified_python"])
         self.assertEqual(["Windows", "Linux", "macOS"], metadata["target_ci_platforms"])
         self.assertEqual(["3.11", "3.12", "3.13", "3.14"], metadata["target_ci_python"])

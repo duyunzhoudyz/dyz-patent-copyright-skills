@@ -4,7 +4,7 @@
 
 ## 已实现的接口
 
-适用版本为 0.1.0（纯 Python 3.11—3.14 标准库，已加入跨平台路径守护；当前本机已实测基线为 Windows Python 3.11 / 3.12 / 3.13 / 3.14，Linux／macOS 待托管 CI 实跑）：`tools.host_bridge.HostToolBridge`、`dynamic_tools()`；也可从完整包根运行`python -B -m tools.host_bridge --describe`。从其他目录可运行完整包中`tools/host_bridge.py`的绝对路径；使用`-I -S -B -X utf8`可关闭用户站点、环境搜索路径及字节码写入。这里只启动本地文件工具，不启动模型、账户RPC、浏览器或办公转换器。
+适用版本为 0.1.1（标签 `v0.1.1`，发布日期 `2026-11-25`；纯 Python 3.11—3.14 标准库，含跨平台路径守护；纯标准库本地工具与自动化单测已在托管 GitHub Actions Windows / Linux (Ubuntu) / macOS × Python 3.11 / 3.12 / 3.13 / 3.14 共 12 组矩阵全部通过，详见 `main@697d8a2` 的 [run 45592934144](https://github.com/duyunzhoudyz/dyz-patent-copyright-skills/actions/runs/45592934144)；跨平台 Office／LibreOffice／Poppler 实页视觉复核、真实外联、真实模型多轮稳定性与执业签核仍未执行）：`tools.host_bridge.HostToolBridge`、`dynamic_tools()`；也可从完整包根运行`python -B -m tools.host_bridge --describe`。从其他目录可运行完整包中`tools/host_bridge.py`的绝对路径；使用`-I -S -B -X utf8`可关闭用户站点、环境搜索路径及字节码写入。这里只启动本地文件工具，不启动模型、账户RPC、浏览器或办公转换器。
 
 | 接口 | 用途与限制 |
 | --- | --- |

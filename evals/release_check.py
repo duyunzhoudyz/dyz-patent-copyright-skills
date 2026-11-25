@@ -41,7 +41,7 @@ PLATFORM_TO_RUNNER = {
     "Linux": "ubuntu-latest",
     "macOS": "macos-latest",
 }
-EXPECTED_VERIFIED_PLATFORMS = ["Windows"]
+EXPECTED_VERIFIED_PLATFORMS = ["Windows", "Linux", "macOS"]
 EXPECTED_VERIFIED_PYTHON = ["3.11", "3.12", "3.13", "3.14"]
 EXPECTED_TARGET_CI_PLATFORMS = ["Windows", "Linux", "macOS"]
 EXPECTED_TARGET_CI_PYTHON = ["3.11", "3.12", "3.13", "3.14"]

@@ -1,5 +1,25 @@
 # 变更记录
 
+## 0.1.1 — 维护正式版（2026-11-25）
+
+维护正式发布标签为 **`v0.1.1`**，发布日期为 **`2026-11-25`**，主分支为 `main`。本版聚焦跨平台确定性修复、托管 GitHub Actions CI 12 组全绿验证及双语文档体验升级；11 个能力域、83 项能力目录的支持等级仍全部维持 `synthetic_helper_only`，6 个 Skill 入口与 309 源本地运行包白名单保持不变。
+
+### 跨平台修复与 CI 全绿验证
+
+- **跨平台 DOCX 确定性修复**：在 `tools/documents.py`（`_zip_docx`）中显式固定 `create_system = 0` 与 `external_attr = 0o600 << 16`，消除 Linux / macOS 与 Windows 生成 DOCX 时 ZIP 中央目录元数据的平台差异，保持既有黄金 SHA-256 零修改。
+- **macOS 系统根符号链接兼容修复**：在 `tools/standard_pdf.py` 的 `_Access.pin` 中复用 `is_macos_system_root_symlink`，并在项目根与案例根独立性校验中以 `resolve` 补强判重，兼容 macOS 系统根符号链接的同时，继续严格拒绝包内真实符号链接、重解析点与硬链接。
+- **跨平台回归测试与托管 CI 12 / 12 全绿验证**：补充跨平台 DOCX ZIP 字节、字段与 macOS 系统根符号链接回归测试。合并态 `main@697d8a2` 在本机 Windows（Python `3.14.6`）全仓 **`2,145 / 2,145`** 项单元测试通过（0 失败、0 错误、0 跳过），`compileall`、`validate_readme_pair.py` 与 `evals/release_check.py --publication` 均通过（此前 Windows Python `3.11 / 3.12 / 3.13 / 3.14` 本机基线均已验证）；同提交于 `2026-11-25` 在托管 GitHub Actions（[run 45592934144](https://github.com/duyunzhoudyz/dyz-patent-copyright-skills/actions/runs/45592934144)）的 `windows-latest` / `ubuntu-latest` / `macos-latest` × Python `3.11 / 3.12 / 3.13 / 3.14` 共 **12 / 12 全部通过**（Linux / macOS 上保留 4 项预期平台跳过：2 项 Windows junction、1 项 Windows 大小写碰撞、1 项可选外部 PDF 工具测试）。`release.json` 同步升级 `verified_platforms` 与 `supported_platforms` 为 `["Windows", "Linux", "macOS"]`（纯标准库本地工具与自动化单测范围）；`v0.1.1` 发版合并前会复跑全量测试。
+
+### 双语 README 与发布文档优化
+
+- **双语 README 全面重写与体验优化**：重写 `README.md` 与 `README_EN.md`，突出 6 个 Skill 与零依赖 Python 本地工具解决的实际痛点与使用方式，移除空白的第三方星标/贡献者展示图与零信息量徽章，并在 CI 全绿后恢复 GitHub Actions CI 状态徽章。
+- **发布文档同步至 `v0.1.1`**：同步更新 `RELEASE.md`、`SECURITY.md`、`COMMERCIAL-LICENSE.md` 及 `skills/dyz-workbench/resources/` 下运行包资源说明的版本号与跨平台 CI 实测证据，保持 `release.json` 四项维护者事实、`LICENSE` 原文权利边界及双语同步校验一致。
+
+### 未变边界与明确未执行项
+
+- 11 域 83 项能力目录支持等级维持 `synthetic_helper_only`，6 个 Skill 入口、10 项 `HostToolBridge` 接口、309 源本地运行包白名单（对应 415 源码候选）及四项维护者事实保持不变。
+- 明确未执行项仍包括：真实外部联网请求（`tools/connectors/` 默认离线，仅在显式披露授权与硬预算上限下允许只读外联）、跨平台 Office / LibreOffice / Poppler 实页视觉与分页复核、付费模型真人盲测（`evals/benchmark_harness.py` 仅完成离线夹具协议自检）以及人类执业人员专业签核；多宿主真实模型多轮往返稳定性仍须按具体环境另验。
+
 ## 0.1.0 — 正式发布（2026-11-25）
 
 正式发布标签为 **`v0.1.0`**，发布日期为 **`2026-11-25`**，主分支为 `main`。本节记录 `0.1.0` 正式发布的全部收敛变更、阶段能力与已知限制；11 个能力域、83 项能力目录的支持等级仍全部维持 `synthetic_helper_only`。

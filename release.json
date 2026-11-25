@@ -1,6 +1,6 @@
 {
-  "version": "0.1.0",
-  "proposed_tag": "v0.1.0",
+  "version": "0.1.1",
+  "proposed_tag": "v0.1.1",
   "publication_status": "published_release",
   "license": "PolyForm-Noncommercial-1.0.0",
   "contributions": "accepted_subject_to_explicit_contributor_license",
@@ -8,12 +8,12 @@
   "repository_url": "https://github.com/duyunzhoudyz/dyz-patent-copyright-skills",
   "commercial_contact": "402784717@qq.com",
   "security_contact": "AI4anyone(wechat)",
-  "supported_platforms": ["Windows"],
+  "supported_platforms": ["Windows", "Linux", "macOS"],
   "supported_python": ["3.11", "3.12", "3.13", "3.14"],
-  "verified_platforms": ["Windows"],
+  "verified_platforms": ["Windows", "Linux", "macOS"],
   "verified_python": ["3.11", "3.12", "3.13", "3.14"],
   "target_ci_platforms": ["Windows", "Linux", "macOS"],
   "target_ci_python": ["3.11", "3.12", "3.13", "3.14"],
-  "platform_verification_note": "Locally verified on Windows with Python 3.11, 3.12, 3.13 and 3.14; hosted Linux/macOS Actions matrix (Python 3.11-3.14) is configured in .github/workflows/ci.yml and awaiting live hosted CI runs.",
+  "platform_verification_note": "The hosted GitHub Actions matrix passed all 12 combinations of Windows, Linux (Ubuntu), and macOS with Python 3.11–3.14 for the standard-library-only local tools and tests (main@697d8a2, run 45592934144, 2026-11-25), with four expected POSIX test skips. All 2,145 local tests passed on Windows with Python 3.14.6, and earlier Windows baselines passed on Python 3.11–3.14. Cross-platform visual review of rendered Office, LibreOffice, and Poppler pages, live external connector requests, paid-model blind testing by humans, and professional sign-off by human practitioners were not performed.",
   "capability_support": "synthetic_helper_only"
 }

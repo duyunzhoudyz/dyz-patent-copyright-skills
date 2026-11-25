@@ -11,7 +11,8 @@
 
 If you have ever spent an evening fixing an AI draft that read smoothly until a reviewer spotted invented test numbers or inverted claim conditions, leave a [Star](https://github.com/duyunzhoudyz/dyz-patent-copyright-skills/stargazers) to bookmark the repo and help peers with the same headache find it.
 
-[![Version](https://img.shields.io/badge/version-v0.1.0-1f6feb?style=flat)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-v0.1.1-1f6feb?style=flat)](CHANGELOG.md)
+[![CI](https://github.com/duyunzhoudyz/dyz-patent-copyright-skills/actions/workflows/ci.yml/badge.svg)](https://github.com/duyunzhoudyz/dyz-patent-copyright-skills/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/python-3.11--3.14%20stdlib-3776AB?style=flat&logo=python&logoColor=white)](RELEASE.md)
 [![Last Commit](https://img.shields.io/github/last-commit/duyunzhoudyz/dyz-patent-copyright-skills?style=flat)](https://github.com/duyunzhoudyz/dyz-patent-copyright-skills/commits/main)
 [![License](https://img.shields.io/badge/Source%20Available-PolyForm%20Noncommercial%201.0.0-1f6feb?style=flat)](LICENSE)
@@ -173,15 +174,14 @@ Both commands print to stdout only: **nothing is written to disk and global host
 
 ## What it will not do, and what has been verified
 
-This release is **`0.1.0`** (`main` branch, tag `v0.1.0`, released `2026-11-25`). All 83 catalog entries across 11 capability domains remain `synthetic_helper_only`: structured drafting workflows, synthetic fixtures, and bounded local checks. Release scope, verified baselines, and maintainer metadata live in [RELEASE.md](RELEASE.md), [release.json](release.json), and [CHANGELOG.md](CHANGELOG.md).
+This release is **`0.1.1`** (`main` branch, tag `v0.1.1`, released `2026-11-25`). All 83 catalog entries across 11 capability domains remain `synthetic_helper_only`: structured drafting workflows, synthetic fixtures, and bounded local checks. Release scope, verified baselines, and maintainer metadata live in [RELEASE.md](RELEASE.md), [release.json](release.json), and [CHANGELOG.md](CHANGELOG.md).
 
 ### Verified baseline vs unexecuted checks
 
 | Area | Status | Exact scope |
 | --- | --- | --- |
-| Local Windows baseline | Verified locally | `release.json` records Windows with Python `3.11 / 3.12 / 3.13 / 3.14` as the locally verified baseline (verified across all four Python versions on the prior baseline). Specifically, the **`2,144 / 2,144`** full unit-test count (both on the full source tree and the gitless source archive), `compileall`, and `evals/release_check.py --publication` were executed and passed on **`v0.1.0` release commit `d6334df` under local Windows Python `3.14.6`**. |
-| Hosted GitHub Actions CI | Not yet in verified baseline | `.github/workflows/ci.yml` configures a 12-job matrix (Windows / Ubuntu / macOS × Python `3.11 / 3.12 / 3.13 / 3.14`) with SHA-pinned actions, `contents: read`, `persist-credentials: false`, and concurrency cancellation. Hosted Linux, macOS, and cross-platform environments remain unverified; check [GitHub Actions](https://github.com/duyunzhoudyz/dyz-patent-copyright-skills/actions/workflows/ci.yml) for current run status. |
-| Explicitly unexecuted | Not performed | Live outbound requests (`tools/connectors/` stays offline by default and permits read-only requests only under explicit disclosure approval binding host, purpose, normalized query, pagination scope, and expiry plus hard budget caps; no live network requests have been run locally), cross-platform Office / LibreOffice / Poppler visual page checks, blind human evaluations on paid models (`evals/benchmark_harness.py` is fixture-checked offline only), and licensed practitioner sign-off. |
+| Cross-platform local baseline | Verified (12 / 12 green) | `verified_platforms` and `supported_platforms` in `release.json` are aligned to Windows / Linux (Ubuntu) / macOS × Python `3.11 / 3.12 / 3.13 / 3.14` (pure-stdlib local tools and automated unit tests). Specifically, merged state `main@697d8a2` passed all **`2,145 / 2,145`** repository unit tests (0 failures, 0 errors, 0 skips), `compileall`, `validate_readme_pair.py`, and `evals/release_check.py --publication` locally on Windows (Python `3.14.6`), building on the prior local Windows Python `3.11 / 3.12 / 3.13 / 3.14` baseline. On `2026-11-25`, the same commit passed **12 / 12** jobs on hosted GitHub Actions ([run 45592934144](https://github.com/duyunzhoudyz/dyz-patent-copyright-skills/actions/runs/45592934144)) across `windows-latest`, `ubuntu-latest`, and `macos-latest` × Python `3.11 / 3.12 / 3.13 / 3.14` (running `release_check.py`, `compileall`, and the full local test suite, with 4 expected platform skips on Linux/macOS: 2 Windows junction tests, 1 Windows case-collision test, and 1 optional external PDF tool test). The full suite will be re-run before merging `v0.1.1`; check [GitHub Actions](https://github.com/duyunzhoudyz/dyz-patent-copyright-skills/actions/workflows/ci.yml) for the latest run status. |
+| Explicitly unexecuted | Not performed | Live outbound requests (`tools/connectors/` stays offline by default and permits read-only requests only under explicit disclosure approval binding host, purpose, normalized query, pagination scope, and expiry plus hard budget caps; no live network requests have been run locally), cross-platform Office / LibreOffice / Poppler visual page and pagination checks, blind human evaluations on paid models (`evals/benchmark_harness.py` is fixture-checked offline only), and licensed practitioner sign-off. |
 
 ### Hard limits
 

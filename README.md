@@ -11,7 +11,8 @@
 
 如果你也被 AI 写专业材料时"看着很顺、一审全是坑"折腾过，欢迎点一个 [Star](https://github.com/duyunzhoudyz/dyz-patent-copyright-skills/stargazers) 收藏，也帮写交底、赶软著、起草标准的同行更容易找到它。
 
-[![Version](https://img.shields.io/badge/version-v0.1.0-1f6feb?style=flat)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-v0.1.1-1f6feb?style=flat)](CHANGELOG.md)
+[![CI](https://github.com/duyunzhoudyz/dyz-patent-copyright-skills/actions/workflows/ci.yml/badge.svg)](https://github.com/duyunzhoudyz/dyz-patent-copyright-skills/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/python-3.11--3.14%20stdlib-3776AB?style=flat&logo=python&logoColor=white)](RELEASE.md)
 [![Last Commit](https://img.shields.io/github/last-commit/duyunzhoudyz/dyz-patent-copyright-skills?style=flat)](https://github.com/duyunzhoudyz/dyz-patent-copyright-skills/commits/main)
 [![License](https://img.shields.io/badge/Source%20Available-PolyForm%20Noncommercial%201.0.0-1f6feb?style=flat)](LICENSE)
@@ -171,15 +172,14 @@ python -B -X utf8 -m tools.mcp_server --print-config --host claude-code
 
 ## 它能帮你做什么，又绝不越界做什么
 
-先把版本状态和边界摊开讲清楚，用着才踏实。当前正式发布版本为 **`0.1.0`**（主分支 `main`，发布标签 `v0.1.0`，发布日期 `2026-11-25`）。11 个能力域、83 项能力目录当前全部维持 `synthetic_helper_only`，即提供可核查的起草方法、合成示范与有限本地工具。完整发布范围、维护者元数据与版本变化见[发布说明](RELEASE.md)、[release.json](release.json) 和[变更记录](CHANGELOG.md)。
+先把版本状态和边界摊开讲清楚，用着才踏实。当前正式发布版本为 **`0.1.1`**（主分支 `main`，发布标签 `v0.1.1`，发布日期 `2026-11-25`）。11 个能力域、83 项能力目录当前全部维持 `synthetic_helper_only`，即提供可核查的起草方法、合成示范与有限本地工具。完整发布范围、维护者元数据与版本变化见[发布说明](RELEASE.md)、[release.json](release.json) 和[变更记录](CHANGELOG.md)。
 
 ### 实测基线与明确未执行项
 
 | 维度 | 当前状态 | 准确范围与说明 |
 | --- | --- | --- |
-| Windows 本机实测基线 | 已实测通过 | `release.json` 声明的已验证基线为 Windows 下的 Python `3.11 / 3.12 / 3.13 / 3.14`（此前四版本基线均已实跑通过）。其中 **`2,144 / 2,144`** 项全仓单元测试（含完整源码树与不含 `.git` 的源码归档）、`compileall` 与 `evals/release_check.py --publication`，是在 **`v0.1.0` 发布提交 `d6334df`、本机 Windows Python `3.14.6`** 上实跑通过的记录。 |
-| 托管 GitHub Actions CI | 未纳入已验证基线 | `.github/workflows/ci.yml` 已配置 Windows / Ubuntu / macOS × Python `3.11 / 3.12 / 3.13 / 3.14` 共 12 组矩阵（固定 Action SHA、`contents: read`、`persist-credentials: false`、并发取消）。托管 Linux / macOS 与跨平台环境仍待核验，最新工作流状态以 [GitHub Actions](https://github.com/duyunzhoudyz/dyz-patent-copyright-skills/actions/workflows/ci.yml) 为准。 |
-| 明确未执行项 | 未执行 | 真实外联请求（`tools/connectors/` 默认离线，只在显式披露授权并绑定主机、用途、规范化查询、分页范围、有效期与硬预算上限后才允许只读外联，本机未执行真实联网请求）、跨平台 Office / LibreOffice / Poppler 实页视觉复核、付费模型真人盲测（`evals/benchmark_harness.py` 仅完成离线夹具协议自检）以及人类执业人员专业签核。 |
+| 跨平台本地工具基线 | 已实测通过（12 / 12 全绿） | `release.json` 中的 `verified_platforms` 与 `supported_platforms` 同步升级为 Windows / Linux (Ubuntu) / macOS × Python `3.11 / 3.12 / 3.13 / 3.14`（纯标准库本地工具与自动化单测范围）。具体实证：合并态 `main@697d8a2` 在本机 Windows（Python `3.14.6`）上全仓 **`2,145 / 2,145`** 项单元测试通过（0 失败、0 错误、0 跳过），`compileall`、`validate_readme_pair.py` 与 `evals/release_check.py --publication` 均通过（此前 Windows Python `3.11 / 3.12 / 3.13 / 3.14` 本机基线均已验证）；同提交于 `2026-11-25` 在托管 GitHub Actions [run 45592934144](https://github.com/duyunzhoudyz/dyz-patent-copyright-skills/actions/runs/45592934144) 上实现 `windows-latest` / `ubuntu-latest` / `macos-latest` × Python `3.11 / 3.12 / 3.13 / 3.14` 共 **12 / 12 全部通过**（含 `release_check.py`、`compileall` 与全仓本地测试；Linux / macOS 上保留 4 项预期平台跳过：2 项 Windows junction、1 项 Windows 大小写碰撞、1 项可选外部 PDF 工具测试）。`v0.1.1` 发版合并前会复跑全量测试，最新工作流状态以 [GitHub Actions](https://github.com/duyunzhoudyz/dyz-patent-copyright-skills/actions/workflows/ci.yml) 为准。 |
+| 明确未执行项 | 未执行 | 真实外联请求（`tools/connectors/` 默认离线，只在显式披露授权并绑定主机、用途、规范化查询、分页范围、有效期与硬预算上限后才允许只读外联，本机未执行真实联网请求）、跨平台 Office / LibreOffice / Poppler 实页视觉与分页复核、付费模型真人盲测（`evals/benchmark_harness.py` 仅完成离线夹具协议自检）以及人类执业人员专业签核。 |
 
 ### 这套工具绝不替代的事情
 
